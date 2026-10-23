@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#1d4e96"><link rel="manifest" href="manifest.json"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>日語 N5 學習</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#1d4e96"><link rel="manifest" href="manifest.json"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script><script>window.N5_FIREBASE={apiKey:"AIzaSyBbBF9JRFQPli5NeyH2cB1CvYMTeByMIng",authDomain:"n5-learning-453eb.firebaseapp.com",projectId:"n5-learning-453eb",storageBucket:"n5-learning-453eb.firebasestorage.app",messagingSenderId:"1076998873386",appId:"1:1076998873386:web:1b485881481292af84be53"};</script></head><body><title>日語 N5 學習</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -310,6 +310,10 @@ textarea{width:100%;min-height:110px;border-radius:10px;border:1px solid var(--l
 .iconbtn.furibtn[aria-pressed="false"] rt{text-decoration:line-through}
 body.hide-furi rt{visibility:hidden}
 body.hide-furi #gloss rt,body.hide-furi .furibtn rt{visibility:visible}
+.authcard{display:flex;align-items:center;gap:12px;justify-content:space-between;background:var(--pri-soft);border:1px solid var(--pri-mid);border-radius:14px;padding:12px 14px}
+.authcard b{font-size:15px}
+.gbtn-signin{gap:8px;white-space:nowrap;flex:none}
+.gbtn-signin svg{background:#fff;border-radius:50%;padding:2px;width:22px;height:22px}
 /* 提示 */
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--tabh) + env(safe-area-inset-bottom,0px) + 14px);z-index:40;background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:15px;max-width:calc(100% - 32px);box-shadow:0 6px 20px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity .2s}
 .toast.on{opacity:1}
@@ -2775,6 +2779,7 @@ function renderLib() {
   const denom = Math.max(1, c.total - c.excluded);
   const pct = Math.round(c.learned / denom * 100);
   host.innerHTML = `
+    <div id="authTop"></div>
     <div class="stats">
       <div class="stat"><b>${pct}%</b><span>已學會</span></div>
       <div class="stat"><b>${c.due}</b><span>今天到期</span></div>
@@ -2792,7 +2797,7 @@ function renderLib() {
       <div class="chips" style="padding:0 12px 10px">${[['queued', '待考', c.queued], ['learned', '已學會', c.learned], ['mcWrong', '單選錯題', c.mcW], ['mcReview', '單選複習', c.mcR], ['fillWrong', '填空錯題', c.fillW], ['fillReview', '填空複習', c.fillR], ['excluded', '已排除', c.excluded]].map(([k, l, n]) => `<button class="chip" data-list="${k}" aria-pressed="${libList === k}">${l}<span class="n">${n}</span></button>`).join('')}</div>
       <div class="lrows"></div>
     </details>
-    <details class="lst"><summary>設定<span class="n sync${Cloud.ref ? ' on' : ''}" id="syncState"><i></i><span>${esc(Cloud.ref ? '已連帳號' : '只存本機')}</span></span></summary>
+    <details class="lst"${Cloud.mode === 'google' && !Cloud.user ? ' open' : ''}><summary>設定<span class="n sync${Cloud.ref ? ' on' : ''}" id="syncState"><i></i><span>${esc(Cloud.chip())}</span></span></summary>
       <div class="setgrp">
         <section><h4>發音</h4><div id="voiceBox"></div></section>
         <section><h4>文法補充</h4>
@@ -2802,6 +2807,7 @@ function renderLib() {
         </section>
         <section><h4>同步與備份</h4>
           <div class="meta" id="syncLong">${esc(Cloud.label())}</div>
+          <div id="authBox"></div>
           <div class="row"><button class="btn quiet" id="exp">匯出進度</button><button class="btn quiet" id="imp">匯入進度</button></div>
           <div id="bk"></div>
         </section>
@@ -2821,6 +2827,7 @@ function renderLib() {
   const q = $('#q');
   q.addEventListener('input', () => doSearch(q.value));
   renderVoiceBox();
+  renderAuthBox();
   $('#knownLv').onchange = e => { SET.knownLv = e.target.value; saveSet(); toast(SET.knownLv ? `已隱藏 ${SET.knownLv} 以下的文法` : '文法全部顯示'); };
   $('#exp').onclick = async () => {
     const txt = await zipCode(packState(S, today()));
@@ -2934,33 +2941,96 @@ function renderVoiceBox() {
 
 // ================= 帳號同步（claude.ai）=================
 const Cloud = {
-  ref: null, remote: null, state: 'local', timer: 0, writing: false, again: false,
+  ref: null, remote: null, state: 'local', timer: 0, writing: false, again: false, mode: 'local', user: null, unsub: null, fb: null,
   label() {
-    return { local: '進度只存在這台裝置', connecting: '正在連線帳號…', synced: '已同步到你的帳號', saving: '正在同步…', error: '暫時無法同步，進度仍存在這台裝置', readonly: '這個連結無法寫入你的帳號，進度只存在這台裝置' }[this.state];
+    return {
+      local: '進度只存在這台裝置',
+      signedout: '還沒登入。登入 Google 後，進度會存到雲端，換手機也能接著練。',
+      connecting: '正在連線帳號…',
+      synced: this.mode === 'google' ? `已同步到 Google 帳號${this.user && this.user.email ? `（${this.user.email}）` : ''}` : '已同步到你的帳號',
+      saving: '正在同步…',
+      error: '暫時無法同步，進度仍存在這台裝置',
+      readonly: '這個連結無法寫入你的帳號，進度只存在這台裝置'
+    }[this.state];
   },
+  chip() { return this.ref ? (this.mode === 'google' ? '已登入' : '已連帳號') : (this.mode === 'google' ? '未登入' : '只存本機'); },
   set(st) {
     this.state = st;
     const el = $('#syncState');
-    if (el) { el.className = 'n sync' + (this.ref ? ' on' : ''); $('span', el).textContent = this.ref ? '已連帳號' : '只存本機'; }
+    if (el) { el.className = 'n sync' + (this.ref ? ' on' : ''); $('span', el).textContent = this.chip(); }
     const lg = $('#syncLong'); if (lg) lg.textContent = this.label();
+    renderAuthBox();
   },
   async init() {
+    if (await this.initClaude()) return;
+    this.initFirebase();
+  },
+  async initClaude() {
     try {
-      if (!window.claude || typeof window.claude.use !== 'function') return;
+      if (!window.claude || typeof window.claude.use !== 'function') return false;
       const [db, user] = await Promise.all([window.claude.use('db'), window.claude.use('user')]);
-      if (!db || !user) return;
+      if (!db || !user) return false;
       const uid = await user.id();
-      if (!uid) return;
-      this.ref = db.collection('data/users/' + uid).doc('progress');
-      this.set('connecting');
-      this.ref.onSnapshot(snap => {
-        const d = snap && snap.exists ? (snap.data() || {}) : {};
-        this.remote = { items: d.items || {}, days: d.days || {} };
-        this.absorb(this.remote);
-        if (this.state === 'connecting' || this.state === 'error') this.set('synced');
-        this.schedule(300);
-      }, () => this.set('error'));
-    } catch (e) { this.set('local'); }
+      if (!uid) return false;
+      this.mode = 'claude';
+      this.attach(db.collection('data/users/' + uid).doc('progress'));
+      return true;
+    } catch (e) { return false; }
+  },
+  initFirebase() {
+    try {
+      if (!window.firebase || !window.N5_FIREBASE) return;
+      if (!firebase.apps.length) firebase.initializeApp(window.N5_FIREBASE);
+      this.fb = { auth: firebase.auth(), db: firebase.firestore() };
+      this.mode = 'google';
+      this.set('signedout');
+      this.fb.auth.getRedirectResult().catch(e => this.authError(e));
+      this.fb.auth.onAuthStateChanged(u => {
+        if (u) { this.user = u; this.attach(this.fb.db.collection('users').doc(u.uid)); }
+        else { this.detach(); this.user = null; this.set('signedout'); }
+      });
+    } catch (e) { this.mode = 'local'; this.set('local'); }
+  },
+  async signIn() {
+    if (!this.fb) return;
+    const prov = new firebase.auth.GoogleAuthProvider();
+    prov.setCustomParameters({ prompt: 'select_account' });
+    try { await this.fb.auth.signInWithPopup(prov); }
+    catch (e) {
+      if (e && /popup-blocked|operation-not-supported/.test(e.code || '')) { try { await this.fb.auth.signInWithRedirect(prov); } catch (e2) { this.authError(e2); } }
+      else this.authError(e);
+    }
+  },
+  async signOut() {
+    if (!this.fb) return;
+    await this.upload();
+    await this.fb.auth.signOut();
+    toast('已登出，進度仍保留在這台裝置');
+  },
+  authError(e) {
+    const c = (e && e.code) || '';
+    if (/popup-closed|cancelled-popup/.test(c)) return;
+    const msg = /unauthorized-domain/.test(c) ? '登入失敗：Firebase 還沒允許這個網址，請到 Authentication → Settings → Authorized domains 加入 chouhug.github.io'
+      : /network/.test(c) ? '登入失敗：請確認網路連線'
+      : /operation-not-allowed/.test(c) ? '登入失敗：Firebase 還沒打開 Google 登入'
+      : '登入失敗，請再試一次';
+    toast(msg);
+  },
+  attach(ref) {
+    this.detach();
+    this.ref = ref; this.remote = null;
+    this.set('connecting');
+    this.unsub = ref.onSnapshot(snap => {
+      const d = snap && snap.exists ? (snap.data() || {}) : {};
+      this.remote = { items: d.items || {}, days: d.days || {} };
+      this.absorb(this.remote);
+      if (this.state === 'connecting' || this.state === 'error') this.set('synced');
+      this.schedule(300);
+    }, () => this.set('error'));
+  },
+  detach() {
+    if (this.unsub) { try { this.unsub(); } catch (e) {} }
+    this.unsub = null; this.ref = null; this.remote = null;
   },
   absorb(remote) {
     const merged = mergeState(S, remote);
@@ -2989,7 +3059,7 @@ const Cloud = {
       this.remote = JSON.parse(JSON.stringify({ items: S.items, days: S.days }));
       this.set('synced');
     } catch (e) {
-      if (e && e.code === 'invalid_argument') this.set('readonly');
+      if (e && (e.code === 'invalid_argument' || e.code === 'permission-denied')) this.set(this.mode === 'google' ? 'error' : 'readonly');
       else if (e && e.code === 'unavailable') { this.set('error'); setTimeout(() => this.schedule(500), 3000 + Math.random() * 2000); }
       else this.set('error');
     } finally {
@@ -2998,6 +3068,26 @@ const Cloud = {
     }
   }
 };
+function renderAuthBox() {
+  const top = $('#authTop');
+  if (top) {
+    if (Cloud.mode === 'google' && !Cloud.user) {
+      top.innerHTML = `<div class="authcard"><div><b>用 Google 帳號存進度</b><div class="meta">登入後，換手機、換電腦都能接著練。</div></div><button class="btn solid gbtn-signin" id="gInTop">${GOOGLE_G}登入</button></div>`;
+      $('#gInTop', top).onclick = () => Cloud.signIn();
+    } else top.innerHTML = '';
+  }
+  const box = $('#authBox');
+  if (!box) return;
+  if (Cloud.mode !== 'google') { box.innerHTML = ''; return; }
+  if (Cloud.user) {
+    box.innerHTML = `<div class="row"><span class="meta">${esc(Cloud.user.email || Cloud.user.displayName || '已登入')}</span><button class="btn quiet" id="gOut" style="min-height:40px">登出</button></div>`;
+    $('#gOut', box).onclick = () => Cloud.signOut();
+  } else {
+    box.innerHTML = `<button class="btn solid block gbtn-signin" id="gIn">${GOOGLE_G}用 Google 登入</button>`;
+    $('#gIn', box).onclick = () => Cloud.signIn();
+  }
+}
+const GOOGLE_G = '<svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
 // 從雲端合併後，只更新不會打斷作答的地方
 function refreshPassive() {
   renderGoal();
