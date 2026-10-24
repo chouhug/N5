@@ -314,6 +314,7 @@ body.hide-furi #gloss rt,body.hide-furi .furibtn rt{visibility:visible}
 .authcard b{font-size:15px}
 .gbtn-signin{gap:8px;white-space:nowrap;flex:none}
 .gbtn-signin svg{background:#fff;border-radius:50%;padding:2px;width:22px;height:22px}
+.en{color:var(--muted);font-weight:400;font-size:.88em}
 /* 提示 */
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--tabh) + env(safe-area-inset-bottom,0px) + 14px);z-index:40;background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:15px;max-width:calc(100% - 32px);box-shadow:0 6px 20px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity .2s}
 .toast.on{opacity:1}
@@ -1348,12 +1349,12 @@ function pickRound(items, getRec, mode, size, randomOnly) {
 
 // ---- 單字選擇題的錯誤選項 ----
 function pickWordDistractors(target, all, qmode, n = 3) {
-  const ok = w => w.id !== target.id && w.word !== target.word && !sameMeaning(w.zh, target.zh)
+  const ok = w => w.id !== target.id && w.word !== target.word && !sameMeaning(w.zh, target.zh) && !(w.en && target.en && sameMeaning(w.en, target.en))
     && !(qmode === 'listen' && normKana(w.reading) === normKana(target.reading))
     && !(qmode === 'zh2jp' && w.zh === target.zh);
   const same = shuffle(all.filter(w => w.pg === target.pg && ok(w)));
   const chosen = [];
-  const accept = w => { if (chosen.length >= n) return; if (chosen.some(c => c.word === w.word || sameMeaning(c.zh, w.zh) || (qmode === 'listen' && normKana(c.reading) === normKana(w.reading)))) return; chosen.push(w); };
+  const accept = w => { if (chosen.length >= n) return; if (chosen.some(c => c.word === w.word || sameMeaning(c.zh, w.zh) || (c.en && w.en && sameMeaning(c.en, w.en)) || (qmode === 'listen' && normKana(c.reading) === normKana(w.reading)))) return; chosen.push(w); };
   same.forEach(accept);
   if (chosen.length < n) shuffle(all.filter(ok)).forEach(accept);
   return chosen;
@@ -1942,6 +1943,26 @@ function corpusExamples(row, w, words, max) {
   return out;
 }
 
+// ===== 英文意思（順序與 VOCAB、GRAMMAR 相同）=====
+const EN_LIST = [
+// 名詞
+'I; me','you','student','teacher','friend','family','(my) father','(my) mother','(my) older brother','(my) older sister','younger brother','younger sister','father (addressing / someone else\'s)','mother (addressing / someone else\'s)','older brother (addressing / someone else\'s)','older sister (addressing / someone else\'s)','grandfather; old man','grandmother; old woman','parents','siblings','(someone else\'s) wife','child','adult','person','man; male','woman; female','everyone','customer; guest','office worker','doctor','police officer','name','what','who','where','when','how much','this (one)','that (one, near you)','that (one, over there)','here','there (near you)','over there','Japan','Taiwan','Tokyo','country','foreign country','foreigner','Japanese (language)','English (language)','word; language','meaning','kanji; Chinese characters','school','university','classroom','class (group of students)','class; lesson','homework','exam','question','problem; question (on a test)','study','work; job','company','holiday; day off; break','summer vacation','birthday','party','present; gift','trip; travel','shopping','movie','music','song','picture; painting','sports','tennis','swimming pool','piano','guitar','station','train','bus','taxi','car','bicycle','airplane','ticket','map','road; way','corner','bridge','town','place','shop; store','department store','supermarket','bookstore','greengrocer','café; coffee shop','restaurant','cafeteria; dining hall','bank','post office','hospital','library','park','police box','hotel','temple','building','gate','house; home','room','kitchen','toilet; restroom','bath','shower','garden; yard','pond','stairs','elevator','window','door','desk','chair','table','bed','refrigerator','electricity; light','TV','radio','personal computer','telephone','camera','photo','clock; watch','book','newspaper','magazine','dictionary','notebook','paper','pencil','pen','ballpoint pen','bag','wallet','money','umbrella','key','box','luggage; baggage','postage stamp','letter','clothes','jacket','coat','shirt','trousers; pants','shoes','socks','hat; cap','glasses','necktie','rice; meal','breakfast','lunch','dinner','boxed lunch; bento','food','drink','cooking; dish','bread','meat','fish','vegetable','fruit','apple','egg','sweets; snacks','cake','curry','sugar','salt','water','tea; green tea','black tea','coffee','milk','alcohol; sake','plate; dish','cup; glass','weather','rain','snow','wind','sky','mountain','river','sea','flower','tree','dog','cat','bird','animal','body','head','face','eye','ear','nose','mouth','tooth','hand','foot; leg','stomach; belly','illness','a cold','medicine','color','sound','voice','talk; story','news','on; above; top','under; below','front; before','behind; back','inside','outside','right','left','next to; next door','beside; side','between','nearby','the other side; over there','east','west','south','north',
+// 動詞
+'to go','to come','to go home; to return','to eat','to drink','to see; to watch','to listen; to ask','to read','to write','to speak; to talk','to say','to buy','to sell','to meet','to wait','to hold; to have; to carry','to get up; to wake up','to sleep; to go to bed','to work','to rest; to take a day off','to do','to study','to clean','to do laundry','to take a walk','to make a phone call','to get married','to make','to use','to enter','to leave; to go out','to take out; to send','to go out','to open','to close','to turn on (a light, TV)','to turn off; to erase','to walk','to run','to swim','to play; to have fun','to sing','to teach; to tell','to learn (from someone)','to understand','to know','to wear (on the upper body)','to take off (clothes)','to put on (a hat)','to wash','to get on; to ride','to get off','to live (somewhere)','to sit','to stand','to take; to pass','to take (a photo)','to lend','to borrow','to return (something)','to give','to receive; to get','to call','to begin','to end; to finish','to forget','to remember; to memorize','to be in trouble','to smoke; to breathe in','to make (a call); to put on (glasses)','to take (a shower)','to put in','to line up','to turn (a corner)','to cross','to fall (rain, snow)','to bloom','to put; to place','to show','to play (an instrument)','to pull; to catch (a cold)','to answer','to get tired','to be born','to be; to exist (things)','to be; to exist (people, animals)','to need','to fly','to push; to press','to brush; to polish','to climb','to cut','to clear up (weather)',
+// い形容詞
+'big','small','new','old (things)','tall; high; expensive','cheap','low; short (height)','long','short','hot (weather)','cold (weather)','warm','cool','hot (to the touch)','cold (to the touch)','delicious','tastes bad','sweet','spicy','many; a lot','few; little','near','far','wide; spacious','narrow; small (room)','heavy','light (weight)','early','fast','slow; late','bright','dark','strong','weak','difficult','easy','busy','fun; enjoyable','interesting; funny','boring','painful; sore','white','black','red','blue','young','cute','dirty','good','bad','want; desired','thick','thin; narrow','dangerous','noisy','round',
+// な形容詞
+'like','love; like a lot','dislike; hate','good at; skillful','bad at; unskillful','pretty; clean','quiet','lively; busy (place)','healthy; energetic','famous','convenient','important; precious','all right; OK','free (time)','kind','simple; easy','hard; terrible','sturdy; durable','various','same','handsome',
+// 副詞
+'very','a little','a bit; a moment','a lot; many','often; well','sometimes','always','already; yet','still; not yet','soon; right away','again','together','all','not very (with negative)','not at all (with negative)','slowly','straight','really','probably','more','most; the best','gradually','for the first time','exactly; just','mostly; roughly','once more','please (go ahead)','very much (emphasis)','first; ahead','early; quickly','all the time',
+// 數字與時間
+'one','two','three','four','five','six','seven','eight','nine','ten','hundred','thousand','ten thousand','yen','one (thing)','two (things)','three (things)','four (things)','five (things)','one person; alone','two people','today','tomorrow','yesterday','every day','now','morning','noon; daytime','evening','night','a.m.; morning','p.m.; afternoon','this morning','this evening; tonight','every morning','every night','this week','next week','last week','this month','next month','last month','this year','next year','last year','one day; all day','time','... o\'clock','... minutes','half (past)','what time','what day of the week','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday','spring','summer','autumn; fall','winter',
+// 招呼語與常用句
+'good morning','hello; good afternoon','good evening','good night','goodbye','thank you','you\'re welcome','excuse me; sorry','I\'m sorry','(said before eating)','thank you for the meal (after eating)','I\'m leaving (said when going out)','take care (said to someone leaving)','I\'m home','welcome home','nice to meet you','nice to meet you; please treat me well','please (request)','yes','no','welcome (in a shop)','excuse me (entering / leaving)','how are you?','congratulations','take care; be careful','hello (on the phone)',
+// 文法
+'topic marker','subject marker','object marker','at (a point in time)','in; at (where something exists)','to (a person, as target)','at; in (where an action happens)','by; with (means, tool)','to; toward (direction)','with (someone)','and (listing nouns)','and ... etc.','also; too','\'s; of (possession)','from (starting point)','until; to (end point)','because','but','than','question marker','..., right? (seeking agreement)','..., you know (telling)','is; am; are (polite)','is not','was (polite)','polite verb ending','do not (polite)','did (polite past)','did not (polite past)','let\'s ...','won\'t you ...? (invitation)','please do ...','please don\'t ...','want to do ...','is doing ...; state'
+];
+
 </script>
 <script>
 (function () {
@@ -1976,6 +1997,7 @@ const KANA = (() => {
 })();
 const KMAP = Object.fromEntries(KANA.map(k => [k.id, k]));
 const WORDS = prepWords(VOCAB.concat(GRAMMAR));
+WORDS.forEach((w, i) => { w.en = (typeof EN_LIST !== 'undefined' && EN_LIST[i]) || ''; });
 const WMAP = Object.fromEntries(WORDS.map(w => [w.id, w]));
 const GLOSS = buildGlossary(WORDS);
 const TOKS = {};
@@ -1987,7 +2009,7 @@ const ALL_IDS = KANA.map(k => k.id).concat(WORDS.map(w => w.id));
 let S = store.get('n5:progress', null);
 if (!S || typeof S !== 'object' || !S.items) S = { items: {}, days: {} };
 S.days = S.days || {};
-const SET = Object.assign({ furi: true, knownLv: '', romaji: false, theme: 'system', voice: '', rate: 0.9 }, store.get('n5:settings', {}));
+const SET = Object.assign({ round: 20, recent: 'd1', mean: 'zh', furi: true, knownLv: '', romaji: false, theme: 'system', voice: '', rate: 0.9 }, store.get('n5:settings', {}));
 const UI = Object.assign({ gramOpen: false, kanaSec: 'seion', tab: 'kana', script: 'h', kanaView: 'table', kanaMode: 'k2r', kanaRange: 'all', mcMode: 'jp2zh', mcSrc: 'learn', fillSrc: 'learn', cardSrc: 'new', pos: 'all' }, store.get('n5:ui', {}));
 const saveSet = () => store.set('n5:settings', SET);
 const saveUI = () => store.set('n5:ui', UI);
@@ -2070,6 +2092,13 @@ function rubyHTML(segs, opt = {}) {
   return h;
 }
 const wordHTML = w => rubyHTML(w.wsegs);
+// 依設定顯示中文、英文或兩者
+function meanText(zh, en) {
+  if (SET.mean === 'en' && en) return `<span lang="en">${esc(en)}</span>`;
+  if (SET.mean === 'both' && en) return `${esc(zh)} <span class="en" lang="en">${esc(en)}</span>`;
+  return esc(zh);
+}
+const meanW = w => meanText(w.zh, w.en);
 const sentHTML = (w, hl = true) => rubyHTML(w.segs, Object.assign({ toks: toksOf(w) }, hl && w.a0 >= 0 ? { hl: [w.a0, w.a1] } : {}));
 const romajiLine = txt => `<div class="romaji">${esc(txt)}</div>`;
 function exampleBlock(w) {
@@ -2119,6 +2148,7 @@ function wordPool(src) {
     learn: w => getRec(w.id).s === 'queued',
     queued: w => getRec(w.id).s === 'queued',
     learned: w => getRec(w.id).s === 'learned',
+    recent: w => recentIds().has(w.id),
     due: w => { const r = getRec(w.id); return r.s === 'learned' && r.due && r.due <= t; },
     mcWrong: w => wrongOf(w.id, 'mc') === 1,
     mcReview: w => wrongOf(w.id, 'mc') === 2,
@@ -2160,7 +2190,7 @@ function openGloss(el) {
   p.innerHTML = `<div class="gl-top"><div class="gl-word" lang="ja">${head}</div><button class="gl-x" aria-label="關閉">${ICON.ng}</button></div>
     ${showReading && info.reading !== info.word ? `<div class="meta ja">${esc(info.reading)}</div>` : ''}
     ${romajiLine(info.romaji)}
-    <div class="gl-zh"><span class="pos">${esc(info.pos)}</span> ${esc(info.zh)}</div>
+    <div class="gl-zh"><span class="pos">${esc(info.pos)}</span> ${info.w ? meanW(info.w) : esc(info.zh)}</div>
     ${surface && surface !== info.word && form ? `<div class="meta">句中的「<span class="ja">${esc(surface)}</span>」：${esc(form)}</div>` : ''}
     <div class="row">${playBtn(info.reading, '發音')}${info.w && info.w.pg !== '文法' ? `<button class="btn quiet" data-forms="${esc(info.w.id)}" style="min-height:44px">變化形・詞性</button>` : ''}${r ? `<span class="st ${r.s}">${STATUS_TXT[r.s] || '未學'}</span>` : ''}${r && (r.s === 'new' || r.s === 'excluded') ? `<button class="btn" id="glQ" style="min-height:44px">列入考題</button>` : ''}</div>`;
   p.hidden = false;
@@ -2278,7 +2308,7 @@ function showPeek(tk) {
   d.className = 'peek';
   d.innerHTML = `<div class="pk-top"><span class="pk-w" lang="ja">${info.w ? wordHTML(info.w) : esc(info.word)}</span>${showReading && info.reading !== info.word ? `<span class="meta ja">${esc(info.reading)}</span>` : ''}<button class="pk-x" aria-label="收起">${ICON.ng}</button></div>
     ${romajiLine(info.romaji)}
-    <div><span class="pos">${esc(info.pos)}</span> <b>${esc(info.zh)}</b></div>
+    <div><span class="pos">${esc(info.pos)}</span> <b>${info.w ? meanW(info.w) : esc(info.zh)}</b></div>
     ${surface && surface !== info.word && form ? `<div class="meta">句中的「<span class="ja">${esc(surface)}</span>」：${esc(form)}</div>` : ''}
     <div class="row">${playBtn(info.reading, '發音')}${info.w && info.w.pg !== '文法' && info.w.id !== formsStack[formsStack.length - 1] ? `<button class="btn quiet" data-forms="${esc(info.w.id)}" style="min-height:40px">看它的變化形</button>` : ''}</div>`;
   box.appendChild(d);
@@ -2374,7 +2404,18 @@ function progressLine(round, total) {
   const done = round.queue.length ? (round.idx / round.queue.length) * 100 : 0;
   return `<span class="qprog" aria-label="本輪還剩 ${left} 題，此分類共 ${total} 題"><i style="width:${done}%"></i></span><span class="meta">剩 ${left} · 共 ${total}</span>`;
 }
-const ROUND = 20, REVIEW_ROUND = 10;
+const REVIEW_ROUND = 10;
+const roundSize = () => Number(SET.round) || 20;
+// 「最近學過」的範圍：d1 = 最近 1 天，c20 = 最近學過的 20 個字
+const RECENT_OPTS = [['d1', '最近 1 天'], ['d3', '最近 3 天'], ['d7', '最近 7 天'], ['c10', '最近 10 個字'], ['c20', '最近 20 個字'], ['c30', '最近 30 個字'], ['c50', '最近 50 個字']];
+function recentLabel() { return (RECENT_OPTS.find(x => x[0] === SET.recent) || RECENT_OPTS[0])[1]; }
+function recentIds() {
+  const v = SET.recent || 'd1', n = parseInt(v.slice(1), 10) || 1;
+  const cand = WORDS.filter(w => { const r = getRec(w.id); return (r.s === 'queued' || r.s === 'learned') && r.t > 0; });
+  if (v[0] === 'c') return new Set(cand.sort((a, b) => getRec(b.id).t - getRec(a.id).t).slice(0, n).map(w => w.id));
+  const since = Date.now() - n * 864e5;
+  return new Set(cand.filter(w => getRec(w.id).t >= since).map(w => w.id));
+}
 
 // ================= 五十音 =================
 let kanaSel = null;
@@ -2493,7 +2534,7 @@ function renderKanaQuiz() {
       return;
     }
     const isRev = UI.kanaRange === 'review';
-    kanaRound = { queue: pickRound(pool, getRec, 'kana', isRev ? REVIEW_ROUND : ROUND, isRev), idx: 0, total: pool.length, range: UI.kanaRange, right: 0 };
+    kanaRound = { queue: pickRound(pool, getRec, 'kana', isRev ? REVIEW_ROUND : roundSize(), isRev), idx: 0, total: pool.length, range: UI.kanaRange, right: 0 };
   }
   nextKanaQ();
 }
@@ -2526,15 +2567,16 @@ function roundDone(host, R, again) {
 // ================= 單選 =================
 let mcRound = null;
 const MC_MODES = [['jp2zh', '看日文選中文'], ['zh2jp', '看中文選日文'], ['listen', '聽發音選中文']];
-const MC_SRCS = [['learn', '待考'], ['mcWrong', '單選錯題'], ['mcReview', '錯題複習'], ['learned', '複習已學會']];
+const MC_SRCS = [['learn', '待考'], ['recent', '最近學過'], ['mcWrong', '單選錯題'], ['mcReview', '錯題複習'], ['learned', '複習已學會']];
 function renderMC() {
   const host = $('#tab-mc');
   const counts = Object.fromEntries(MC_SRCS.map(([k]) => [k, filtered(k).length]));
   host.innerHTML = `
-    <div class="ctl">${pillSelect('mcMode', '題型', [['jp2zh', '日→中'], ['zh2jp', '中→日'], ['listen', '聽→中']], UI.mcMode)}${pillSelect('mcSrc', '題目來源', MC_SRCS.map(([k, l]) => [k, `${l} ${counts[k]}`]), UI.mcSrc)}${posChips()}</div>
+    <div class="ctl">${pillSelect('mcMode', '題型', [['jp2zh', '日→中'], ['zh2jp', '中→日'], ['listen', '聽→中']], UI.mcMode)}${pillSelect('mcSrc', '題目來源', MC_SRCS.map(([k, l]) => [k, `${l} ${counts[k]}`]), UI.mcSrc)}${UI.mcSrc === 'recent' ? pillSelect('recentSel', '最近學過的範圍', RECENT_OPTS, SET.recent) : posChips()}</div>
     <div id="mcq"></div>`;
   $('#mcMode', host).onchange = e => { UI.mcMode = e.target.value; saveUI(); renderMC(); };
   $('#mcSrc', host).onchange = e => { UI.mcSrc = e.target.value; saveUI(); mcRound = null; renderMC(); };
+  const rs = $('#recentSel', host); if (rs) rs.onchange = e => { SET.recent = e.target.value; saveSet(); mcRound = null; renderMC(); };
   bindPos(host, () => { mcRound = null; renderMC(); });
   if (mcRound && mcRound.done) { mcRound.idx++; mcRound.done = false; }
   const valid = mcRound && mcRound.src === UI.mcSrc && mcRound.pos === UI.pos;
@@ -2543,7 +2585,10 @@ function renderMC() {
     const pool = filtered(UI.mcSrc);
     if (!pool.length) return emptyWords($('#mcq'), UI.mcSrc);
     const isRev = UI.mcSrc === 'mcReview';
-    mcRound = { queue: pickRound(pool, getRec, 'mc', isRev ? REVIEW_ROUND : ROUND, isRev), idx: 0, total: pool.length, src: UI.mcSrc, pos: UI.pos, right: 0 };
+    const queue = UI.mcSrc === 'recent'
+      ? shuffle(pool.slice().sort((a, b) => (getRec(b.id).t || 0) - (getRec(a.id).t || 0)).slice(0, roundSize()))
+      : pickRound(pool, getRec, 'mc', isRev ? REVIEW_ROUND : roundSize(), isRev);
+    mcRound = { queue, idx: 0, total: pool.length, src: UI.mcSrc, pos: UI.pos, right: 0 };
   }
   nextMCQ();
 }
@@ -2554,6 +2599,7 @@ function emptyWords(host, src) {
     mcWrong: ['目前沒有單選錯題。', '練習待考的字', () => { UI.mcSrc = 'learn'; saveUI(); renderMC(); }],
     mcReview: ['目前沒有單選錯題複習。', '練習待考的字', () => { UI.mcSrc = 'learn'; saveUI(); renderMC(); }],
     learned: ['還沒有已學會的字。填空答對就算學會。', '去填空', () => showTab('fill')],
+    recent: [`「${recentLabel()}」範圍內還沒有學過的字。可以在上方把範圍調大，或先到字卡把字列入考題。`, '去字卡挑字', () => { UI.cardSrc = 'new'; saveUI(); showTab('card'); }],
     fillWrong: ['目前沒有填空錯題。', '練習待考的字', () => { UI.fillSrc = 'learn'; saveUI(); renderFill(); }],
     fillReview: ['目前沒有填空錯題複習。', '練習待考的字', () => { UI.fillSrc = 'learn'; saveUI(); renderFill(); }],
     due: ['今天沒有到期要複習的字。', '練習待考的字', () => { UI.fillSrc = 'learn'; saveUI(); renderFill(); }]
@@ -2572,16 +2618,16 @@ function nextMCQ() {
   const src = { mcWrong: 'wrong', mcReview: 'review' }[R.src] || (R.src === 'learned' ? 'learned' : 'learn');
   let prompt;
   if (mode === 'jp2zh') prompt = `<div class="big" lang="ja">${wordHTML(w)}</div>${romajiLine(w.romaji)}<span class="pos">${esc(w.pos)}</span>`;
-  else if (mode === 'zh2jp') prompt = `<div class="zh">${esc(w.zh)}</div><span class="pos">${esc(w.pos)}</span>`;
+  else if (mode === 'zh2jp') prompt = `<div class="zh">${meanW(w)}</div><span class="pos">${esc(w.pos)}</span>`;
   else prompt = `<button class="btn solid" data-say="${esc(w.reading)}" style="min-width:160px">${ICON.play}播放發音</button><span class="meta">按下按鈕聽發音，再選出意思</span>`;
   renderChoice(host, {
     head: `<div class="qhead">${progressLine(R, R.total)}</div>`,
     promptHTML: prompt,
     options: opts.map(o => mode === 'zh2jp'
       ? { html: `<span lang="ja">${wordHTML(o)}</span>${romajiLine(o.romaji)}`, cls: 'ja', correct: o.id === w.id }
-      : { html: esc(o.zh), correct: o.id === w.id }),
+      : { html: meanW(o), correct: o.id === w.id }),
     onAnswer: ok => { if (ok) R.right++; R.done = true; record(w, 'mc', ok, src); },
-    afterHTML: () => `<div class="example"><div class="row" style="gap:12px;align-items:center"><span class="ja" style="font-size:24px">${wordHTML(w)}</span><span>${esc(w.zh)}</span>${iconPlay(w.reading, '播放單字')}</div>${romajiLine(w.romaji)}</div>${exampleBlock(w)}`
+    afterHTML: () => `<div class="example"><div class="row" style="gap:12px;align-items:center"><span class="ja" style="font-size:24px">${wordHTML(w)}</span><span>${meanW(w)}</span>${iconPlay(w.reading, '播放單字')}</div>${romajiLine(w.romaji)}</div>${exampleBlock(w)}`
   }, () => { R.idx++; R.done = false; nextMCQ(); });
 }
 
@@ -2607,7 +2653,7 @@ function renderCard() {
       return;
     }
     const isRev = /Review$/.test(UI.cardSrc);
-    const cards = UI.cardSrc === 'new' ? pool.slice(0, ROUND) : pickRound(pool, getRec, /^fill/.test(UI.cardSrc) ? 'fill' : 'mc', isRev ? REVIEW_ROUND : ROUND, isRev);
+    const cards = UI.cardSrc === 'new' ? pool.slice(0, roundSize()) : pickRound(pool, getRec, /^fill/.test(UI.cardSrc) ? 'fill' : 'mc', isRev ? REVIEW_ROUND : roundSize(), isRev);
     deck = { src: UI.cardSrc, pos: UI.pos, cards, total: pool.length };
   }
   showFlash();
@@ -2634,7 +2680,7 @@ function showFlash() {
     ${isWrong && tags.length ? `<div class="row">${tags.map(t => `<span class="tag">${ICON.ng.replace('<svg', '<svg width="14" height="14"')}${t}</span>`).join('')}</div>` : ''}
     <div class="word-row"><div class="word" lang="ja">${wordHTML(w)}</div>${iconPlay(w.reading, '播放單字')}</div>
     <div class="sub">${romajiLine(w.romaji)}</div>
-    <div class="zh">${esc(w.zh)}</div>
+    <div class="zh">${meanW(w)}</div>
     ${exampleBlock(w)}
     <div class="fcbtns">${btns}</div>
   </div>`;
@@ -2675,7 +2721,7 @@ function renderFill() {
     const pool = filtered(UI.fillSrc);
     if (!pool.length) return emptyWords($('#fq'), UI.fillSrc);
     const isRev = UI.fillSrc === 'fillReview';
-    fillRound = { queue: pickRound(pool, getRec, 'fill', isRev ? REVIEW_ROUND : ROUND, isRev), idx: 0, total: pool.length, src: UI.fillSrc, pos: UI.pos, right: 0 };
+    fillRound = { queue: pickRound(pool, getRec, 'fill', isRev ? REVIEW_ROUND : roundSize(), isRev), idx: 0, total: pool.length, src: UI.fillSrc, pos: UI.pos, right: 0 };
   }
   nextFillQ();
 }
@@ -2730,7 +2776,7 @@ function nextFillQ(keepFocus) {
       ${!ok ? `<div>正確答案：<span class="ja" style="font-size:22px;font-weight:700">${esc(w.ans)}</span>（${esc(w.ansR)}）${inp.value && !shown ? `<br><span class="meta">你的答案：${esc(inp.value)}</span>` : ''}</div>` : ''}
       ${learnedNow ? `<div class="meta">已學會，明天（${r.due.slice(5).replace('-', '/')}）會出現在到期複習。</div>` : ''}
       ${ok && src === 'due' ? `<div class="meta">下次複習：${r.due.slice(5).replace('-', '/')}</div>` : ''}
-      <div class="row" style="gap:12px;align-items:center"><span class="ja" style="font-size:22px">${wordHTML(w)}</span><span>${esc(w.zh)}</span>${iconPlay(w.reading, '播放單字')}</div>
+      <div class="row" style="gap:12px;align-items:center"><span class="ja" style="font-size:22px">${wordHTML(w)}</span><span>${meanW(w)}</span>${iconPlay(w.reading, '播放單字')}</div>
       ${exampleBlock(w)}
     </div>`;
   };
@@ -2759,11 +2805,13 @@ if (window.visualViewport) window.visualViewport.addEventListener('resize', () =
 // ================= 單字庫 =================
 function libCounts() {
   const t = today();
-  const c = { total: WORDS.length, learned: 0, queued: 0, excluded: 0, due: 0, mcW: 0, mcR: 0, fillW: 0, fillR: 0 };
+  const c = { total: WORDS.length, learned: 0, queued: 0, excluded: 0, due: 0, mcW: 0, mcR: 0, fillW: 0, fillR: 0, recent: 0 };
+  const rset = recentIds();
   for (const w of WORDS) {
     const r = getRec(w.id);
     if (r.s === 'learned') { c.learned++; if (r.due && r.due <= t) c.due++; }
     if (r.s === 'queued') c.queued++;
+    if (rset.has(w.id)) c.recent++;
     if (r.s === 'excluded') c.excluded++;
     const ww = r.w || {};
     if (ww.mc === 1) c.mcW++; if (ww.mc === 2) c.mcR++;
@@ -2790,7 +2838,7 @@ function renderLib() {
     <div class="search"><input id="q" type="search" placeholder="搜尋：日文、假名、拼音或中文" aria-label="搜尋單字" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
     <div class="results" id="results"></div>
     ${(() => {
-      const ents = [['fill', 'due', '到期複習', c.due], ['mc', 'mcWrong', '單選錯題', c.mcW], ['fill', 'fillWrong', '填空錯題', c.fillW], ['mc', 'mcReview', '單選錯題複習', c.mcR], ['fill', 'fillReview', '填空錯題複習', c.fillR], ['mc', 'learned', '複習單選', c.learned], ['card', 'learned', '複習字卡', c.learned]].filter(x => x[3] > 0);
+      const ents = [['fill', 'due', '到期複習', c.due], ['mc', 'mcWrong', '單選錯題', c.mcW], ['fill', 'fillWrong', '填空錯題', c.fillW], ['mc', 'mcReview', '單選錯題複習', c.mcR], ['fill', 'fillReview', '填空錯題複習', c.fillR], ['mc', 'recent', '複習最近學過', c.recent], ['mc', 'learned', '複習單選', c.learned], ['card', 'learned', '複習字卡', c.learned]].filter(x => x[3] > 0);
       return ents.length ? `<div class="entry">${ents.map(x => entryBtn(...x)).join('')}</div>` : '<p class="meta" style="margin:0">目前沒有要複習的題目。練習時答錯的字、到期的字會出現在這裡。</p>';
     })()}
     <details class="lst" id="listBox"><summary>清單（待考、已學會、錯題）</summary>
@@ -2800,6 +2848,18 @@ function renderLib() {
     <details class="lst"${Cloud.mode === 'google' && !Cloud.user ? ' open' : ''}><summary>設定<span class="n sync${Cloud.ref ? ' on' : ''}" id="syncState"><i></i><span>${esc(Cloud.chip())}</span></span></summary>
       <div class="setgrp">
         <section><h4>發音</h4><div id="voiceBox"></div></section>
+        <section><h4>練習</h4>
+          <label class="label" for="roundSel">每輪題數</label>
+          <select id="roundSel">${[10, 15, 20, 30, 50].map(n => `<option value="${n}"${roundSize() === n ? ' selected' : ''}>${n} 題</option>`).join('')}</select>
+          <label class="label" for="recentSet">「最近學過」的範圍</label>
+          <select id="recentSet">${RECENT_OPTS.map(([k, l]) => `<option value="${k}"${SET.recent === k ? ' selected' : ''}>${l}</option>`).join('')}</select>
+          <div class="meta">每輪題數會套用到五十音、單選、字卡和填空。錯題複習固定每輪隨機 10 題。</div>
+        </section>
+        <section><h4>單字意思</h4>
+          <label class="label" for="meanSel">顯示哪種語言的意思</label>
+          <select id="meanSel"><option value="zh"${SET.mean === 'zh' ? ' selected' : ''}>中文</option><option value="en"${SET.mean === 'en' ? ' selected' : ''}>English</option><option value="both"${SET.mean === 'both' ? ' selected' : ''}>中文＋English</option></select>
+          <div class="meta">字卡、單選、單字庫和點字看意思都會跟著換。例句的翻譯維持中文。</div>
+        </section>
         <section><h4>文法補充</h4>
           <label class="label" for="knownLv">已經會的文法等級（不再顯示）</label>
           <select id="knownLv"><option value="">全部顯示</option>${GLOSS_LEVELS.slice().reverse().map(l => `<option value="${l}"${SET.knownLv === l ? ' selected' : ''}>${l === 'N5' ? 'N5' : 'N5～' + l} 已經會了</option>`).join('')}</select>
@@ -2828,6 +2888,9 @@ function renderLib() {
   q.addEventListener('input', () => doSearch(q.value));
   renderVoiceBox();
   renderAuthBox();
+  $('#roundSel').onchange = e => { SET.round = Number(e.target.value); saveSet(); mcRound = null; fillRound = null; deck = null; kanaRound = null; toast(`每輪 ${SET.round} 題`); };
+  $('#recentSet').onchange = e => { SET.recent = e.target.value; saveSet(); mcRound = null; toast(`最近學過：${recentLabel()}`); renderLib(); };
+  $('#meanSel').onchange = e => { SET.mean = e.target.value; saveSet(); mcRound = null; toast({ zh: '單字意思：中文', en: '單字意思：English', both: '單字意思：中文＋English' }[SET.mean]); };
   $('#knownLv').onchange = e => { SET.knownLv = e.target.value; saveSet(); toast(SET.knownLv ? `已隱藏 ${SET.knownLv} 以下的文法` : '文法全部顯示'); };
   $('#exp').onclick = async () => {
     const txt = await zipCode(packState(S, today()));
@@ -2884,7 +2947,7 @@ function fillList(d) {
   box.innerHTML = arr.map(w => {
     const r = getRec(w.id);
     const dd = key === 'learned' ? `<span class="d">${r.due ? r.due.slice(5).replace('-', '/') : ''} · 第${(r.lv || 0) + 1}級</span>` : '';
-    return `<div class="lrow"><span class="w" lang="ja">${wordHTML(w)}</span><span class="z">${esc(w.zh)}</span>${dd}<button data-id="${esc(w.id)}">${act}</button></div>`;
+    return `<div class="lrow"><span class="w" lang="ja">${wordHTML(w)}</span><span class="z">${meanW(w)}</span>${dd}<button data-id="${esc(w.id)}">${act}</button></div>`;
   }).join('');
   $$('button[data-id]', box).forEach(b => b.onclick = () => {
     const id = b.dataset.id, r = getRec(id);
@@ -2902,13 +2965,13 @@ function doSearch(qs) {
   if (!q) { box.innerHTML = ''; return; }
   const kq = normKana(romaToKana(q, true));
   const rq = q.replace(/[\s']/g, '');
-  const hits = WORDS.filter(w => w.word.includes(qs.trim()) || normKana(w.reading).includes(normKana(qs.trim())) || (kq && normKana(w.reading).includes(kq)) || w.romaji.replace(/[\s']/g, '').includes(rq) || w.zh.includes(qs.trim())).slice(0, 30);
+  const hits = WORDS.filter(w => w.word.includes(qs.trim()) || normKana(w.reading).includes(normKana(qs.trim())) || (kq && normKana(w.reading).includes(kq)) || w.romaji.replace(/[\s']/g, '').includes(rq) || w.zh.includes(qs.trim()) || (q.length > 1 && /^[a-z ]+$/.test(q) && new RegExp('\\b' + q).test(w.en.toLowerCase()))).slice(0, 30);
   if (!hits.length) { box.innerHTML = '<div class="meta">找不到符合的字。</div>'; return; }
   box.innerHTML = hits.map(w => {
     const r = getRec(w.id);
     const canQ = r.s === 'new' || r.s === 'excluded';
     return `<div class="res">
-      <div class="hd"><span class="w" lang="ja">${wordHTML(w)}</span><span>${esc(w.zh)}</span><button class="posbtn" data-forms="${esc(w.id)}">${esc(w.pos)}<span aria-hidden="true">›</span></button></div>
+      <div class="hd"><span class="w" lang="ja">${wordHTML(w)}</span><span>${meanW(w)}</span><button class="posbtn" data-forms="${esc(w.id)}">${esc(w.pos)}<span aria-hidden="true">›</span></button></div>
       ${romajiLine(w.romaji)}
       <div class="row"><span class="st ${r.s}">${STATUS_TXT[r.s] || '未學'}</span><span class="meta">作答 ${r.n || 0} 次</span></div>
       <div class="sent" lang="ja">${sentHTML(w)}</div>
