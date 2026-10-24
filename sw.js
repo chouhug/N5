@@ -1,6 +1,6 @@
 // 離線快取：App 本身、字體、Firebase 程式庫先用快取，背景更新
 // 登入和資料庫的連線（googleapis 等）一律直接走網路，不快取
-const CACHE = 'n5-v12';
+const CACHE = 'n5-v14';
 const CORE = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 const CACHE_HOSTS = ['fonts.googleapis.com', 'fonts.gstatic.com', 'www.gstatic.com'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE))); self.skipWaiting(); });
