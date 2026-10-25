@@ -14,6 +14,17 @@
   --font-ja: "Noto Sans JP","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",sans-serif;
   --font-kana: "Klee One","Noto Sans JP","Hiragino Mincho ProN","Yu Mincho",serif;
   --r:12px; --tabh:62px;
+  --pri-deep:#123468; --edge:#c3cbd7; --ok-deep:#0c4f28; --ng-deep:#86190f;
+  --btn:#eceef3; --btn-edge:#b6bdca; --btn-ink:#18202c; --opt:#f7f8fa;
+  --amb:#fcebc6; --amb-ink:#6b4200; --amb-edge:#ddb768;
+  --vio:#e9e2fb; --vio-ink:#46288f; --vio-edge:#c3b3ee;
+  --tea:#d8f1ec; --tea-ink:#0b5a51; --tea-edge:#9fd3c9;
+  --fill:#1d4e96; --fill-ink:#ffffff; --fill-deep:#123468;
+  --go:#2f855a; --go-ink:#ffffff; --go-deep:#1f5c3d;
+  --tile:#fbf8f2; --tile-line:#e3dccd; --tile-edge:#d5cdbb; --tile-ink:#221f1a; --tile-sub:#776f60; --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.055 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  --frame:#9aa3b3;
+  --c1:#dde8f8; --c1-ink:#1d4e96; --c2:#fbecc8; --c2-ink:#7a4c00; --c3:#d6f0eb; --c3-ink:#0b5a51; --c4:#e8e1fa; --c4-ink:#46288f;
+  --hi:rgba(255,255,255,.85); --hi-grad:rgba(255,255,255,.55); --drop:rgba(30,45,75,.22); --kk-shadow:0 1px 0 rgba(255,255,255,.9); --track:inset 0 2px 4px rgba(30,45,75,.18);
   /* 背景：不規則散落的淡色幾何圖形，固定不隨捲動 */
   --pat:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 900' preserveAspectRatio='xMidYMid slice'%3E%3Cpolygon transform='translate(162 25) rotate(132)' points='17,0 -8,14 -8,-14' fill='%23e7ecf3' stroke='%23d2d9e4' stroke-width='1'/%3E%3Cline transform='translate(12 65) rotate(21)' x1='-8' x2='8' stroke='%23d2d9e4' stroke-width='1.4' stroke-linecap='round'/%3E%3Cpolygon transform='translate(8 530) rotate(351)' points='41,0 -21,36 -21,-36' fill='%23e7ecf3' stroke='%23d2d9e4' stroke-width='1.2'/%3E%3Ccircle transform='translate(34 270) rotate(37)' r='17' fill='none' stroke='%23b9cbe8' stroke-width='1'/%3E%3Cg transform='translate(240 562) rotate(245)' fill='%23d2d9e4'%3E%3Ccircle cx='-15' cy='-15' r='1.6'/%3E%3Ccircle cx='0' cy='-15' r='1.6'/%3E%3Ccircle cx='15' cy='-15' r='1.6'/%3E%3Ccircle cx='-15' cy='0' r='1.6'/%3E%3Ccircle cx='0' cy='0' r='1.6'/%3E%3Ccircle cx='15' cy='0' r='1.6'/%3E%3Ccircle cx='-15' cy='15' r='1.6'/%3E%3Ccircle cx='0' cy='15' r='1.6'/%3E%3Ccircle cx='15' cy='15' r='1.6'/%3E%3C/g%3E%3Cpolygon transform='translate(94 149) rotate(29)' points='19,0 0,19 -19,0 -0,-19' fill='%23e7ecf3' stroke='%23d2d9e4' stroke-width='1.2'/%3E%3Cline transform='translate(260 49) rotate(59)' x1='-55' x2='55' stroke='%23d2d9e4' stroke-width='1.4' stroke-linecap='round'/%3E%3Cg transform='translate(124 634) rotate(209)' fill='%23d2d9e4'%3E%3Ccircle cx='-32' cy='-32' r='1.6'/%3E%3Ccircle cx='0' cy='-32' r='1.6'/%3E%3Ccircle cx='32' cy='-32' r='1.6'/%3E%3Ccircle cx='-32' cy='0' r='1.6'/%3E%3Ccircle cx='0' cy='0' r='1.6'/%3E%3Ccircle cx='32' cy='0' r='1.6'/%3E%3Ccircle cx='-32' cy='32' r='1.6'/%3E%3Ccircle cx='0' cy='32' r='1.6'/%3E%3Ccircle cx='32' cy='32' r='1.6'/%3E%3C/g%3E%3Cpolygon transform='translate(10 667) rotate(233)' points='22,0 11,19 -11,19 -22,0 -11,-19 11,-19' fill='none' stroke='%23d2d9e4' stroke-width='1.2'/%3E%3Cpolygon transform='translate(261 444) rotate(277)' points='19,0 0,19 -19,0 -0,-19' fill='%23e7ecf3' stroke='%23b9cbe8' stroke-width='1.2'/%3E%3Cpolygon transform='translate(57 358) rotate(318)' points='55,0 27,48 -27,48 -55,0 -27,-48 27,-48' fill='none' stroke='%23d2d9e4' stroke-width='1.2'/%3E%3Cpolygon transform='translate(145 811) rotate(54)' points='39,0 0,39 -39,0 -0,-39' fill='%23e7ecf3' stroke='%23b9cbe8' stroke-width='1'/%3E%3Cpolygon transform='translate(251 227) rotate(52)' points='6,0 -3,5 -3,-5' fill='none' stroke='%23d2d9e4' stroke-width='1.2'/%3E%3Cline transform='translate(237 354) rotate(37)' x1='-83' x2='83' stroke='%23b9cbe8' stroke-width='1.4' stroke-linecap='round'/%3E%3Cg transform='translate(50 75) rotate(221)' fill='none' stroke='%23b9cbe8'%3E%3Ccircle r='5'/%3E%3Ccircle r='3'/%3E%3C/g%3E%3Cg transform='translate(420 546) rotate(44)' fill='%23d2d9e4'%3E%3Ccircle cx='-5' cy='-5' r='1.6'/%3E%3Ccircle cx='0' cy='-5' r='1.6'/%3E%3Ccircle cx='5' cy='-5' r='1.6'/%3E%3Ccircle cx='-5' cy='0' r='1.6'/%3E%3Ccircle cx='0' cy='0' r='1.6'/%3E%3Ccircle cx='5' cy='0' r='1.6'/%3E%3Ccircle cx='-5' cy='5' r='1.6'/%3E%3Ccircle cx='0' cy='5' r='1.6'/%3E%3Ccircle cx='5' cy='5' r='1.6'/%3E%3C/g%3E%3Ccircle transform='translate(417 477) rotate(248)' r='23' fill='none' stroke='%23d2d9e4' stroke-width='1.2'/%3E%3Cg transform='translate(144 189) rotate(229)' fill='none' stroke='%23d2d9e4'%3E%3Ccircle r='16'/%3E%3Ccircle r='10'/%3E%3C/g%3E%3Cg transform='translate(197 162) rotate(161)' fill='none' stroke='%23d2d9e4'%3E%3Ccircle r='7'/%3E%3Ccircle r='4'/%3E%3C/g%3E%3Cpolygon transform='translate(280 732) rotate(300)' points='6,0 -3,5 -3,-5' fill='%23e7ecf3' stroke='%23d2d9e4' stroke-width='1.6'/%3E%3Cg transform='translate(389 388) rotate(31)' fill='none' stroke='%23d2d9e4'%3E%3Ccircle r='48'/%3E%3Ccircle r='29'/%3E%3C/g%3E%3Ccircle transform='translate(19 129) rotate(10)' r='22' fill='none' stroke='%23d2d9e4' stroke-width='1.6'/%3E%3Cpolygon transform='translate(232 0) rotate(190)' points='12,0 -6,10 -6,-10' fill='none' stroke='%23d2d9e4' stroke-width='1'/%3E%3Ccircle transform='translate(355 466) rotate(191)' r='21' fill='none' stroke='%23b9cbe8' stroke-width='1.2'/%3E%3Ccircle transform='translate(-18 731) rotate(51)' r='48' fill='none' stroke='%23b9cbe8' stroke-width='1'/%3E%3Cpolygon transform='translate(224 434) rotate(318)' points='15,0 -8,13 -8,-13' fill='%23e7ecf3' stroke='%23b9cbe8' stroke-width='1'/%3E%3Cg transform='translate(108 458) rotate(183)' fill='%23d2d9e4'%3E%3Ccircle cx='-12' cy='-12' r='1.6'/%3E%3Ccircle cx='0' cy='-12' r='1.6'/%3E%3Ccircle cx='12' cy='-12' r='1.6'/%3E%3Ccircle cx='-12' cy='0' r='1.6'/%3E%3Ccircle cx='0' cy='0' r='1.6'/%3E%3Ccircle cx='12' cy='0' r='1.6'/%3E%3Ccircle cx='-12' cy='12' r='1.6'/%3E%3Ccircle cx='0' cy='12' r='1.6'/%3E%3Ccircle cx='12' cy='12' r='1.6'/%3E%3C/g%3E%3Cpolygon transform='translate(78 265) rotate(323)' points='9,0 -4,8 -4,-8' fill='%23e7ecf3' stroke='%23d2d9e4' stroke-width='1.6'/%3E%3Cpolygon transform='translate(386 889) rotate(269)' points='12,0 0,12 -12,0 -0,-12' fill='%23e7ecf3' stroke='%23d2d9e4' stroke-width='1'/%3E%3Cpolygon transform='translate(157 466) rotate(184)' points='22,0 11,19 -11,19 -22,0 -11,-19 11,-19' fill='%23e7ecf3' stroke='%23d2d9e4' stroke-width='1'/%3E%3Cpolygon transform='translate(64 822) rotate(338)' points='7,0 3,6 -3,6 -7,0 -3,-6 3,-6' fill='none' stroke='%23d2d9e4' stroke-width='1'/%3E%3Cg transform='translate(224 174) rotate(180)' fill='%23d2d9e4'%3E%3Ccircle cx='-7' cy='-7' r='1.6'/%3E%3Ccircle cx='0' cy='-7' r='1.6'/%3E%3Ccircle cx='7' cy='-7' r='1.6'/%3E%3Ccircle cx='-7' cy='0' r='1.6'/%3E%3Ccircle cx='0' cy='0' r='1.6'/%3E%3Ccircle cx='7' cy='0' r='1.6'/%3E%3Ccircle cx='-7' cy='7' r='1.6'/%3E%3Ccircle cx='0' cy='7' r='1.6'/%3E%3Ccircle cx='7' cy='7' r='1.6'/%3E%3C/g%3E%3Cpolygon transform='translate(-12 455) rotate(185)' points='11,0 0,11 -11,0 -0,-11' fill='%23e7ecf3' stroke='%23d2d9e4' stroke-width='1.6'/%3E%3Ccircle transform='translate(363 644) rotate(146)' r='8' fill='%23e7ecf3' stroke='%23b9cbe8' stroke-width='1'/%3E%3C/svg%3E");
 }
@@ -21,11 +32,33 @@
   --bg:#0f1319; --surface:#181e27; --surface2:#222a35; --fg:#e7ecf3; --muted:#a6b1c1; --line:#323d4c;
   --pri:#8fb5ff; --pri-ink:#0b1424; --pri-soft:#1f2f4a; --pri-mid:#3e5f93;
   --ok:#62d48c; --ok-soft:#163222; --ng:#ff8b82; --ng-soft:#3b1b19;
+  --pri-deep:#4f78c4; --edge:#0a0d12; --ok-deep:#2f8f55; --ng-deep:#b9534b;
+  --btn:#2a313c; --btn-edge:#0c0f14; --btn-ink:#eef1f6; --opt:#222833;
+  --amb:#43341a; --amb-ink:#f6cd73; --amb-edge:#1c150a;
+  --vio:#342a5c; --vio-ink:#cbbcff; --vio-edge:#140f27;
+  --tea:#17393d; --tea-ink:#86dccf; --tea-edge:#08191b;
+  --fill:#3a6bd4; --fill-ink:#ffffff; --fill-deep:#1d3c80;
+  --go:#2d7a52; --go-ink:#ffffff; --go-deep:#163f2b;
+  --tile:#1e2531; --tile-line:#2d3747; --tile-edge:#0b0f15; --tile-ink:#ece6da; --tile-sub:#9ba3b1; --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  --frame:#5a6578;
+  --c1:#1f3049; --c1-ink:#86b9ff; --c2:#3a2f17; --c2-ink:#f2c46b; --c3:#163735; --c3-ink:#72d8c8; --c4:#2d2750; --c4-ink:#c4b4ff;
+  --hi:rgba(255,255,255,.10); --hi-grad:rgba(255,255,255,.06); --drop:rgba(0,0,0,.55); --kk-shadow:0 2px 0 rgba(0,0,0,.45); --track:inset 0 2px 5px rgba(0,0,0,.5);
   --mark:#f3de48; --mark-ink:#111214; --pat:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 900' preserveAspectRatio='xMidYMid slice'%3E%3Cpolygon transform='translate(162 25) rotate(132)' points='17,0 -8,14 -8,-14' fill='%23161c25' stroke='%2328313e' stroke-width='1'/%3E%3Cline transform='translate(12 65) rotate(21)' x1='-8' x2='8' stroke='%2328313e' stroke-width='1.4' stroke-linecap='round'/%3E%3Cpolygon transform='translate(8 530) rotate(351)' points='41,0 -21,36 -21,-36' fill='%23161c25' stroke='%2328313e' stroke-width='1.2'/%3E%3Ccircle transform='translate(34 270) rotate(37)' r='17' fill='none' stroke='%232c3d5a' stroke-width='1'/%3E%3Cg transform='translate(240 562) rotate(245)' fill='%2328313e'%3E%3Ccircle cx='-15' cy='-15' r='1.6'/%3E%3Ccircle cx='0' cy='-15' r='1.6'/%3E%3Ccircle cx='15' cy='-15' r='1.6'/%3E%3Ccircle cx='-15' cy='0' r='1.6'/%3E%3Ccircle cx='0' cy='0' r='1.6'/%3E%3Ccircle cx='15' cy='0' r='1.6'/%3E%3Ccircle cx='-15' cy='15' r='1.6'/%3E%3Ccircle cx='0' cy='15' r='1.6'/%3E%3Ccircle cx='15' cy='15' r='1.6'/%3E%3C/g%3E%3Cpolygon transform='translate(94 149) rotate(29)' points='19,0 0,19 -19,0 -0,-19' fill='%23161c25' stroke='%2328313e' stroke-width='1.2'/%3E%3Cline transform='translate(260 49) rotate(59)' x1='-55' x2='55' stroke='%2328313e' stroke-width='1.4' stroke-linecap='round'/%3E%3Cg transform='translate(124 634) rotate(209)' fill='%2328313e'%3E%3Ccircle cx='-32' cy='-32' r='1.6'/%3E%3Ccircle cx='0' cy='-32' r='1.6'/%3E%3Ccircle cx='32' cy='-32' r='1.6'/%3E%3Ccircle cx='-32' cy='0' r='1.6'/%3E%3Ccircle cx='0' cy='0' r='1.6'/%3E%3Ccircle cx='32' cy='0' r='1.6'/%3E%3Ccircle cx='-32' cy='32' r='1.6'/%3E%3Ccircle cx='0' cy='32' r='1.6'/%3E%3Ccircle cx='32' cy='32' r='1.6'/%3E%3C/g%3E%3Cpolygon transform='translate(10 667) rotate(233)' points='22,0 11,19 -11,19 -22,0 -11,-19 11,-19' fill='none' stroke='%2328313e' stroke-width='1.2'/%3E%3Cpolygon transform='translate(261 444) rotate(277)' points='19,0 0,19 -19,0 -0,-19' fill='%23161c25' stroke='%232c3d5a' stroke-width='1.2'/%3E%3Cpolygon transform='translate(57 358) rotate(318)' points='55,0 27,48 -27,48 -55,0 -27,-48 27,-48' fill='none' stroke='%2328313e' stroke-width='1.2'/%3E%3Cpolygon transform='translate(145 811) rotate(54)' points='39,0 0,39 -39,0 -0,-39' fill='%23161c25' stroke='%232c3d5a' stroke-width='1'/%3E%3Cpolygon transform='translate(251 227) rotate(52)' points='6,0 -3,5 -3,-5' fill='none' stroke='%2328313e' stroke-width='1.2'/%3E%3Cline transform='translate(237 354) rotate(37)' x1='-83' x2='83' stroke='%232c3d5a' stroke-width='1.4' stroke-linecap='round'/%3E%3Cg transform='translate(50 75) rotate(221)' fill='none' stroke='%232c3d5a'%3E%3Ccircle r='5'/%3E%3Ccircle r='3'/%3E%3C/g%3E%3Cg transform='translate(420 546) rotate(44)' fill='%2328313e'%3E%3Ccircle cx='-5' cy='-5' r='1.6'/%3E%3Ccircle cx='0' cy='-5' r='1.6'/%3E%3Ccircle cx='5' cy='-5' r='1.6'/%3E%3Ccircle cx='-5' cy='0' r='1.6'/%3E%3Ccircle cx='0' cy='0' r='1.6'/%3E%3Ccircle cx='5' cy='0' r='1.6'/%3E%3Ccircle cx='-5' cy='5' r='1.6'/%3E%3Ccircle cx='0' cy='5' r='1.6'/%3E%3Ccircle cx='5' cy='5' r='1.6'/%3E%3C/g%3E%3Ccircle transform='translate(417 477) rotate(248)' r='23' fill='none' stroke='%2328313e' stroke-width='1.2'/%3E%3Cg transform='translate(144 189) rotate(229)' fill='none' stroke='%2328313e'%3E%3Ccircle r='16'/%3E%3Ccircle r='10'/%3E%3C/g%3E%3Cg transform='translate(197 162) rotate(161)' fill='none' stroke='%2328313e'%3E%3Ccircle r='7'/%3E%3Ccircle r='4'/%3E%3C/g%3E%3Cpolygon transform='translate(280 732) rotate(300)' points='6,0 -3,5 -3,-5' fill='%23161c25' stroke='%2328313e' stroke-width='1.6'/%3E%3Cg transform='translate(389 388) rotate(31)' fill='none' stroke='%2328313e'%3E%3Ccircle r='48'/%3E%3Ccircle r='29'/%3E%3C/g%3E%3Ccircle transform='translate(19 129) rotate(10)' r='22' fill='none' stroke='%2328313e' stroke-width='1.6'/%3E%3Cpolygon transform='translate(232 0) rotate(190)' points='12,0 -6,10 -6,-10' fill='none' stroke='%2328313e' stroke-width='1'/%3E%3Ccircle transform='translate(355 466) rotate(191)' r='21' fill='none' stroke='%232c3d5a' stroke-width='1.2'/%3E%3Ccircle transform='translate(-18 731) rotate(51)' r='48' fill='none' stroke='%232c3d5a' stroke-width='1'/%3E%3Cpolygon transform='translate(224 434) rotate(318)' points='15,0 -8,13 -8,-13' fill='%23161c25' stroke='%232c3d5a' stroke-width='1'/%3E%3Cg transform='translate(108 458) rotate(183)' fill='%2328313e'%3E%3Ccircle cx='-12' cy='-12' r='1.6'/%3E%3Ccircle cx='0' cy='-12' r='1.6'/%3E%3Ccircle cx='12' cy='-12' r='1.6'/%3E%3Ccircle cx='-12' cy='0' r='1.6'/%3E%3Ccircle cx='0' cy='0' r='1.6'/%3E%3Ccircle cx='12' cy='0' r='1.6'/%3E%3Ccircle cx='-12' cy='12' r='1.6'/%3E%3Ccircle cx='0' cy='12' r='1.6'/%3E%3Ccircle cx='12' cy='12' r='1.6'/%3E%3C/g%3E%3Cpolygon transform='translate(78 265) rotate(323)' points='9,0 -4,8 -4,-8' fill='%23161c25' stroke='%2328313e' stroke-width='1.6'/%3E%3Cpolygon transform='translate(386 889) rotate(269)' points='12,0 0,12 -12,0 -0,-12' fill='%23161c25' stroke='%2328313e' stroke-width='1'/%3E%3Cpolygon transform='translate(157 466) rotate(184)' points='22,0 11,19 -11,19 -22,0 -11,-19 11,-19' fill='%23161c25' stroke='%2328313e' stroke-width='1'/%3E%3Cpolygon transform='translate(64 822) rotate(338)' points='7,0 3,6 -3,6 -7,0 -3,-6 3,-6' fill='none' stroke='%2328313e' stroke-width='1'/%3E%3Cg transform='translate(224 174) rotate(180)' fill='%2328313e'%3E%3Ccircle cx='-7' cy='-7' r='1.6'/%3E%3Ccircle cx='0' cy='-7' r='1.6'/%3E%3Ccircle cx='7' cy='-7' r='1.6'/%3E%3Ccircle cx='-7' cy='0' r='1.6'/%3E%3Ccircle cx='0' cy='0' r='1.6'/%3E%3Ccircle cx='7' cy='0' r='1.6'/%3E%3Ccircle cx='-7' cy='7' r='1.6'/%3E%3Ccircle cx='0' cy='7' r='1.6'/%3E%3Ccircle cx='7' cy='7' r='1.6'/%3E%3C/g%3E%3Cpolygon transform='translate(-12 455) rotate(185)' points='11,0 0,11 -11,0 -0,-11' fill='%23161c25' stroke='%2328313e' stroke-width='1.6'/%3E%3Ccircle transform='translate(363 644) rotate(146)' r='8' fill='%23161c25' stroke='%232c3d5a' stroke-width='1'/%3E%3C/svg%3E"); color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0f1319; --surface:#181e27; --surface2:#222a35; --fg:#e7ecf3; --muted:#a6b1c1; --line:#323d4c;
   --pri:#8fb5ff; --pri-ink:#0b1424; --pri-soft:#1f2f4a; --pri-mid:#3e5f93;
   --ok:#62d48c; --ok-soft:#163222; --ng:#ff8b82; --ng-soft:#3b1b19;
+  --pri-deep:#4f78c4; --edge:#0a0d12; --ok-deep:#2f8f55; --ng-deep:#b9534b;
+  --btn:#2a313c; --btn-edge:#0c0f14; --btn-ink:#eef1f6; --opt:#222833;
+  --amb:#43341a; --amb-ink:#f6cd73; --amb-edge:#1c150a;
+  --vio:#342a5c; --vio-ink:#cbbcff; --vio-edge:#140f27;
+  --tea:#17393d; --tea-ink:#86dccf; --tea-edge:#08191b;
+  --fill:#3a6bd4; --fill-ink:#ffffff; --fill-deep:#1d3c80;
+  --go:#2d7a52; --go-ink:#ffffff; --go-deep:#163f2b;
+  --tile:#1e2531; --tile-line:#2d3747; --tile-edge:#0b0f15; --tile-ink:#ece6da; --tile-sub:#9ba3b1; --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  --frame:#5a6578;
+  --c1:#1f3049; --c1-ink:#86b9ff; --c2:#3a2f17; --c2-ink:#f2c46b; --c3:#163735; --c3-ink:#72d8c8; --c4:#2d2750; --c4-ink:#c4b4ff;
+  --hi:rgba(255,255,255,.10); --hi-grad:rgba(255,255,255,.06); --drop:rgba(0,0,0,.55); --kk-shadow:0 2px 0 rgba(0,0,0,.45); --track:inset 0 2px 5px rgba(0,0,0,.5);
   --mark:#f3de48; --mark-ink:#111214; --pat:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 900' preserveAspectRatio='xMidYMid slice'%3E%3Cpolygon transform='translate(162 25) rotate(132)' points='17,0 -8,14 -8,-14' fill='%23161c25' stroke='%2328313e' stroke-width='1'/%3E%3Cline transform='translate(12 65) rotate(21)' x1='-8' x2='8' stroke='%2328313e' stroke-width='1.4' stroke-linecap='round'/%3E%3Cpolygon transform='translate(8 530) rotate(351)' points='41,0 -21,36 -21,-36' fill='%23161c25' stroke='%2328313e' stroke-width='1.2'/%3E%3Ccircle transform='translate(34 270) rotate(37)' r='17' fill='none' stroke='%232c3d5a' stroke-width='1'/%3E%3Cg transform='translate(240 562) rotate(245)' fill='%2328313e'%3E%3Ccircle cx='-15' cy='-15' r='1.6'/%3E%3Ccircle cx='0' cy='-15' r='1.6'/%3E%3Ccircle cx='15' cy='-15' r='1.6'/%3E%3Ccircle cx='-15' cy='0' r='1.6'/%3E%3Ccircle cx='0' cy='0' r='1.6'/%3E%3Ccircle cx='15' cy='0' r='1.6'/%3E%3Ccircle cx='-15' cy='15' r='1.6'/%3E%3Ccircle cx='0' cy='15' r='1.6'/%3E%3Ccircle cx='15' cy='15' r='1.6'/%3E%3C/g%3E%3Cpolygon transform='translate(94 149) rotate(29)' points='19,0 0,19 -19,0 -0,-19' fill='%23161c25' stroke='%2328313e' stroke-width='1.2'/%3E%3Cline transform='translate(260 49) rotate(59)' x1='-55' x2='55' stroke='%2328313e' stroke-width='1.4' stroke-linecap='round'/%3E%3Cg transform='translate(124 634) rotate(209)' fill='%2328313e'%3E%3Ccircle cx='-32' cy='-32' r='1.6'/%3E%3Ccircle cx='0' cy='-32' r='1.6'/%3E%3Ccircle cx='32' cy='-32' r='1.6'/%3E%3Ccircle cx='-32' cy='0' r='1.6'/%3E%3Ccircle cx='0' cy='0' r='1.6'/%3E%3Ccircle cx='32' cy='0' r='1.6'/%3E%3Ccircle cx='-32' cy='32' r='1.6'/%3E%3Ccircle cx='0' cy='32' r='1.6'/%3E%3Ccircle cx='32' cy='32' r='1.6'/%3E%3C/g%3E%3Cpolygon transform='translate(10 667) rotate(233)' points='22,0 11,19 -11,19 -22,0 -11,-19 11,-19' fill='none' stroke='%2328313e' stroke-width='1.2'/%3E%3Cpolygon transform='translate(261 444) rotate(277)' points='19,0 0,19 -19,0 -0,-19' fill='%23161c25' stroke='%232c3d5a' stroke-width='1.2'/%3E%3Cpolygon transform='translate(57 358) rotate(318)' points='55,0 27,48 -27,48 -55,0 -27,-48 27,-48' fill='none' stroke='%2328313e' stroke-width='1.2'/%3E%3Cpolygon transform='translate(145 811) rotate(54)' points='39,0 0,39 -39,0 -0,-39' fill='%23161c25' stroke='%232c3d5a' stroke-width='1'/%3E%3Cpolygon transform='translate(251 227) rotate(52)' points='6,0 -3,5 -3,-5' fill='none' stroke='%2328313e' stroke-width='1.2'/%3E%3Cline transform='translate(237 354) rotate(37)' x1='-83' x2='83' stroke='%232c3d5a' stroke-width='1.4' stroke-linecap='round'/%3E%3Cg transform='translate(50 75) rotate(221)' fill='none' stroke='%232c3d5a'%3E%3Ccircle r='5'/%3E%3Ccircle r='3'/%3E%3C/g%3E%3Cg transform='translate(420 546) rotate(44)' fill='%2328313e'%3E%3Ccircle cx='-5' cy='-5' r='1.6'/%3E%3Ccircle cx='0' cy='-5' r='1.6'/%3E%3Ccircle cx='5' cy='-5' r='1.6'/%3E%3Ccircle cx='-5' cy='0' r='1.6'/%3E%3Ccircle cx='0' cy='0' r='1.6'/%3E%3Ccircle cx='5' cy='0' r='1.6'/%3E%3Ccircle cx='-5' cy='5' r='1.6'/%3E%3Ccircle cx='0' cy='5' r='1.6'/%3E%3Ccircle cx='5' cy='5' r='1.6'/%3E%3C/g%3E%3Ccircle transform='translate(417 477) rotate(248)' r='23' fill='none' stroke='%2328313e' stroke-width='1.2'/%3E%3Cg transform='translate(144 189) rotate(229)' fill='none' stroke='%2328313e'%3E%3Ccircle r='16'/%3E%3Ccircle r='10'/%3E%3C/g%3E%3Cg transform='translate(197 162) rotate(161)' fill='none' stroke='%2328313e'%3E%3Ccircle r='7'/%3E%3Ccircle r='4'/%3E%3C/g%3E%3Cpolygon transform='translate(280 732) rotate(300)' points='6,0 -3,5 -3,-5' fill='%23161c25' stroke='%2328313e' stroke-width='1.6'/%3E%3Cg transform='translate(389 388) rotate(31)' fill='none' stroke='%2328313e'%3E%3Ccircle r='48'/%3E%3Ccircle r='29'/%3E%3C/g%3E%3Ccircle transform='translate(19 129) rotate(10)' r='22' fill='none' stroke='%2328313e' stroke-width='1.6'/%3E%3Cpolygon transform='translate(232 0) rotate(190)' points='12,0 -6,10 -6,-10' fill='none' stroke='%2328313e' stroke-width='1'/%3E%3Ccircle transform='translate(355 466) rotate(191)' r='21' fill='none' stroke='%232c3d5a' stroke-width='1.2'/%3E%3Ccircle transform='translate(-18 731) rotate(51)' r='48' fill='none' stroke='%232c3d5a' stroke-width='1'/%3E%3Cpolygon transform='translate(224 434) rotate(318)' points='15,0 -8,13 -8,-13' fill='%23161c25' stroke='%232c3d5a' stroke-width='1'/%3E%3Cg transform='translate(108 458) rotate(183)' fill='%2328313e'%3E%3Ccircle cx='-12' cy='-12' r='1.6'/%3E%3Ccircle cx='0' cy='-12' r='1.6'/%3E%3Ccircle cx='12' cy='-12' r='1.6'/%3E%3Ccircle cx='-12' cy='0' r='1.6'/%3E%3Ccircle cx='0' cy='0' r='1.6'/%3E%3Ccircle cx='12' cy='0' r='1.6'/%3E%3Ccircle cx='-12' cy='12' r='1.6'/%3E%3Ccircle cx='0' cy='12' r='1.6'/%3E%3Ccircle cx='12' cy='12' r='1.6'/%3E%3C/g%3E%3Cpolygon transform='translate(78 265) rotate(323)' points='9,0 -4,8 -4,-8' fill='%23161c25' stroke='%2328313e' stroke-width='1.6'/%3E%3Cpolygon transform='translate(386 889) rotate(269)' points='12,0 0,12 -12,0 -0,-12' fill='%23161c25' stroke='%2328313e' stroke-width='1'/%3E%3Cpolygon transform='translate(157 466) rotate(184)' points='22,0 11,19 -11,19 -22,0 -11,-19 11,-19' fill='%23161c25' stroke='%2328313e' stroke-width='1'/%3E%3Cpolygon transform='translate(64 822) rotate(338)' points='7,0 3,6 -3,6 -7,0 -3,-6 3,-6' fill='none' stroke='%2328313e' stroke-width='1'/%3E%3Cg transform='translate(224 174) rotate(180)' fill='%2328313e'%3E%3Ccircle cx='-7' cy='-7' r='1.6'/%3E%3Ccircle cx='0' cy='-7' r='1.6'/%3E%3Ccircle cx='7' cy='-7' r='1.6'/%3E%3Ccircle cx='-7' cy='0' r='1.6'/%3E%3Ccircle cx='0' cy='0' r='1.6'/%3E%3Ccircle cx='7' cy='0' r='1.6'/%3E%3Ccircle cx='-7' cy='7' r='1.6'/%3E%3Ccircle cx='0' cy='7' r='1.6'/%3E%3Ccircle cx='7' cy='7' r='1.6'/%3E%3C/g%3E%3Cpolygon transform='translate(-12 455) rotate(185)' points='11,0 0,11 -11,0 -0,-11' fill='%23161c25' stroke='%2328313e' stroke-width='1.6'/%3E%3Ccircle transform='translate(363 644) rotate(146)' r='8' fill='%23161c25' stroke='%232c3d5a' stroke-width='1'/%3E%3C/svg%3E"); color-scheme:dark}
 *{box-sizing:border-box}
 html,body{background:var(--bg);color:var(--fg)}
@@ -65,7 +98,7 @@ main .wrap{padding-block:16px}
 .tab{display:flex;flex-direction:column;gap:16px}
 .tab[hidden]{display:none!important}
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
-.tabbar .in{max-width:640px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+.tabbar .in{max-width:640px;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr)}
 .tabbar button{height:var(--tabh);border:0;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:12px;color:var(--muted)}
 .tabbar button .g{font-size:20px;line-height:1;font-family:var(--font-kana);font-weight:600;height:22px;display:flex;align-items:center}
 .tabbar button .g svg{width:22px;height:22px}
@@ -247,7 +280,7 @@ textarea{width:100%;min-height:110px;border-radius:10px;border:1px solid var(--l
 .gp-s{color:var(--fg);font-size:16px}
 .gpanel p{margin:0}
 /* 點單字 */
-.tk{cursor:pointer;border-radius:4px;text-decoration:underline dotted var(--muted);text-decoration-thickness:1px;text-underline-offset:.28em;-webkit-tap-highlight-color:transparent}
+.tk{cursor:pointer;border-radius:4px;-webkit-tap-highlight-color:transparent;text-decoration:none;margin:0 1px;padding-bottom:2px;background-image:radial-gradient(circle,var(--muted) .9px,transparent 1.1px);background-size:4px 3px;background-repeat:repeat-x;background-position:0 100%;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .tk.on{background:var(--pri-soft);text-decoration-color:var(--pri)}
 .tk:focus-visible{outline:2px solid var(--pri)}
 .gloss{position:fixed;z-index:35;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:calc(var(--tabh) + env(safe-area-inset-bottom,0px) + 10px);max-width:560px;margin:0 auto;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px 16px;box-shadow:0 10px 30px rgba(0,0,0,.28);display:flex;flex-direction:column;gap:8px}
@@ -326,6 +359,220 @@ body.hide-furi #gloss rt,body.hide-furi .furibtn rt{visibility:visible}
 .toast.goal{background:var(--pri);color:var(--pri-ink);font-weight:700}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 @media (max-width:380px){.brand .full{display:none}}
+
+/* ===== 按鈕：鍵帽質感（底部有一條較深的邊，按下去會往下沉） ===== */
+.btn,.opt,.chip,.pill,.play,.iconbtn,.kc,.entry button,.seg{transition:transform .08s ease,box-shadow .08s ease,background-color .15s,border-color .15s}
+.btn{box-shadow:0 3px 0 var(--pri-mid)}
+.btn.solid{background:linear-gradient(180deg,color-mix(in srgb,var(--pri) 86%,#fff) 0%,var(--pri) 100%);border-color:var(--pri-deep);box-shadow:0 3px 0 var(--pri-deep),0 6px 14px -6px color-mix(in srgb,var(--pri) 55%,transparent)}
+.btn.quiet{box-shadow:0 3px 0 var(--edge)}
+.btn:active:not(:disabled){transform:translateY(2px);box-shadow:0 1px 0 var(--pri-mid)}
+.btn.solid:active:not(:disabled){box-shadow:0 1px 0 var(--pri-deep)}
+.btn.quiet:active:not(:disabled){box-shadow:0 1px 0 var(--edge)}
+.btn:disabled{box-shadow:none}
+.opt{box-shadow:0 3px 0 var(--edge)}
+.opt .k{background:var(--pri-soft);color:var(--pri)}
+.opt:active:not(:disabled){transform:translateY(2px);box-shadow:0 1px 0 var(--edge)}
+.opt.right{box-shadow:0 3px 0 var(--ok-deep)}
+.opt.wrong{box-shadow:0 3px 0 var(--ng-deep)}
+.chip,.pill,.play,.iconbtn,.kc,.entry button{box-shadow:0 2px 0 var(--edge)}
+.chip[aria-pressed="true"],.iconbtn[aria-pressed="true"]{box-shadow:0 2px 0 var(--pri-deep)}
+.kc.s2{box-shadow:0 2px 0 var(--pri-deep)}
+.chip:active,.play:active,.iconbtn:active,.kc:active,.entry button:active{transform:translateY(2px);box-shadow:0 0 0 var(--edge)}
+.entry button b{background:var(--surface);border-radius:999px;padding:0 9px;min-width:28px;text-align:center}
+.entry button.zero b{background:none}
+.seg button[aria-pressed="true"]{box-shadow:0 2px 0 var(--edge)}
+@media (prefers-reduced-motion: reduce){.btn,.opt,.chip,.pill,.play,.iconbtn,.kc,.entry button{transition:none}.btn:active,.opt:active,.chip:active,.play:active,.iconbtn:active,.kc:active,.entry button:active{transform:none}}
+
+/* ===== 按鈕配色：跟卡片、背景分開的填色（淺色、深色模式都有） ===== */
+.btn.quiet,.pill,.iconbtn,.chip,.entry button,.kc,.opt{background-color:var(--btn);border-color:var(--btn-edge);color:var(--btn-ink);box-shadow:0 3px 0 var(--btn-edge)}
+.iconbtn{color:var(--pri)}
+.btn.quiet:active:not(:disabled),.opt:active:not(:disabled){box-shadow:0 1px 0 var(--btn-edge)}
+.chip:active,.iconbtn:active,.kc:active,.entry button:active,.pill:active{box-shadow:0 1px 0 var(--btn-edge)}
+.opt .k{background:var(--surface);color:var(--pri)}
+.opt.right{background-color:var(--ok-soft);border-color:var(--ok)}
+.opt.wrong{background-color:var(--ng-soft);border-color:var(--ng)}
+.opt:disabled:not(.right):not(.wrong){opacity:.75}
+.chip[aria-pressed="true"],.iconbtn[aria-pressed="true"]{background-color:var(--pri);border-color:var(--pri-deep);color:var(--pri-ink)}
+.kc.s1{background-color:var(--pri-soft);border-color:var(--pri-mid);box-shadow:0 3px 0 var(--pri-mid)}
+.kc.s2{background-color:var(--pri);border-color:var(--pri-deep);color:var(--pri-ink);box-shadow:0 3px 0 var(--pri-deep)}
+.pill.on{border-color:var(--pri);color:var(--pri)}
+.seg{background:var(--btn)}
+.seg button[aria-pressed="true"]{background:var(--pri);color:var(--pri-ink);box-shadow:0 2px 0 var(--pri-deep)}
+.play{background:var(--pri-soft);border-color:var(--pri-mid);color:var(--pri);box-shadow:0 3px 0 var(--pri-mid)}
+.play:active{box-shadow:0 1px 0 var(--pri-mid)}
+/* 五十音圖例：還沒學＝按鈕底色 */
+.legend i{background:var(--btn);border-color:var(--btn-edge)}
+/* 稍後再看：琥珀色 */
+.btn[data-a="later"]{background:var(--amb);border-color:var(--amb-edge);color:var(--amb-ink);box-shadow:0 3px 0 var(--amb-edge)}
+.btn[data-a="later"]:active{box-shadow:0 1px 0 var(--amb-edge)}
+/* 文法：紫色 */
+.gbtn{background:var(--vio);border-color:var(--vio-edge);color:var(--vio-ink);box-shadow:0 3px 0 var(--vio-edge);transition:transform .08s,box-shadow .08s}
+.gbtn b{background:var(--vio-ink);color:var(--vio)}
+.gbtn[aria-expanded="true"]{background:var(--vio-ink);color:var(--vio)}
+.gbtn[aria-expanded="true"] b{background:var(--vio);color:var(--vio-ink)}
+.gbtn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--vio-edge)}
+/* 詞性：青綠色 */
+.posbtn{background:var(--tea);border-color:var(--tea-edge);color:var(--tea-ink);box-shadow:0 2px 0 var(--tea-edge);transition:transform .08s,box-shadow .08s}
+.posbtn:active{transform:translateY(2px);box-shadow:0 0 0 var(--tea-edge)}
+@media (prefers-reduced-motion: reduce){.gbtn,.posbtn{transition:none}.gbtn:active,.posbtn:active{transform:none}}
+
+/* ===== 滑動開關（平假名／片假名、五十音表／練習） ===== */
+.seg{position:relative;isolation:isolate;gap:0;padding:4px;border-radius:10px;background:var(--btn);box-shadow:var(--track),inset 0 0 0 1px var(--btn-edge)}
+.seg::before{content:"";position:absolute;z-index:0;top:4px;bottom:6px;left:4px;width:calc((100% - 8px) / var(--n, 2));transform:translateX(calc(var(--i, 0) * 100%));border-radius:7px;background:linear-gradient(180deg,color-mix(in srgb,var(--pri) 82%,#fff),var(--pri));box-shadow:0 3px 0 var(--pri-deep),inset 0 1px 0 rgba(255,255,255,.3);transition:transform .24s cubic-bezier(.3,.8,.3,1)}
+.seg.seg-noanim::before{transition:none}
+.seg button,.seg button[aria-pressed="true"]{position:relative;z-index:1;background:none;box-shadow:none;border-radius:7px;min-height:42px;margin-bottom:2px;transition:color .2s}
+.seg button[aria-pressed="true"]{color:var(--pri-ink)}
+/* ===== 五十音格子：立體鍵帽 ===== */
+.ktable{row-gap:10px}
+.kc{border-radius:12px;background-image:linear-gradient(180deg,var(--hi-grad) 0%,transparent 65%);box-shadow:inset 0 1px 0 var(--hi),0 4px 0 var(--btn-edge),0 8px 12px -6px var(--drop)}
+.kc .kk{text-shadow:var(--kk-shadow)}
+.kc.s1{box-shadow:inset 0 1px 0 var(--hi),0 4px 0 var(--pri-mid),0 8px 12px -6px var(--drop)}
+.kc.s2{box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 4px 0 var(--pri-deep),0 8px 12px -6px var(--drop)}
+.kc.s2 .kk{text-shadow:0 2px 0 rgba(0,0,0,.25)}
+.kc:active{transform:translateY(3px);box-shadow:inset 0 1px 0 var(--hi),0 1px 0 var(--btn-edge),0 2px 4px -2px var(--drop)}
+@media (prefers-reduced-motion: reduce){.seg::before{transition:none}.kc:active{transform:none}}
+
+/* ===== 實心藍：深色模式改用飽和的藍＋白字，不用淺粉藍 ===== */
+.btn.solid{background:linear-gradient(180deg,color-mix(in srgb,var(--fill) 85%,#fff),var(--fill));border-color:var(--fill-deep);color:var(--fill-ink);box-shadow:0 3px 0 var(--fill-deep),0 6px 14px -6px color-mix(in srgb,var(--fill) 55%,transparent)}
+.btn.solid:active:not(:disabled){box-shadow:0 1px 0 var(--fill-deep)}
+.seg::before{background:linear-gradient(180deg,color-mix(in srgb,var(--fill) 85%,#fff),var(--fill));box-shadow:0 3px 0 var(--fill-deep),inset 0 1px 0 rgba(255,255,255,.25)}
+.seg button[aria-pressed="true"]{color:var(--fill-ink)}
+.chip[aria-pressed="true"],.iconbtn[aria-pressed="true"]{background-color:var(--fill);border-color:var(--fill-deep);color:var(--fill-ink);box-shadow:0 3px 0 var(--fill-deep)}
+.kc.s2{background-color:var(--fill);border-color:var(--fill-deep);color:var(--fill-ink);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 4px 0 var(--fill-deep),0 8px 12px -6px var(--drop)}
+.kc.s2 .rr{color:var(--fill-ink)}
+.legend .l2{background:var(--fill);border-color:var(--fill-deep)}
+/* 已經會了：綠色 */
+.btn.known{background:var(--ok-soft);border-color:var(--ok);color:var(--ok);box-shadow:0 3px 0 var(--ok-deep)}
+.btn.known:active{box-shadow:0 1px 0 var(--ok-deep)}
+
+/* 已經會了：中等亮度的綠，實心白字 */
+.btn.known{background:linear-gradient(180deg,color-mix(in srgb,var(--go) 88%,#fff),var(--go));border-color:var(--go-deep);color:var(--go-ink);box-shadow:0 3px 0 var(--go-deep)}
+.btn.known:active{box-shadow:0 1px 0 var(--go-deep)}
+/* ===== 五十音格子：霧面紙卡（取代亮面塑膠感） ===== */
+.kc{border-radius:8px;background-color:var(--tile);background-image:var(--grain);border:1px solid var(--tile-line);color:var(--tile-ink);box-shadow:0 2px 0 var(--tile-edge),0 3px 6px -4px var(--drop)}
+.kc .kk{text-shadow:none}
+.kc .rr{color:var(--tile-sub)}
+.kc.s1{background-color:var(--pri-soft);border-color:var(--pri-mid);box-shadow:0 2px 0 var(--pri-mid),0 3px 6px -4px var(--drop)}
+.kc.s1 .rr{color:var(--pri)}
+.kc.s2{background-color:var(--fill);border-color:var(--fill-deep);color:var(--fill-ink);box-shadow:0 2px 0 var(--fill-deep),0 3px 6px -4px var(--drop)}
+.kc.s2 .kk{text-shadow:none}
+.kc:active{transform:translateY(2px);box-shadow:0 0 0 var(--tile-edge)}
+.legend i{background:var(--tile);border-color:var(--tile-line)}
+.legend .l1{background:var(--pri-soft);border-color:var(--pri-mid)}
+.legend .l2{background:var(--fill);border-color:var(--fill-deep)}
+
+/* 黃色標記跨好幾個詞時連在一起，不留空隙 */
+.tk:has(mark){margin:0}
+/* ===== 文法區 ===== */
+.g-txt{font-family:var(--font-ja);font-weight:700;font-size:20px;line-height:1}
+.gr-search{width:100%;min-height:46px;border-radius:12px;border:1px solid var(--line);background:var(--surface);padding:0 14px;font-size:16px}
+.gr-group{display:flex;flex-direction:column;gap:8px}
+.gr-group h3{margin:4px 2px 0;font-size:14px;color:var(--muted);font-weight:600}
+.gr-row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px 10px;text-align:left;width:100%;min-height:60px;padding:10px 14px;border-radius:12px;border:1px solid var(--btn-edge);background:var(--btn);color:var(--btn-ink);box-shadow:0 3px 0 var(--btn-edge);transition:transform .08s,box-shadow .08s}
+.gr-row:active{transform:translateY(2px);box-shadow:0 1px 0 var(--btn-edge)}
+.gr-row b{font-size:16px}
+.gr-row .gd{grid-column:1;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gr-row .gn{grid-row:1/3;grid-column:2;display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.gr-row .gn span{background:var(--surface);border-radius:999px;padding:1px 9px;font-variant-numeric:tabular-nums;color:var(--pri);font-weight:600}
+.gr-back{align-self:flex-start;min-height:40px;padding:0 14px 0 10px;border-radius:999px;border:1px solid var(--btn-edge);background:var(--btn);color:var(--pri);font-weight:600;box-shadow:0 2px 0 var(--btn-edge)}
+.gr-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.gr-head h2{margin:0;font-size:22px}
+.gr-head .lv{font-size:12px;border:1px solid var(--line);border-radius:6px;padding:1px 6px;color:var(--muted)}
+.gr-desc{font-size:16px;line-height:1.7;margin:10px 0 0}
+.gr-exs{display:flex;flex-direction:column;gap:0}
+.gr-ex{padding:14px 0;border-top:1px dashed var(--line)}
+.gr-ex:first-child{border-top:0;padding-top:4px}
+.gr-ex .from{font-size:12px;color:var(--muted);margin-top:4px}
+.gr-more{width:100%}
+.gp-more{margin-top:6px;min-height:36px;font-size:13px;padding:0 12px;border-radius:999px;border:1px solid var(--vio-edge);background:var(--vio);color:var(--vio-ink);font-weight:600}
+
+/* ===== 詞性變化規則 ===== */
+.rc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.rc-tile{grid-template-columns:1fr;min-height:64px;text-align:center;justify-items:center;padding:8px 6px;background:var(--tea);border-color:var(--tea-edge);color:var(--tea-ink);box-shadow:0 3px 0 var(--tea-edge)}
+.rc-tile:active{box-shadow:0 1px 0 var(--tea-edge)}
+.rc-tile b{font-size:15px}
+.rc-tile .gd{grid-column:auto;color:inherit;opacity:.8;font-size:12px}
+.rc-list,.rc-te{display:flex;flex-direction:column}
+.rc-row{padding:12px 0;border-top:1px dashed var(--line)}
+.rc-row:first-child{border-top:0;padding-top:6px}
+.rc-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.rc-h b{font-size:16px}
+.rc-rule{margin-top:2px;font-size:15px}
+.rc-exs{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.rc-chip{display:inline-flex;flex-direction:column;align-items:flex-start;background:var(--btn);border:1px solid var(--btn-edge);border-radius:8px;padding:4px 10px;font-family:var(--font-ja);font-size:16px;line-height:1.3}
+.rc-chip .rc-r{font-size:11px;color:var(--muted)}
+.rc-words{display:flex;flex-wrap:wrap;gap:6px}
+.rc-w{min-height:38px;padding:0 12px;border-radius:8px;border:1px solid var(--btn-edge);background:var(--btn);color:var(--btn-ink);font-family:var(--font-ja);font-size:16px;box-shadow:0 2px 0 var(--btn-edge)}
+.rc-w:active{transform:translateY(2px);box-shadow:0 0 0 var(--btn-edge)}
+
+/* ===== 按鈕外框（試用） ===== */
+.btn,.opt,.chip,.pill,.play,.iconbtn,.kc,.entry button,.gr-row,.gr-back,.rc-w,.gbtn,.posbtn,.seg,.iplay{border-width:2px;border-style:solid}
+.btn.quiet,.opt,.chip,.pill,.iconbtn,.entry button,.gr-row,.gr-back,.rc-w,.seg,.kc{border-color:var(--frame)}
+.btn.solid,.chip[aria-pressed="true"],.iconbtn[aria-pressed="true"],.kc.s2{border-color:var(--fill-deep)}
+.btn.known{border-color:var(--go-deep)}
+.play,.iplay,.kc.s1{border-color:var(--pri-mid)}
+.gbtn{border-color:color-mix(in srgb,var(--vio-ink) 45%,var(--vio-edge))}
+.posbtn,.rc-tile{border-color:color-mix(in srgb,var(--tea-ink) 40%,var(--tea-edge))}
+.opt.right{border-color:var(--ok)}
+.opt.wrong{border-color:var(--ng)}
+.pill.on{border-color:var(--pri)}
+
+/* 單選選項：沒選的時候接近卡片底色，不要看起來像被點過 */
+.opt{background-color:var(--opt)}
+.opt .k{background:var(--btn);color:var(--pri)}
+.opt:hover:not(:disabled){border-color:var(--pri-mid)}
+.opt.right{background-color:var(--ok-soft)}
+.opt.wrong{background-color:var(--ng-soft)}
+
+/* 選項稍微緊湊一點，答完後「下一題」比較容易出現在畫面內 */
+.opts{gap:10px}
+.opt{min-height:52px;padding-top:6px;padding-bottom:6px}
+
+/* ===== 點綴色：底色維持中性，用彩色標籤和外框增加變化 ===== */
+.opts .opt:nth-child(4n+1){--c:var(--c1);--ci:var(--c1-ink)}
+.opts .opt:nth-child(4n+2){--c:var(--c2);--ci:var(--c2-ink)}
+.opts .opt:nth-child(4n+3){--c:var(--c3);--ci:var(--c3-ink)}
+.opts .opt:nth-child(4n+4){--c:var(--c4);--ci:var(--c4-ink)}
+.opts .opt{border-color:color-mix(in srgb,var(--ci,var(--frame)) 38%,var(--frame))}
+.opts .opt .k{background:var(--c,var(--btn));color:var(--ci,var(--pri))}
+.opts .opt:hover:not(:disabled){border-color:var(--ci,var(--pri))}
+.opts .opt.right{border-color:var(--ok)}
+.opts .opt.wrong{border-color:var(--ng)}
+.opts .opt.right .k{background:var(--ok);color:var(--surface)}
+.opts .opt.wrong .k{background:var(--ng);color:var(--surface)}
+.pill{border-color:color-mix(in srgb,var(--pri) 40%,var(--frame))}
+.entry button[data-go^="mc"]{border-color:color-mix(in srgb,var(--c3-ink) 45%,var(--frame))}
+.entry button[data-go^="mc"] b{color:var(--c3-ink)}
+.entry button[data-go^="fill"]{border-color:color-mix(in srgb,var(--c2-ink) 45%,var(--frame))}
+.entry button[data-go^="fill"] b{color:var(--c2-ink)}
+.entry button[data-go^="card"]{border-color:color-mix(in srgb,var(--c4-ink) 45%,var(--frame))}
+.entry button[data-go^="card"] b{color:var(--c4-ink)}
+
+/* ===== 自訂下拉選單 ===== */
+.pw{flex:1 1 0;min-width:0;display:flex;position:relative;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pw>.pill{flex:1;width:100%;pointer-events:none}
+.pw:active>.pill{transform:translateY(2px);box-shadow:0 1px 0 var(--btn-edge)}
+.pk-back{position:fixed;inset:0;z-index:60;background:rgba(5,8,14,.45);opacity:0;transition:opacity .18s}
+.pk-back.in{opacity:1}
+.pk{position:fixed;left:0;right:0;bottom:0;z-index:61;max-width:560px;margin:0 auto;max-height:72vh;display:flex;flex-direction:column;background:var(--surface);border:2px solid var(--frame);border-bottom:0;border-radius:18px 18px 0 0;padding:6px 14px calc(14px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 30px rgba(0,0,0,.25);transform:translateY(100%);transition:transform .2s cubic-bezier(.3,.8,.3,1)}
+.pk.in{transform:none}
+.pk-grab{width:40px;height:4px;border-radius:4px;background:var(--line);margin:4px auto 8px}
+.pk-top{display:flex;align-items:center;justify-content:space-between;padding:0 2px 10px}
+.pk-top b{font-size:17px}
+.pk-x{width:40px;height:40px;border-radius:999px;border:0;background:var(--btn);color:var(--muted);display:inline-flex;align-items:center;justify-content:center}
+.pk-x svg{width:18px;height:18px}
+.pk-list{overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:2px 2px 6px}
+.pk-opt{display:flex;align-items:center;gap:10px;min-height:54px;padding:0 14px;border-radius:12px;border:2px solid var(--frame);background:var(--opt);color:var(--fg);font-size:16px;font-weight:600;text-align:left;box-shadow:0 3px 0 var(--btn-edge);transition:transform .08s,box-shadow .08s}
+.pk-opt:active{transform:translateY(2px);box-shadow:0 1px 0 var(--btn-edge)}
+.pk-opt .pk-n{flex:1;min-width:0}
+.pk-opt .pk-c{min-width:36px;text-align:center;padding:2px 10px;border-radius:999px;background:var(--btn);color:var(--pri);font-variant-numeric:tabular-nums;font-size:14px}
+.pk-opt .pk-ck{width:22px;display:inline-flex;justify-content:center;color:var(--fill-ink)}
+.pk-opt .pk-ck svg{width:18px;height:18px}
+.pk-opt.zero{color:var(--muted)}
+.pk-opt.zero .pk-c{color:var(--muted)}
+.pk-opt.on{background:var(--fill);border-color:var(--fill-deep);color:var(--fill-ink);box-shadow:0 3px 0 var(--fill-deep)}
+.pk-opt.on .pk-c{background:rgba(255,255,255,.2);color:var(--fill-ink)}
+@media (prefers-reduced-motion: reduce){.pk,.pk-back{transition:none}}
 </style>
 
 <header class="top"><div class="wrap">
@@ -341,6 +588,7 @@ body.hide-furi #gloss rt,body.hide-furi .furibtn rt{visibility:visible}
   <section class="tab" id="tab-mc" hidden></section>
   <section class="tab" id="tab-card" hidden></section>
   <section class="tab" id="tab-fill" hidden></section>
+  <section class="tab" id="tab-gram" hidden></section>
   <section class="tab" id="tab-lib" hidden></section>
 </div></main>
 
@@ -349,6 +597,7 @@ body.hide-furi #gloss rt,body.hide-furi .furibtn rt{visibility:visible}
   <button data-tab="mc"><span class="g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="5" cy="6" r="1.6" fill="currentColor"/><circle cx="5" cy="12" r="1.6" fill="currentColor"/><circle cx="5" cy="18" r="1.6" fill="currentColor"/><path d="M10 6h10M10 12h10M10 18h10"/></svg></span>單選</button>
   <button data-tab="card"><span class="g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="7" width="14" height="12" rx="2"/><path d="M7 7V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-2"/></svg></span>字卡</button>
   <button data-tab="fill"><span class="g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"/><path d="M14.5 4.5l3 3L9 16H6v-3z"/></svg></span>填空</button>
+  <button data-tab="gram"><span class="g g-txt">文</span>文法</button>
   <button data-tab="lib"><span class="g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5M8 7h7"/></svg></span>單字庫</button>
 </div></nav>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -1495,6 +1744,7 @@ const FUNC = {
   'でしょう': ['でしょう', '…吧（推測）'],
   'だ': ['だ', '是（普通體）'],
   'ので': ['ので', '因為'],
+  'ながら': ['ながら', '一邊…一邊…（接在動詞ます形後面）'],
   'この': ['この', '這個（後面接名詞）'],
   'その': ['その', '那個（靠近對方，後面接名詞）'],
   'あの': ['あの', '那個（遠處，後面接名詞）'],
@@ -1771,6 +2021,10 @@ const GRAMMAR_POINTS = [
   { id: 'kara', lv: 'N5', t: '「から」從、因為', d: '接在名詞後是「從…」（九時から）；接在句子後是「因為…」（雨ですから）。', m: c => byE('f:から')(c) || byE('f:ですから')(c) },
   { id: 'made', lv: 'N5', t: '「まで」到', d: '表示終點，常和「から」配對：「AからBまで」＝從 A 到 B。', m: byE('f:まで') },
   { id: 'ya', lv: 'N5', t: '「や」列舉', d: '「AやB」＝A 和 B 等等，只舉出其中幾個。', m: byE('f:や') },
+  { id: 'dake', lv: 'N5', t: '「だけ」只有', d: '接在名詞或數量後面：只…。例如「一つだけ」＝只有一個。', m: byE('f:だけ') },
+  { id: 'zutsu', lv: 'N5', t: '「ずつ」各…、每…', d: '接在數量後面，表示平均分配或每次的量。例如「一人に二つずつ」＝每人各兩個。', m: byE('f:ずつ') },
+  { id: 'gurai', lv: 'N5', t: '「ぐらい／くらい」大約', d: '接在數量、時間、距離後面表示大概的量。例如「十分ぐらい」＝大約十分鐘。', m: c => byE('f:ぐらい')(c) || byE('f:くらい')(c) },
+  { id: 'nado', lv: 'N5', t: '「など」等等', d: '列舉之後加「など」，表示還有其他的，常和「や」一起用：りんごやみかんなど＝蘋果、橘子等等。', m: byE('f:など') },
   { id: 'yori', lv: 'N5', t: '「より」比較', d: '「AよりBが…」＝B 比 A 更…。', m: byE('f:より') },
   { id: 'ka', lv: 'N5', t: '句尾「か」疑問', d: '放在句尾就變成問句，語調上揚，不需要問號也可以。', m: c => byE('f:か')(c) || byE('f:ですか')(c) || byF(/^要不要/)(c) },
   { id: 'ne', lv: 'N5', t: '句尾「ね」', d: '…呢。說話者覺得對方也會同意時加上。', m: byE('f:ね') },
@@ -1791,6 +2045,9 @@ const GRAMMAR_POINTS = [
   { id: 'naidekudasai', lv: 'N5', t: '「〜ないでください」請不要…', d: '動詞ない形加「でください」，禮貌地請對方不要做。', m: c => byF(/^ないでください/)(c) || byE('f:ないでください')(c) },
   { id: 'teimasu', lv: 'N5', t: '「〜ています」正在…／狀態', d: '動詞て形加「います」：正在做的事，或持續的狀態（住んでいます＝住在）。', m: c => byF(/^ていま/)(c) || byE('f:ています')(c) },
   { id: 'temoii', lv: 'N5', t: '「〜てもいいですか」可以…嗎', d: '動詞て形加「もいいですか」，詢問許可。', m: byF(/^てもいいですか/) },
+  { id: 'tekara', lv: 'N5', t: '「〜てから」…之後', d: '動詞て形加「から」：做完 A 之後再做 B，強調先後順序。例如「食べてから、歯を磨きます」＝吃完再刷牙。', m: c => byF(/^てから/)(c) || byE('f:てから')(c) },
+  { id: 'nagara', lv: 'N5', t: '「〜ながら」一邊…一邊…', d: '動詞ます形去掉「ます」加「ながら」：同時做兩件事，主要的動作放在後面。例如「音楽を聞きながら勉強します」。', m: byE('f:ながら') },
+  { id: 'tari', lv: 'N5', t: '「〜たり〜たりする」列舉動作', d: '動詞た形加「り」，舉出幾個代表性的動作，最後用「する」收尾。例如「本を読んだり、映画を見たりします」。', m: byF(/^たり/) },
   { id: 'nai', lv: 'N5', t: '「〜ない」否定（普通體）', d: '「ません」的普通說法。', m: byF(/^ない形/) },
   { id: 'ta', lv: 'N5', t: '「〜た」過去（普通體）', d: '「ました」的普通說法。', m: byF(/^た形/) },
   { id: 'ikatta', lv: 'N5', t: 'い形容詞過去「〜かった」', d: '去掉「い」加「かった」：（那時）很…。禮貌說法再加「です」。', m: byF(/^過去：/) },
@@ -1798,7 +2055,7 @@ const GRAMMAR_POINTS = [
   { id: 'iku', lv: 'N5', t: 'い形容詞「〜く」', d: '去掉「い」加「く」變成副詞（大きく開ける＝張大），或接「なる」表示變化（寒くなる＝變冷）。', m: byF(/^副詞形/) },
   { id: 'naru', lv: 'N5', t: '「〜くなる」變得…', d: 'い形容詞去掉「い」加「くなる」，表示狀態改變：寒くなりました＝變冷了。', m: c => byF(/^變得/)(c) || byE('f:なりました')(c) },
   { id: 'nana', lv: 'N5', t: 'な形容詞＋「な」＋名詞', d: 'な形容詞放在名詞前要加「な」：静かな所（安靜的地方）。', m: byF(/^＋な/) },
-  { id: 'kono', lv: 'N5', t: '「この／その／あの」', d: '這個／那個（近對方）／那個（遠處），後面一定接名詞。', m: c => byE('f:この')(c) || byE('f:その')(c) || byE('f:あの')(c) || byE('f:どの')(c) },
+  { id: 'kono', lv: 'N5', t: '「この／その／あの」', d: '這個／那個（近對方）／那個（遠處），後面一定接名詞。', m: c => { const t = c.toks.find(t => /^(この|その|あの|どの)$/.test(t.s)); return t ? t.s : null; } },
   { id: 'aruiru', lv: 'N5', t: '「あります／います」存在', d: '東西、植物用「あります」；人、動物用「います」。常見句型：「地點に＋東西が＋あります」。', m: c => { const t = c.toks.find(t => t.e && /^v:(ある|いる)\|/.test(t.e)); return t ? t.s : null; } },
 ];
 
@@ -1818,6 +2075,7 @@ function grammarOf(w, toks, D) {
     let f = '';
     if (b.s === 'ください') f = 'てください：請…';
     else if (/^(います|いました|いません)$/.test(b.s)) f = 'ています：正在…、…著';
+    else if (b.s === 'から') f = 'てから：…之後';
     if (f) { list.splice(i, 2, { s: a.s + b.s, e: a.e, f }); }
   }
   const c = { toks: list, sent: w.sent };
@@ -2357,6 +2615,14 @@ document.addEventListener('click', e => {
 });
 
 // ================= 顯示工具 =================
+// 按鈕被底部分頁列擋住時，把頁面捲到剛好看得到（不會整頁跳走）
+function revealAboveTabbar(el) {
+  requestAnimationFrame(() => {
+    const bar = $('.tabbar'), r = el.getBoundingClientRect();
+    const lim = innerHeight - (bar ? bar.getBoundingClientRect().height : 0) - 12;
+    if (r.bottom > lim) window.scrollBy({ top: r.bottom - lim, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  });
+}
 function rubyHTML(segs, opt = {}) {
   let h = '';
   const starts = {}, ends = {};
@@ -2446,10 +2712,10 @@ function wordPool(src) {
 }
 const filtered = src => wordPool(src).filter(posOK);
 function pillSelect(id, label, opts, val) {
-  return `<select class="pill" id="${id}" aria-label="${label}">${opts.map(([k, l]) => `<option value="${k}"${k === val ? ' selected' : ''}>${l}</option>`).join('')}</select>`;
+  return `<span class="pw"><select class="pill" id="${id}" aria-label="${label}">${opts.map(([k, l]) => `<option value="${k}"${k === val ? ' selected' : ''}>${l}</option>`).join('')}</select></span>`;
 }
 function posChips() {
-  return `<select class="pill${UI.pos !== 'all' ? ' on' : ''}" data-possel aria-label="詞性">${POS_FILTERS.map(([k, l]) => `<option value="${k}"${UI.pos === k ? ' selected' : ''}>${k === 'all' ? '詞性' : l}</option>`).join('')}</select>`;
+  return `<span class="pw"><select class="pill${UI.pos !== 'all' ? ' on' : ''}" data-possel aria-label="詞性">${POS_FILTERS.map(([k, l]) => `<option value="${k}"${UI.pos === k ? ' selected' : ''}>${k === 'all' ? '詞性' : l}</option>`).join('')}</select></span>`;
 }
 function bindPos(root, cb) { const sel = $('[data-possel]', root); if (sel) sel.onchange = () => { UI.pos = sel.value; saveUI(); cb(); }; }
 
@@ -2520,7 +2786,7 @@ function grammarPanel(w) {
   else body = g.shown.map(x => `<div class="gp-item">
       <div class="gp-h"><b>${esc(x.p.t)}</b><span class="lv">${x.p.lv}</span></div>
       <div class="meta">句中：<span class="ja gp-s">${esc(x.s)}</span></div>
-      <div>${esc(x.p.d)}</div></div>`).join('') + (g.hidden ? `<p class="meta">另有 ${g.hidden} 個已經會的文法沒有顯示。</p>` : '');
+      <div>${esc(x.p.d)}</div><button class="gp-more" data-gram="${x.p.id}">看更多例句 ›</button></div>`).join('') + (g.hidden ? `<p class="meta">另有 ${g.hidden} 個已經會的文法沒有顯示。</p>` : '');
   return `<div class="gpanel" id="gpanel"${UI.gramOpen ? '' : ' hidden'}><div class="gp-title">這句例句用到的文法</div>${body}</div>`;
 }
 function bindGrammar(host) {
@@ -2620,7 +2886,7 @@ document.addEventListener('click', e => {
 }, true);
 
 // ================= 分頁 =================
-const TABS = ['kana', 'mc', 'card', 'fill', 'lib'];
+const TABS = ['kana', 'mc', 'card', 'fill', 'gram', 'lib'];
 function showTab(t) {
   UI.tab = t; saveUI();
   TABS.forEach(x => { $('#tab-' + x).hidden = x !== t; });
@@ -2628,7 +2894,7 @@ function showTab(t) {
   document.body.classList.remove('typing');
   Quiz.active = null;
   closeGloss();
-  ({ kana: renderKana, mc: renderMC, card: renderCard, fill: renderFill, lib: renderLib })[t]();
+  ({ kana: renderKana, mc: renderMC, card: renderCard, fill: renderFill, gram: renderGram, lib: renderLib })[t]();
   window.scrollTo(0, 0);
 }
 $$('.tabbar button').forEach(b => b.onclick = () => showTab(b.dataset.tab));
@@ -2669,6 +2935,7 @@ function renderChoice(host, q, onNext) {
     const nb = $('[data-next]', after);
     nb.onclick = () => { clearTimeout(state.timer); onNext(); };
     if (!ok) nb.focus({ preventScroll: true });
+    if (!ok) revealAboveTabbar(nb);
   };
   state.choose = choose;
   state.goNext = () => { if (state.answered) { clearTimeout(state.timer); onNext(); } };
@@ -2963,8 +3230,8 @@ function showFlash() {
   if (r.w && r.w.mc) tags.push(`單選${r.w.mc === 1 ? '答錯' : '錯題複習中'}`);
   if (r.w && r.w.fill) tags.push(`填空${r.w.fill === 1 ? '答錯' : '錯題複習中'}`);
   const btns = deck.src === 'new'
-    ? `<button class="btn quiet" data-a="later">稍後再看</button><button class="btn solid" data-a="queue">列入考題</button><button class="btn quiet wide" data-a="exclude">這個我本來就會（排除）</button>`
-    : `<button class="btn quiet" data-a="later">稍後再看</button><button class="btn solid" data-a="next">下一張</button>`;
+    ? `<button class="btn known" data-a="known">${ICON.ok}已經會了</button><button class="btn solid" data-a="queue">列入考題</button>`
+    : `<button class="btn solid wide" data-a="next">下一張</button>`;
   host.innerHTML = `<div class="card fc">
     <div class="qhead"><div class="qh-l"><button class="posbtn" data-forms="${esc(w.id)}" aria-label="看「${esc(w.word)}」的詞性和變化形">${esc(w.pos)}<span aria-hidden="true">›</span></button><span class="meta" aria-label="這疊還剩 ${deck.cards.length} 張，此分類共 ${deck.total} 張">剩 ${deck.cards.length} · 共 ${deck.total}</span></div>${grammarButton(w)}</div>
     ${grammarPanel(w)}
@@ -2978,14 +3245,12 @@ function showFlash() {
   bindGrammar(host);
   $$('[data-a]', host).forEach(b => b.onclick = () => {
     const a = b.dataset.a;
-    if (a === 'later') { deck.cards.push(deck.cards.shift()); }
-    else {
-      deck.cards.shift();
-      if (a === 'queue') { touch(w.id, { s: 'queued' }); toast('已列入考題'); }
-      if (a === 'exclude') { touch(w.id, { s: 'excluded' }); toast('已排除，可在單字庫恢復'); }
-    }
+    deck.cards.shift();
+    if (a === 'queue') { touch(w.id, { s: 'queued' }); toast('已列入考題'); }
+    // 已經會了：直接算學會，3 天後出現在「到期複習」確認一次
+    if (a === 'known') { touch(w.id, { s: 'learned', lv: 1, due: addDays(today(), SRS[1]) }); toast(`已標記為學會，${SRS[1]} 天後會再考一次`); }
     showFlash();
-    if (a === 'queue' || a === 'exclude') updateCardCounts();
+    if (a === 'queue' || a === 'known') updateCardCounts();
   });
 }
 function updateCardCounts() {
@@ -3450,6 +3715,216 @@ function refreshPassive() {
   if (UI.tab === 'lib' && !$('#q')?.value && !$('#bk')?.innerHTML) renderLib();
 }
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { renderGoal(); Cloud.schedule(500); } });
+
+// ================= 詞性變化規則 =================
+const RULES = [
+  { id: 'r-v1', pos: '動詞(一類)', name: '一類動詞', sub: '五段動詞', ex: ['飲む', '書く', '買う'],
+    lead: '字尾是う段音（う、く、ぐ、す、つ、ぬ、ぶ、む、る）。變化時，最後一個字在あ、い、う、え、お段之間移動。',
+    r: { 'ます形': '字尾換成い段＋ます（む→み）', '否定': '字尾換成い段＋ません', '過去': '字尾換成い段＋ました', '過去否定': '字尾換成い段＋ませんでした',
+      'て形': '看字尾決定（見下面的表）', '〜てください': 'て形＋ください', '〜ています': 'て形＋います',
+      'ない形': '字尾換成あ段＋ない；「う」結尾的換成「わ」（買う→買わない）', 'た形': '把て形的「て／で」換成「た／だ」', '〜たい': '字尾換成い段＋たい' } },
+  { id: 'r-v2', pos: '動詞(二類)', name: '二類動詞', sub: '一段動詞', ex: ['食べる', '見る', '起きる'],
+    lead: '字尾是「る」，前面通常是い段或え段的音。變化最簡單：去掉「る」，直接接後面的部分。',
+    r: { 'ます形': '去掉る＋ます', '否定': '去掉る＋ません', '過去': '去掉る＋ました', '過去否定': '去掉る＋ませんでした',
+      'て形': '去掉る＋て', '〜てください': '去掉る＋てください', '〜ています': '去掉る＋ています',
+      'ない形': '去掉る＋ない', 'た形': '去掉る＋た', '〜たい': '去掉る＋たい' } },
+  { id: 'r-v3', pos: '動詞(三類)', name: '三類動詞', sub: '不規則動詞', ex: ['する', '来る', '勉強する'],
+    lead: '只有「する」（做）和「来る」（來），加上「名詞＋する」（勉強する、散歩する）。沒有規則可套，要直接背。「来る」的漢字讀音會變：きます、きて、こない。',
+    r: { 'ます形': 'する→します；来る→来ます（きます）', '否定': 'しません；来ません（きません）', '過去': 'しました；来ました（きました）', '過去否定': 'しませんでした；来ませんでした（きませんでした）',
+      'て形': 'して；来て（きて）', '〜てください': 'してください；来てください（きてください）', '〜ています': 'しています；来ています（きています）',
+      'ない形': 'しない；来ない（こない）', 'た形': 'した；来た（きた）', '〜たい': 'したい；来たい（きたい）' } },
+  { id: 'r-ai', pos: 'い形容詞', name: 'い形容詞', sub: '', ex: ['大きい', '高い', 'いい'],
+    lead: '以「い」結尾，可以直接放在名詞前面（大きい犬）。變化都發生在最後的「い」。「いい」變化時要換成「よ」。',
+    r: { '〜です': '原形＋です', '過去': 'い→かった＋です', '否定': 'い→くない＋です（也可以說「くありません」）', '過去否定': 'い→くなかった＋です',
+      'て形': 'い→くて（又…又…）', '副詞': 'い→く（接動詞，或接「なる」表示變得…）' } },
+  { id: 'r-na', pos: 'な形容詞', name: 'な形容詞', sub: '', ex: ['静か', '好き', '元気'],
+    lead: '本身不變化，變化都在後面的「です」，跟名詞一樣。放在名詞前面要加「な」，當副詞用要加「に」。',
+    r: { '〜です': '＋です', '過去': '＋でした', '否定': '＋じゃありません（正式：ではありません）', '過去否定': '＋じゃありませんでした',
+      '＋な＋名詞': '修飾名詞時加「な」：静かな町', '＋に': '當副詞時加「に」：静かに話す' } },
+  { id: 'r-n', pos: '名詞', name: '名詞', sub: '', ex: ['学生', '雨', '先生'],
+    lead: '名詞本身不變化，變化都在後面的「です」。',
+    r: { '〜です': '＋です（是…）', '過去': '＋でした', '否定': '＋じゃありません（正式：ではありません）' } }
+];
+const RMAP = Object.fromEntries(RULES.map(r => [r.id, r]));
+const findWord = (word, pos) => WORDS.find(w => w.kind === 'w' && w.word === word && (!pos || w.pos === pos)) || WORDS.find(w => w.kind === 'w' && w.word === word);
+function conjChip(w, label) {
+  const row = conjugate(w).find(x => x.label === label);
+  if (!row) return '';
+  const r = row.r && row.r !== row.s ? `<span class="rc-r">${esc(row.r)}</span>` : '';
+  return `<span class="rc-chip"><span lang="ja">${esc(row.s)}</span>${r}</span>`;
+}
+function rulePage(rule) {
+  const exW = rule.ex.map(x => findWord(x, rule.pos)).filter(Boolean);
+  const rows = Object.entries(rule.r).map(([label, txt]) => {
+    const note = (exW[0] && (conjugate(exW[0]).find(x => x.label === label) || {}).note) || '';
+    return `<div class="rc-row"><div class="rc-h"><b>${esc(label)}</b>${note ? `<span class="meta">${esc(note)}</span>` : ''}</div>
+      <div class="rc-rule">${esc(txt)}</div>
+      <div class="rc-exs">${exW.map(w => conjChip(w, label)).join('')}</div></div>`;
+  }).join('');
+  let extra = '';
+  if (rule.id === 'r-v1') {
+    const TE = [['う・つ・る', 'って', ['買う', '待つ', '帰る']], ['む・ぶ・ぬ', 'んで', ['飲む', '遊ぶ', '死ぬ']], ['く', 'いて', ['書く', '聞く']], ['ぐ', 'いで', ['泳ぐ', '脱ぐ']], ['す', 'して', ['話す', '貸す']], ['例外：行く', '行って', ['行く']]];
+    extra += `<div class="card"><div class="gp-title">て形・た形：看字尾</div><div class="rc-te">${TE.map(([end, te, ws]) => `<div class="rc-row"><div class="rc-h"><b>${esc(end)} → ${esc(te)}</b><span class="meta">た形：${esc(te.replace(/て$/, 'た').replace(/で$/, 'だ'))}</span></div><div class="rc-exs">${ws.map(x => findWord(x, '動詞(一類)')).filter(Boolean).map(w => `<span class="rc-chip"><span lang="ja">${esc(w.word)} → ${esc(conjugate(w).find(x => x.label === 'て形').s)}</span></span>`).join('')}</div></div>`).join('')}</div></div>`;
+    const tricky = WORDS.filter(w => w.pos === '動詞(一類)' && LOOKS_ICHIDAN(w));
+    if (tricky.length) extra += `<div class="card"><div class="gp-title">長得像二類的一類動詞</div><p class="meta" style="margin:4px 0 10px">這些字是い段或え段＋る 結尾，看起來像二類，其實是一類，要特別記：</p><div class="rc-words">${tricky.map(w => `<button class="rc-w" data-forms="${esc(w.id)}" lang="ja">${esc(w.word)}</button>`).join('')}</div></div>`;
+  }
+  if (rule.id === 'r-ai') extra += `<div class="card"><div class="gp-title">特別注意</div><p class="gr-desc" style="margin-top:4px">「いい」（好）變化時要換成「よい」：よかった、よくない、よくて。「きれい」「嫌い」雖然是い結尾，其實是な形容詞（きれいな花、嫌いな食べ物）。</p></div>`;
+  const words = WORDS.filter(w => w.kind === 'w' && w.pos === rule.pos);
+  return `<button class="gr-back" id="grBack">‹ 文法列表</button>
+    <div class="card"><div class="gr-head"><h2>${esc(rule.name)}</h2>${rule.sub ? `<span class="lv">${esc(rule.sub)}</span>` : ''}</div><p class="gr-desc">${esc(rule.lead)}</p></div>
+    <div class="card"><div class="gp-title">變化規則（例：${exW.map(w => esc(w.word)).join('、')}）</div><div class="rc-list">${rows}</div></div>
+    ${extra}
+    <div class="card"><div class="gp-title">App 裡的${esc(rule.name)}（${words.length}）</div><p class="meta" style="margin:4px 0 10px">點一下看完整的變化表。</p><div class="rc-words">${words.map(w => `<button class="rc-w" data-forms="${esc(w.id)}" lang="ja">${esc(w.word)}</button>`).join('')}</div></div>`;
+}
+
+// ================= 文法區 =================
+const GRAM_GROUPS = [
+  ['助詞', ['wa', 'ga', 'o', 'ni', 'de', 'e', 'to', 'mo', 'no', 'kara', 'made', 'ya', 'yori', 'dake', 'zutsu', 'gurai', 'nado']],
+  ['句尾與「です」', ['ka', 'ne', 'yo', 'desu', 'janai', 'deshou']],
+  ['動詞的變化與句型', ['masu', 'masen', 'mashita', 'masendeshita', 'mashou', 'masenka', 'tai', 'nini', 'te', 'tekudasai', 'naidekudasai', 'teimasu', 'temoii', 'tekara', 'nagara', 'tari', 'nai', 'ta']],
+  ['形容詞', ['ikatta', 'ikunai', 'iku', 'naru', 'nana']],
+  ['其他句型', ['kono', 'aruiru']]
+];
+const GP = Object.fromEntries(GRAMMAR_POINTS.map(p => [p.id, p]));
+let GIDX = null;
+// 每個文法點 → 用到它的例句（第一次打開文法區時才算）
+function gramIndex() {
+  if (GIDX) return GIDX;
+  GIDX = {};
+  for (const w of WORDS) {
+    if (w.kind !== 'w') continue;
+    for (const g of grammarOf(w, toksOf(w), GLOSS)) (GIDX[g.p.id] = GIDX[g.p.id] || []).push({ w, s: g.s });
+  }
+  // 短句優先，比較好讀；同一句只留一次
+  for (const k in GIDX) {
+    const seen = new Set();
+    GIDX[k] = GIDX[k].filter(x => !seen.has(x.w.sent) && seen.add(x.w.sent)).sort((a, b) => a.w.sent.length - b.w.sent.length);
+  }
+  return GIDX;
+}
+let gramShow = 8;
+function renderGram() {
+  const host = $('#tab-gram');
+  const idx = gramIndex();
+  const rule = UI.gramSel && RMAP[UI.gramSel];
+  if (rule) {
+    host.innerHTML = rulePage(rule);
+    $('#grBack', host).onclick = () => { UI.gramSel = ''; saveUI(); renderGram(); window.scrollTo(0, 0); };
+    return;
+  }
+  const p = UI.gramSel && GP[UI.gramSel];
+  if (!p) {
+    const q = (UI.gramQ || '').trim();
+    const hit = x => !q || (x.t + x.d).includes(q);
+    const listed = new Set(GRAM_GROUPS.flatMap(g => g[1]));
+    const groups = GRAM_GROUPS.map(([h, ids]) => [h, ids.map(id => GP[id]).filter(Boolean)])
+      .concat([['其他', GRAMMAR_POINTS.filter(x => !listed.has(x.id))]]);
+    const rhit = RULES.filter(r => !q || (r.name + r.sub + r.lead).includes(q));
+    host.innerHTML = `<input class="gr-search" id="grQ" type="search" placeholder="搜尋文法：は、て形、想要…" value="${esc(q)}" aria-label="搜尋文法">
+      ${rhit.length ? `<div class="gr-group"><h3>詞性變化規則</h3><div class="rc-grid">${rhit.map(r => `<button class="gr-row rc-tile" data-gram="${r.id}"><b>${esc(r.name)}</b><span class="gd">${esc(r.sub || '變化規則')}</span></button>`).join('')}</div></div>` : ''}
+      ${groups.map(([h, ps]) => { ps = ps.filter(hit); return ps.length ? `<div class="gr-group"><h3>${esc(h)}</h3>${ps.map(x => `<button class="gr-row" data-gram="${x.id}"><b>${esc(x.t)}</b><span class="gn"><span>${(idx[x.id] || []).length}</span>›</span><span class="gd">${esc(x.d)}</span></button>`).join('')}</div>` : ''; }).join('') || (rhit.length ? '' : '<p class="meta">找不到符合的文法。</p>')}`;
+    const inp = $('#grQ', host);
+    inp.oninput = () => { UI.gramQ = inp.value; renderGramKeepFocus(); };
+    return;
+  }
+  const exs = idx[p.id] || [];
+  host.innerHTML = `<button class="gr-back" id="grBack">‹ 文法列表</button>
+    <div class="card">
+      <div class="gr-head"><h2>${esc(p.t)}</h2><span class="lv">${p.lv}</span></div>
+      <p class="gr-desc">${esc(p.d)}</p>
+    </div>
+    <div class="card">
+      <div class="gp-title" style="margin-bottom:8px">例句（${exs.length}）</div>
+      ${exs.length ? `<div class="gr-exs">${exs.slice(0, gramShow).map(({ w, s }) => {
+        const r = segRange(w.segs, w.sent.indexOf(s), s.length);
+        return `<div class="gr-ex"><div class="ex-row"><div class="sent" lang="ja">${rubyHTML(w.segs, { toks: toksOf(w), hl: r })}</div>${iconPlay(w.sent, '播放例句')}</div>
+          ${romajiLine(segsRomaji(w.segs))}<div class="zhline">${esc(w.sentZh)}</div><div class="from">出自單字：<span lang="ja">${esc(w.word)}</span>（${esc(w.zh)}）</div></div>`;
+      }).join('')}</div>${exs.length > gramShow ? `<button class="btn quiet gr-more" id="grMore">再顯示 ${Math.min(8, exs.length - gramShow)} 句（共 ${exs.length} 句）</button>` : ''}`
+      : '<p class="meta">目前的單字例句裡還沒有用到這個文法。</p>'}
+    </div>`;
+  $('#grBack', host).onclick = () => { UI.gramSel = ''; saveUI(); renderGram(); window.scrollTo(0, 0); };
+  const m = $('#grMore', host); if (m) m.onclick = () => { gramShow += 8; renderGram(); };
+}
+function renderGramKeepFocus() {
+  const pos = $('#grQ').selectionStart; renderGram(); const i = $('#grQ'); i.focus(); try { i.setSelectionRange(pos, pos); } catch (e) {}
+}
+function openGram(id) {
+  UI.gramSel = id; gramShow = 8; saveUI();
+  if (UI.tab !== 'gram') showTab('gram'); else { renderGram(); window.scrollTo(0, 0); }
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-gram]');
+  if (b) { e.preventDefault(); openGram(b.dataset.gram); }
+});
+
+// ================= 自訂下拉選單（取代手機內建的選單） =================
+const Picker = {
+  el: null, back: null, sel: null,
+  build() {
+    this.back = document.createElement('div'); this.back.className = 'pk-back'; this.back.hidden = true;
+    this.el = document.createElement('div'); this.el.className = 'pk'; this.el.hidden = true;
+    this.el.setAttribute('role', 'dialog'); this.el.setAttribute('aria-modal', 'true');
+    document.body.append(this.back, this.el);
+    this.back.onclick = () => this.close();
+    this.el.addEventListener('click', e => {
+      if (e.target.closest('.pk-x')) return this.close();
+      const b = e.target.closest('[data-v]');
+      if (!b || !this.sel) return;
+      const sel = this.sel; this.close();
+      if (sel.value !== b.dataset.v) { sel.value = b.dataset.v; sel.dispatchEvent(new Event('change', { bubbles: true })); }
+    });
+  },
+  open(sel) {
+    if (!this.el) this.build();
+    this.sel = sel;
+    const title = sel.getAttribute('aria-label') || '選擇';
+    const rows = [...sel.options].map(o => {
+      const m = o.textContent.match(/^(.*?)\s+(\d+)$/);
+      let name = m ? m[1] : o.textContent; const n = m ? +m[2] : null;
+      if (o.value === 'all' && name === '詞性') name = '全部';
+      const on = o.value === sel.value;
+      return `<button class="pk-opt${on ? ' on' : ''}${n === 0 ? ' zero' : ''}" data-v="${esc(o.value)}" role="option" aria-selected="${on}">
+        <span class="pk-n">${esc(name)}</span>${n !== null ? `<span class="pk-c">${n}</span>` : ''}<span class="pk-ck" aria-hidden="true">${on ? ICON.ok : ''}</span></button>`;
+    }).join('');
+    this.el.setAttribute('aria-label', title);
+    this.el.innerHTML = `<div class="pk-grab" aria-hidden="true"></div><div class="pk-top"><b>${esc(title)}</b><button class="pk-x" aria-label="關閉">${ICON.ng}</button></div><div class="pk-list" role="listbox">${rows}</div>`;
+    this.back.hidden = false; this.el.hidden = false;
+    requestAnimationFrame(() => { this.back.classList.add('in'); this.el.classList.add('in'); const cur = $('.pk-opt.on', this.el); (cur || $('.pk-opt', this.el)).focus({ preventScroll: true }); if (cur) cur.scrollIntoView({ block: 'nearest' }); });
+  },
+  close() {
+    if (!this.el || this.el.hidden) return;
+    this.back.classList.remove('in'); this.el.classList.remove('in');
+    const sel = this.sel; this.sel = null;
+    setTimeout(() => { this.back.hidden = true; this.el.hidden = true; }, 180);
+    if (sel && document.contains(sel)) sel.focus({ preventScroll: true });
+  }
+};
+document.addEventListener('click', e => {
+  const w = e.target.closest('.pw');
+  if (!w) return;
+  const sel = $('select', w);
+  if (sel && !sel.disabled) { e.preventDefault(); Picker.open(sel); }
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && Picker.el && !Picker.el.hidden) { e.stopPropagation(); Picker.close(); } }, true);
+
+// ================= 滑動開關：記住上一個位置，重畫後從舊位置滑到新位置 =================
+const segPrev = {};
+new MutationObserver(() => {
+  document.querySelectorAll('.seg').forEach(seg => {
+    const btns = [...seg.children].filter(b => b.tagName === 'BUTTON');
+    const idx = btns.findIndex(b => b.getAttribute('aria-pressed') === 'true');
+    if (idx < 0 || seg.dataset.segi === String(idx)) return;
+    const key = seg.getAttribute('aria-label') || '', prev = segPrev[key];
+    seg.dataset.segi = idx; segPrev[key] = idx;
+    seg.style.setProperty('--n', btns.length);
+    if (prev != null && prev !== idx) {
+      seg.classList.add('seg-noanim'); seg.style.setProperty('--i', prev);
+      void seg.offsetWidth;
+      seg.classList.remove('seg-noanim');
+    }
+    seg.style.setProperty('--i', idx);
+  });
+}).observe(document.body, { childList: true, subtree: true });
 
 // ================= 啟動 =================
 applyTheme();
