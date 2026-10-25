@@ -529,13 +529,9 @@ body.hide-furi #gloss rt,body.hide-furi .furibtn rt{visibility:visible}
 .opt{min-height:52px;padding-top:6px;padding-bottom:6px}
 
 /* ===== 點綴色：底色維持中性，用彩色標籤和外框增加變化 ===== */
-.opts .opt:nth-child(4n+1){--c:var(--c1);--ci:var(--c1-ink)}
-.opts .opt:nth-child(4n+2){--c:var(--c2);--ci:var(--c2-ink)}
-.opts .opt:nth-child(4n+3){--c:var(--c3);--ci:var(--c3-ink)}
-.opts .opt:nth-child(4n+4){--c:var(--c4);--ci:var(--c4-ink)}
-.opts .opt{border-color:color-mix(in srgb,var(--ci,var(--frame)) 38%,var(--frame))}
-.opts .opt .k{background:var(--c,var(--btn));color:var(--ci,var(--pri))}
-.opts .opt:hover:not(:disabled){border-color:var(--ci,var(--pri))}
+.opts .opt{border-color:var(--frame)}
+.opts .opt .k{background:var(--pri-soft);color:var(--pri)}
+.opts .opt:hover:not(:disabled){border-color:var(--pri)}
 .opts .opt.right{border-color:var(--ok)}
 .opts .opt.wrong{border-color:var(--ng)}
 .opts .opt.right .k{background:var(--ok);color:var(--surface)}
@@ -573,6 +569,19 @@ body.hide-furi #gloss rt,body.hide-furi .furibtn rt{visibility:visible}
 .pk-opt.on{background:var(--fill);border-color:var(--fill-deep);color:var(--fill-ink);box-shadow:0 3px 0 var(--fill-deep)}
 .pk-opt.on .pk-c{background:rgba(255,255,255,.2);color:var(--fill-ink)}
 @media (prefers-reduced-motion: reduce){.pk,.pk-back{transition:none}}
+
+.sfx-try{display:flex;flex-wrap:wrap;gap:6px}
+.sfx-try .chip{min-height:34px;font-size:13px;padding:0 10px}
+
+/* 單字庫清單的標籤列：捲動範圍留在框內，兩側淡出提示可以滑 */
+.lst-chips{margin:0 12px;padding:4px 2px 12px;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 12px,#000 calc(100% - 16px),transparent);mask-image:linear-gradient(90deg,transparent 0,#000 12px,#000 calc(100% - 16px),transparent);scroll-padding:0 12px}
+.lst-chips .chip:first-child{margin-left:6px}
+.lst-chips .chip:last-child{margin-right:10px}
+
+/* 漢字讀音、助詞填空 */
+.read-q{font-size:56px;letter-spacing:.04em}
+.psent{font-size:24px;line-height:2.1;text-align:center}
+.pblank{display:inline-block;min-width:2.4em;text-align:center;color:var(--pri);font-weight:700;border-bottom:2px solid var(--pri);margin:0 2px}
 </style>
 
 <header class="top"><div class="wrap">
@@ -1710,7 +1719,69 @@ function unpackState(code, allIds) {
   return { items, days, unknown };
 }
 
-if (typeof module !== 'undefined') module.exports = { buildKana, romaToKana, kanaToRoma, normKana, align, prepWords, checkFill, kanaLen, applyAnswer, addDays, ymd, SRS, pickRound, pickWordDistractors, pickKanaDistractors, confuseMap, mergeState, sameMeaning, segsRomaji, toHira, toKata, blankRec };
+
+// ===== 漢字讀音題：照 JLPT 的方式做錯誤選項（長音、促音、濁音、拗音） =====
+const hasKanji = s => /[一-鿿々]/.test(s);
+const DAKU = { か: 'が', き: 'ぎ', く: 'ぐ', け: 'げ', こ: 'ご', さ: 'ざ', し: 'じ', す: 'ず', せ: 'ぜ', そ: 'ぞ', た: 'だ', ち: 'ぢ', つ: 'づ', て: 'で', と: 'ど', は: 'ば', ひ: 'び', ふ: 'ぶ', へ: 'べ', ほ: 'ぼ' };
+const UNDAKU = Object.fromEntries(Object.entries(DAKU).map(([a, b]) => [b, a]));
+const O_ROW = 'おこごそぞとどのほぼぽもよろょ', U_ROW = 'うくぐすずつづぬふぶぷむゆるゅ', E_ROW = 'えけげせぜてでねへべぺめれ';
+function readingVariants(r) {
+  const out = new Set(), ch = [...r];
+  // 長音：刪掉「う／い」或在 お段・う段 後面加「う」
+  ch.forEach((c, i) => {
+    const p = ch[i - 1];
+    if (i > 0 && c === 'う' && (O_ROW.includes(p) || U_ROW.includes(p))) out.add(ch.slice(0, i).join('') + ch.slice(i + 1).join(''));
+    if (i > 0 && c === 'い' && E_ROW.includes(p)) out.add(ch.slice(0, i).join('') + ch.slice(i + 1).join(''));
+    // 加長音：只在「ゅ／ょ」後面，或字尾的 お段・う段（とうきょ→とうきょう 這類考試常見的錯法）
+    if ((c === 'ゅ' || c === 'ょ') && ch[i + 1] !== 'う') out.add(ch.slice(0, i + 1).join('') + 'う' + ch.slice(i + 1).join(''));
+
+  });
+  // 促音：刪掉「っ」，或在中間的 か、さ、た、ぱ 行前面加「っ」
+  ch.forEach((c, i) => {
+    if (c === 'っ') out.add(ch.slice(0, i).join('') + ch.slice(i + 1).join(''));
+    if (i > 0 && /[かきくけこさしすせそたちつてとぱぴぷぺぽ]/.test(c) && ch[i - 1] !== 'っ' && ch[i - 1] !== 'ん') out.add(ch.slice(0, i).join('') + 'っ' + ch.slice(i).join(''));
+  });
+  // 濁音：清濁互換
+  ch.forEach((c, i) => { const d = DAKU[c] || UNDAKU[c]; if (d && ch[i - 1] !== 'っ' && d !== 'ぢ' && d !== 'づ') out.add(ch.slice(0, i).join('') + d + ch.slice(i + 1).join('')); });
+  // 拗音：ゅ↔ょ
+  ch.forEach((c, i) => { const d = { ゅ: 'ょ', ょ: 'ゅ' }[c]; if (d) out.add(ch.slice(0, i).join('') + d + ch.slice(i + 1).join('')); });
+  out.delete(r);
+  return [...out].filter(x => x && !/^[っんー]/.test(x) && !/っっ|っ$/.test(x));
+}
+function pickReadingDistractors(w, words, rnd = Math.random) {
+  const sh = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const bad = new Set([w.reading]);
+  // 同一個漢字寫法的其他讀音（例：一日＝いちにち／ついたち）都不能當錯誤選項
+  for (const o of words) if (o.word === w.word) bad.add(o.reading);
+  const fakes = sh(readingVariants(w.reading)).filter(x => !bad.has(x));
+  const kanji = [...w.word].filter(c => hasKanji(c));
+  const real = sh(words.filter(o => o !== w && hasKanji(o.word) && !bad.has(o.reading) && kanji.some(k => o.word.includes(k)) && Math.abs(o.reading.length - w.reading.length) <= 2 && (o.pg === w.pg || o.pg === '名詞' && w.pg === '數字與時間' || o.pg === '數字與時間' && w.pg === '名詞'))).map(o => o.reading);
+  const cand = words.filter(o => o !== w && hasKanji(o.word) && !bad.has(o.reading) && o.pg !== '文法');
+  const score = o => (o.pg === w.pg ? 0 : 2) + Math.abs(o.reading.length - w.reading.length);
+  const near = sh(cand).sort((a, b) => score(a) - score(b)).map(o => o.reading);
+  const out = [];
+  const add = x => { if (x && !bad.has(x) && !out.includes(x) && out.length < 3) out.push(x); };
+  fakes.slice(0, 2).forEach(add); real.slice(0, 1).forEach(add);
+  fakes.slice(2).forEach(add); real.forEach(add); near.forEach(add);
+  return out;
+}
+
+// ===== 助詞填空：可以互換的助詞不會同時出現在選項裡 =====
+const PARTICLES = ['は', 'が', 'を', 'に', 'で', 'へ', 'と', 'も', 'の', 'や', 'から', 'まで'];
+const PART_DISTRACT = {
+  // は／が／も 不用「を」當錯誤選項：「この本は読みました／この本を読みました」兩個都對
+  'は': ['に', 'で', 'へ', 'と'], 'が': ['に', 'で', 'へ', 'と'], 'も': ['に', 'で', 'へ', 'と'],
+  'を': ['に', 'で', 'と', 'へ'], 'に': ['で', 'を', 'と', 'が'], 'へ': ['で', 'を', 'と', 'が'], 'で': ['に', 'を', 'と', 'が'],
+  'と': ['に', 'で', 'を', 'が'], 'や': ['に', 'で', 'を', 'が'], 'の': ['に', 'で', 'を', 'が'],
+  'から': ['に', 'で', 'を', 'と'], 'まで': ['に', 'で', 'を', 'と']
+};
+function pickParticleDistractors(p, rnd = Math.random) {
+  const a = (PART_DISTRACT[p] || []).slice();
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a.slice(0, 3);
+}
+
+if (typeof module !== 'undefined') module.exports = { buildKana, romaToKana, kanaToRoma, normKana, align, prepWords, checkFill, kanaLen, applyAnswer, addDays, ymd, SRS, pickRound, pickWordDistractors, pickKanaDistractors, confuseMap, mergeState, sameMeaning, segsRomaji, toHira, toKata, blankRec, readingVariants, pickReadingDistractors, pickParticleDistractors, PART_DISTRACT, PARTICLES, hasKanji };
 
 // ===== 句子斷詞與點字查義 =====
 
@@ -2543,7 +2614,7 @@ const ALL_IDS = KANA.map(k => k.id).concat(WORDS.map(w => w.id));
 let S = store.get('n5:progress', null);
 if (!S || typeof S !== 'object' || !S.items) S = { items: {}, days: {} };
 S.days = S.days || {};
-const SET = Object.assign({ round: 20, recent: 'd1', mean: 'zh', furi: true, knownLv: '', romaji: false, theme: 'system', voice: '', rate: 0.9 }, store.get('n5:settings', {}));
+const SET = Object.assign({ vib: 'on', sfx: 'on', round: 20, recent: 'd1', mean: 'zh', furi: true, knownLv: '', romaji: false, theme: 'system', voice: '', rate: 0.9 }, store.get('n5:settings', {}));
 const UI = Object.assign({ gramOpen: false, kanaSec: 'seion', tab: 'kana', script: 'h', kanaView: 'table', kanaMode: 'k2r', kanaRange: 'all', mcMode: 'jp2zh', mcSrc: 'learn', fillSrc: 'learn', cardSrc: 'new', pos: 'all' }, store.get('n5:ui', {}));
 const saveSet = () => store.set('n5:settings', SET);
 const saveUI = () => store.set('n5:ui', UI);
@@ -2613,6 +2684,108 @@ document.addEventListener('click', e => {
   const b = e.target.closest('[data-say]');
   if (b) { e.preventDefault(); Voice.speak(b.dataset.say); }
 });
+
+
+// ================= 音效（用 Web Audio 即時合成，不需要音檔） =================
+const Sfx = {
+  ctx: null,
+  vol() { return { on: 1, low: 0.45, off: 0 }[SET.sfx] ?? 1; },
+  ac() {
+    if (!this.ctx) { try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; } }
+    if (this.ctx.state === 'suspended') this.ctx.resume().catch(() => {});
+    return this.ctx;
+  },
+  // 一個音：頻率、長度、波形、音量、結束頻率、延遲
+  tone(f, dur, type = 'sine', v = 0.08, f2 = 0, at = 0) {
+    const k = this.vol(); if (!k) return;
+    const c = this.ac(); if (!c) return;
+    const t = c.currentTime + at, o = c.createOscillator(), g = c.createGain();
+    o.type = type; o.frequency.setValueAtTime(f, t);
+    if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + dur);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(v * k, t + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g).connect(c.destination); o.start(t); o.stop(t + dur + 0.02);
+  },
+  buf(c) { if (!this.nbuf) { const n = c.sampleRate * 0.2; this.nbuf = c.createBuffer(1, n, c.sampleRate); const d = this.nbuf.getChannelData(0); for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1; } return this.nbuf; },
+  // 短促的雜訊：真正的「喀」聲是雜訊，不是有音高的嗶聲
+  noise(dur, freq, q, v, at = 0) {
+    const k = this.vol(); if (!k) return;
+    const c = this.ac(); if (!c) return;
+    this.buf(c);
+    const t = c.currentTime + at, src = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
+    src.buffer = this.nbuf; f.type = 'bandpass'; f.frequency.value = freq; f.Q.value = q;
+    g.gain.setValueAtTime(v * k, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    src.connect(f).connect(g).connect(c.destination); src.start(t); src.stop(t + dur + 0.02);
+  },
+  // ---- 各類按鈕的聲音（同一類用同一個聲音，名稱見 SFX_KIND） ----
+  // 輕聲「嘎」：次要按鈕
+  soft() { this.noise(0.045, 1100, 0.9, 0.14); this.tone(130, 0.045, 'sine', 0.07, 85); },
+  // 青軸鍵盤「ガッヅ」：按下的清脆咔＋鍵身＋回彈的小咔
+  blue() {
+    this.noise(0.008, 4200, 2.5, 0.55); this.noise(0.022, 1900, 1.1, 0.22);
+    this.tone(210, 0.035, 'triangle', 0.09, 120);
+    this.noise(0.010, 3300, 2.2, 0.30, 0.055); this.tone(160, 0.025, 'sine', 0.05, 110, 0.055);
+  },
+  // 木魚「咚」：底部分頁
+  wood() { this.tone(820, 0.07, 'sine', 0.11, 620); this.tone(1640, 0.03, 'sine', 0.03, 1240); this.noise(0.01, 2000, 1, 0.08); },
+  // 開關「嗶啵」：上升＝開、下降＝關
+  toggle(on) { const a = on ? 660 : 990, b = on ? 990 : 660; this.tone(a, 0.05, 'sine', 0.07); this.tone(b, 0.07, 'sine', 0.07, 0, 0.055); },
+  // 篩選標籤「滴」
+  tick() { this.noise(0.012, 5200, 2, 0.18); this.tone(1900, 0.025, 'sine', 0.035); },
+  // 五十音格子：柔和的木琴音，依母音（あいうえお）換音高
+  mallet(col) { const f = [523.3, 587.3, 659.3, 784, 880][col % 5] || 659.3; this.tone(f, 0.22, 'sine', 0.09); this.tone(f * 4, 0.05, 'sine', 0.025); },
+  // 翻頁：打開文法、詞性、清單、設定
+  flip() {
+    const k = this.vol(); if (!k) return; const c = this.ac(); if (!c) return;
+    const t = c.currentTime, src = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
+    src.buffer = this.buf(c); f.type = 'bandpass'; f.Q.value = 0.9;
+    f.frequency.setValueAtTime(700, t); f.frequency.exponentialRampToValueAtTime(3200, t + 0.09);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.16 * k, t + 0.03); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.11);
+    src.connect(f).connect(g).connect(c.destination); src.start(t); src.stop(t + 0.13);
+  },
+  // 點單字看意思「啾」
+  peek() { this.tone(1200, 0.05, 'sine', 0.05, 1700); },
+  slide() { this.noise(0.06, 1800, 0.8, 0.12); this.tone(150, 0.035, 'sine', 0.1, 100, 0.05); this.noise(0.015, 3000, 1.2, 0.25, 0.05); },
+  pop() { this.tone(520, 0.06, 'sine', 0.08, 900); this.noise(0.012, 2600, 1.5, 0.18); },
+  unpop() { this.tone(900, 0.06, 'sine', 0.07, 480); },
+  tap() { this.soft(); },
+  ok() { this.tone(880, 0.12, 'sine', 0.09); this.tone(1318.5, 0.2, 'sine', 0.09, 0, 0.09); },
+  ng() { this.tone(240, 0.22, 'triangle', 0.09, 150); },
+  done() { [523.3, 659.3, 784, 1046.5].forEach((f, i) => this.tone(f, 0.18, 'sine', 0.08, 0, i * 0.09)); }
+};
+// 依按鈕的功能決定聲音；答題、播放發音另外處理
+function sfxKind(el) {
+  if (el.closest('.opt, [data-say], .iplay, .play, #fillGo, [data-sfx]')) return '';
+  if (el.closest('.pk-opt')) return '';
+  if (el.closest('.tk')) return 'peek';
+  if (el.closest('.tabbar')) return 'wood';
+  if (el.closest('.seg')) return 'slide';
+  if (el.classList.contains('pw')) return 'pop';
+  if (el.closest('.gl-x, .pk-x')) return 'unpop';
+  if (el.closest('.iconbtn')) return 'toggle';
+  if (el.closest('.kc')) return 'mallet';
+  if (el.closest('summary, .gr-row, .rc-tile, .rc-w, .posbtn, .gbtn, .gp-more, [data-forms], [data-gram], .gl-back, .gr-back')) return 'flip';
+  if (el.closest('.chip, [data-list], .chips button')) return 'tick';
+  if (el.closest('.btn.solid, .btn.known, [data-a], [data-next], [data-q], [data-go], #again, .gbtn-signin')) return 'blue';
+  return 'soft';
+}
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-sfx]');
+  if (t) { const k = t.dataset.sfx; return k === 'toggle' ? Sfx.toggle(true) : k === 'mallet' ? [0, 1, 2, 3, 4].forEach(i => setTimeout(() => Sfx.mallet(i), i * 140)) : Sfx[k](); }
+  const el = e.target.closest('button, .pw, summary, .tk');
+  if (!el || el.disabled) return;
+  const k = sfxKind(el);
+  if (k === 'toggle') { const on = el.getAttribute('aria-pressed'); return Sfx.toggle(on !== 'true'); }
+  if (k === 'mallet') { const cells = [...el.parentElement.children]; return Sfx.mallet(Math.max(0, cells.indexOf(el))); }
+  if (k) Sfx[k]();
+}, true);
+// 設定裡的下拉選單（不是自訂面板的）換選項時「滴」一聲
+document.addEventListener('change', e => { if (e.target.matches('select') && !e.target.closest('.pw') && e.target.id !== 'sfxSel') Sfx.tick(); });
+
+// 震動：答對短震一下，答錯震兩下（Android 支援；iPhone 的網頁不支援，會自動略過）
+const canVibrate = 'vibrate' in navigator;
+function buzz(ok) { if (SET.vib === 'on' && canVibrate) try { navigator.vibrate(ok ? 25 : [45, 60, 45]); } catch (e) {} }
 
 // ================= 顯示工具 =================
 // 按鈕被底部分頁列擋住時，把頁面捲到剛好看得到（不會整頁跳走）
@@ -2925,6 +3098,7 @@ function renderChoice(host, q, onNext) {
       else if (j === i) b.classList.add('wrong');
     });
     q.onAnswer(ok, i);
+    ok ? Sfx.ok() : Sfx.ng(); buzz(ok);
     const after = $('.after', host);
     if (ok) {
       after.innerHTML = `<div class="afterbox">${verdict(true)}<button class="btn solid block" data-next>下一題（Enter）</button></div>`;
@@ -3118,6 +3292,7 @@ function nextKanaQ() {
 }
 function roundDone(host, R, again) {
   Quiz.active = null;
+  Sfx.done();
   host.innerHTML = `<div class="card empty"><p style="color:var(--fg);font-size:18px;font-weight:700">這一輪完成了</p><p>答對 ${R.right} / ${R.queue.length} 題</p><button class="btn solid" id="again">再來一輪</button></div>`;
   $('#again', host).onclick = again;
 }
@@ -3130,24 +3305,33 @@ function renderMC() {
   const host = $('#tab-mc');
   const counts = Object.fromEntries(MC_SRCS.map(([k]) => [k, srcPool(k).length]));
   host.innerHTML = `
-    <div class="ctl">${pillSelect('mcMode', '題型', [['jp2zh', '日→中'], ['zh2jp', '中→日'], ['listen', '聽→中']], UI.mcMode)}${pillSelect('mcSrc', '題目來源', MC_SRCS.map(([k, l]) => [k, `${l} ${counts[k]}`]), UI.mcSrc)}${UI.mcSrc === 'recent' ? recentCtl().html : posChips()}</div>
+    <div class="ctl">${pillSelect('mcMode', '題型', MC_MODE_OPTS, UI.mcMode)}${UI.mcMode === 'part' ? '' : `${pillSelect('mcSrc', '題目來源', MC_SRCS.map(([k, l]) => [k, `${l} ${counts[k]}`]), UI.mcSrc)}${UI.mcSrc === 'recent' ? recentCtl().html : posChips()}`}</div>
     <div id="mcq"></div>`;
   $('#mcMode', host).onchange = e => { UI.mcMode = e.target.value; saveUI(); renderMC(); };
-  $('#mcSrc', host).onchange = e => { UI.mcSrc = e.target.value; saveUI(); mcRound = null; renderMC(); };
+  const srcEl = $('#mcSrc', host); if (srcEl) srcEl.onchange = e => { UI.mcSrc = e.target.value; saveUI(); mcRound = null; renderMC(); };
   recentCtl(renderMC).bind(host);
   bindPos(host, () => { mcRound = null; renderMC(); });
   if (mcRound && mcRound.done) { mcRound.idx++; mcRound.done = false; }
-  const valid = mcRound && mcRound.src === UI.mcSrc && (UI.mcSrc === 'recent' || mcRound.pos === UI.pos);
+  const kind = mcKind(UI.mcMode);
+  const valid = mcRound && mcRound.kind === kind && (kind === 'part' || (mcRound.src === UI.mcSrc && (UI.mcSrc === 'recent' || mcRound.pos === UI.pos)));
   if (!valid || mcRound.idx >= mcRound.queue.length) {
     if (valid && mcRound.queue.length && mcRound.idx >= mcRound.queue.length) return roundDone($('#mcq'), mcRound, () => { mcRound = null; renderMC(); });
-    const pool = srcPool(UI.mcSrc);
+    if (kind === 'part') {
+      const items = particleItems();
+      mcRound = { kind, queue: shuffle(items).slice(0, roundSize()), idx: 0, total: items.length, right: 0 };
+      return nextPartQ();
+    }
+    let pool = srcPool(UI.mcSrc);
+    if (kind === 'read') pool = pool.filter(w => hasKanji(w.word));
+    if (!pool.length && kind === 'read') { $('#mcq').innerHTML = '<div class="card empty"><p>這個來源裡沒有漢字詞。可以換一個題目來源，或先到字卡把有漢字的字列入考題。</p></div>'; return; }
     if (!pool.length) return emptyWords($('#mcq'), UI.mcSrc);
     const isRev = UI.mcSrc === 'mcReview';
     const queue = UI.mcSrc === 'recent'
       ? recentQueue(pool)
       : pickRound(pool, getRec, 'mc', isRev ? REVIEW_ROUND : roundSize(), isRev);
-    mcRound = { queue, idx: 0, total: pool.length, src: UI.mcSrc, pos: UI.pos, right: 0 };
+    mcRound = { kind, queue, idx: 0, total: pool.length, src: UI.mcSrc, pos: UI.pos, right: 0 };
   }
+  if (mcRound.kind === 'part') return nextPartQ();
   nextMCQ();
 }
 function emptyWords(host, src) {
@@ -3172,6 +3356,7 @@ function nextMCQ() {
   if (R.idx >= R.queue.length) return roundDone(host, R, () => { mcRound = null; renderMC(); });
   const w = R.queue[R.idx];
   const mode = UI.mcMode;
+  if (mode === 'read') return nextReadQ(R, w);
   const opts = shuffle([w, ...pickWordDistractors(w, WORDS, mode)]);
   const src = { mcWrong: 'wrong', mcReview: 'review' }[R.src] || (R.src === 'learned' ? 'learned' : 'learn');
   let prompt;
@@ -3187,6 +3372,57 @@ function nextMCQ() {
     onAnswer: ok => { if (ok) R.right++; R.done = true; record(w, 'mc', ok, src); },
     afterHTML: () => `<div class="example"><div class="row" style="gap:12px;align-items:center"><span class="ja" style="font-size:24px">${wordHTML(w)}</span><span>${meanW(w)}</span>${iconPlay(w.reading, '播放單字')}</div>${romajiLine(w.romaji)}</div>${exampleBlock(w)}`
   }, () => { R.idx++; R.done = false; nextMCQ(); });
+}
+
+
+// ================= 漢字讀音、助詞填空 =================
+const MC_MODE_OPTS = [['jp2zh', '日→中'], ['zh2jp', '中→日'], ['listen', '聽→中'], ['read', '漢字讀音'], ['part', '助詞填空']];
+const mcKind = m => m === 'part' ? 'part' : m === 'read' ? 'read' : 'word';
+function nextReadQ(R, w) {
+  const host = $('#mcq');
+  const src = { mcWrong: 'wrong', mcReview: 'review' }[R.src] || (R.src === 'learned' ? 'learned' : 'learn');
+  const opts = shuffle([w.reading, ...pickReadingDistractors(w, WORDS)]);
+  renderChoice(host, {
+    head: `<div class="qhead">${progressLine(R, R.total)}</div>`,
+    promptHTML: `<div class="big read-q" lang="ja">${esc(w.word)}</div><span class="meta">選出正確的讀音</span>`,
+    options: opts.map(r => ({ html: `<span lang="ja">${esc(r)}</span>`, cls: 'ja', correct: r === w.reading })),
+    onAnswer: ok => { if (ok) R.right++; R.done = true; record(w, 'mc', ok, src); },
+    afterHTML: () => `<div class="example"><div class="row" style="gap:12px;align-items:center"><span class="ja" style="font-size:24px">${wordHTML(w)}</span><span>${meanW(w)}</span>${iconPlay(w.reading, '播放單字')}</div>${exampleBlock(w)}</div>`
+  }, () => { R.idx++; R.done = false; nextMCQ(); });
+}
+const PART_GP = { 'は': 'wa', 'が': 'ga', 'を': 'o', 'に': 'ni', 'で': 'de', 'へ': 'e', 'と': 'to', 'も': 'mo', 'の': 'no', 'や': 'ya', 'から': 'kara', 'まで': 'made' };
+let PITEMS = null;
+// 從全部例句找出可以挖空的助詞（招呼語和文法條目本身的例句不出）
+function particleItems() {
+  if (PITEMS) return PITEMS;
+  PITEMS = [];
+  for (const w of WORDS) {
+    if (w.kind !== 'w' || w.pg === '招呼語與常用句') continue;
+    for (const t of toksOf(w)) {
+      const p = t.e && t.e.startsWith('f:') ? t.e.slice(2) : '';
+      if (!PARTICLES.includes(p) || t.s1 - t.s0 !== [...p].length) continue;
+      if (w.pg === '文法' && w.word === p) continue;
+      PITEMS.push({ w, t, p });
+    }
+  }
+  return PITEMS;
+}
+function nextPartQ() {
+  const R = mcRound, host = $('#mcq');
+  if (!host) return;
+  if (R.idx >= R.queue.length) return roundDone(host, R, () => { mcRound = null; renderMC(); });
+  const { w, t, p } = R.queue[R.idx];
+  const opts = shuffle([p, ...pickParticleDistractors(p)]);
+  const blank = { a0: t.s0, a1: t.s1, html: '<span class="pblank">（　）</span>' };
+  const gp = GP[PART_GP[p]];
+  renderChoice(host, {
+    head: `<div class="qhead">${progressLine(R, R.total)}</div>`,
+    promptHTML: `<div class="sent psent" lang="ja">${rubyHTML(w.segs, { toks: toksOf(w), blank })}</div><div class="zhline">${esc(w.sentZh)}</div>`,
+    options: opts.map(x => ({ html: `<span lang="ja">${esc(x)}</span>`, cls: 'ja kanab', correct: x === p })),
+    onAnswer: ok => { if (ok) R.right++; R.done = true; bumpDay(); },
+    afterHTML: () => `<div class="example"><div class="ex-row"><div class="sent" lang="ja">${rubyHTML(w.segs, { toks: toksOf(w), hl: [t.s0, t.s1] })}</div>${iconPlay(w.sent, '播放例句')}</div><div class="zhline">${esc(w.sentZh)}</div>
+      ${gp ? `<div class="gp-item" style="margin-top:10px"><div class="gp-h"><b>${esc(gp.t)}</b></div><div>${esc(gp.d)}</div><button class="gp-more" data-gram="${gp.id}">看更多例句 ›</button></div>` : ''}</div>`
+  }, () => { R.idx++; R.done = false; nextPartQ(); });
 }
 
 // ================= 字卡 =================
@@ -3321,6 +3557,7 @@ function nextFillQ(keepFocus) {
     R.done = true;
     if (ok) R.right++;
     record(w, 'fill', ok, src);
+    ok ? Sfx.ok() : Sfx.ng(); buzz(ok);
     blank.innerHTML = rubyHTML(w.segs.slice(w.a0, w.a1));
     blank.classList.add(ok ? 'ok' : 'ng');
     inp.readOnly = true;
@@ -3399,12 +3636,22 @@ function renderLib() {
       return ents.length ? `<div class="entry">${ents.map(x => entryBtn(...x)).join('')}</div>` : '<p class="meta" style="margin:0">目前沒有要複習的題目。練習時答錯的字、到期的字會出現在這裡。</p>';
     })()}
     <details class="lst" id="listBox"><summary>清單（待考、已學會、錯題）</summary>
-      <div class="chips" style="padding:0 12px 10px">${[['queued', '待考', c.queued], ['learned', '已學會', c.learned], ['mcWrong', '單選錯題', c.mcW], ['mcReview', '單選複習', c.mcR], ['fillWrong', '填空錯題', c.fillW], ['fillReview', '填空複習', c.fillR], ['excluded', '已排除', c.excluded]].map(([k, l, n]) => `<button class="chip" data-list="${k}" aria-pressed="${libList === k}">${l}<span class="n">${n}</span></button>`).join('')}</div>
+      <div class="chips lst-chips">${[['queued', '待考', c.queued], ['learned', '已學會', c.learned], ['mcWrong', '單選錯題', c.mcW], ['mcReview', '單選複習', c.mcR], ['fillWrong', '填空錯題', c.fillW], ['fillReview', '填空複習', c.fillR], ['excluded', '已排除', c.excluded]].map(([k, l, n]) => `<button class="chip" data-list="${k}" aria-pressed="${libList === k}">${l}<span class="n">${n}</span></button>`).join('')}</div>
       <div class="lrows"></div>
     </details>
     <details class="lst"${Cloud.mode === 'google' && !Cloud.user ? ' open' : ''}><summary>設定<span class="n sync${Cloud.ref ? ' on' : ''}" id="syncState"><i></i><span>${esc(Cloud.chip())}</span></span></summary>
       <div class="setgrp">
         <section><h4>發音</h4><div id="voiceBox"></div></section>
+        <section><h4>音效</h4>
+          <label class="label" for="sfxSel">按鈕和答題音效</label>
+          <select id="sfxSel">${[['on', '開'], ['low', '小聲'], ['off', '關']].map(([k, l]) => `<option value="${k}"${SET.sfx === k ? ' selected' : ''}>${l}</option>`).join('')}</select>
+          <div class="meta">答對、答錯、按按鈕時的短音效。手機開靜音模式時通常不會出聲。</div>
+          <label class="label" for="vibSel" style="margin-top:6px">答題震動</label>
+          <select id="vibSel"${canVibrate ? '' : ' disabled'}>${[['on', '開'], ['off', '關']].map(([k, l]) => `<option value="${k}"${SET.vib === k ? ' selected' : ''}>${l}</option>`).join('')}</select>
+          <div class="meta">${canVibrate ? '答對短震一下，答錯震兩下。' : '這個瀏覽器不支援震動（iPhone 的網頁 App 目前都不支援）。'}</div>
+          <div class="label" style="margin-top:6px">試聽（同一類按鈕用同一個聲音）</div>
+          <div class="sfx-try">${[['blue', '青軸：列入考題、下一題'], ['soft', '輕聲嘎：次要按鈕'], ['wood', '木魚：底部分頁'], ['toggle', '開關：上方按鈕'], ['slide', '滑動開關'], ['tick', '滴：篩選標籤'], ['mallet', '木琴：五十音'], ['flip', '翻頁：文法、清單'], ['peek', '啾：點單字'], ['pop', '啵：打開選單'], ['unpop', '收起'], ['ok', '答對'], ['ng', '答錯'], ['done', '一輪完成']].map(([k, l]) => `<button class="chip" data-sfx="${k}">${l}</button>`).join('')}</div>
+        </section>
         <section><h4>練習</h4>
           <label class="label" for="roundSel">每輪題數</label>
           <select id="roundSel">${[10, 15, 20, 30, 50].map(n => `<option value="${n}"${roundSize() === n ? ' selected' : ''}>${n} 題</option>`).join('')}</select>
@@ -3447,6 +3694,8 @@ function renderLib() {
   renderAuthBox();
   $('#roundSel').onchange = e => { SET.round = Number(e.target.value); saveSet(); mcRound = null; fillRound = null; deck = null; kanaRound = null; toast(`每輪 ${SET.round} 題`); };
   $('#recentSet').onchange = e => { SET.recent = e.target.value; saveSet(); mcRound = null; fillRound = null; toast(`最近學過：${recentLabel()}`); renderLib(); };
+  $('#vibSel').onchange = e => { SET.vib = e.target.value; saveSet(); buzz(true); };
+  $('#sfxSel').onchange = e => { SET.sfx = e.target.value; saveSet(); if (SET.sfx !== 'off') Sfx.ok(); };
   $('#meanSel').onchange = e => { SET.mean = e.target.value; saveSet(); mcRound = null; toast({ zh: '單字意思：中文', en: '單字意思：English', both: '單字意思：中文＋English' }[SET.mean]); };
   $('#knownLv').onchange = e => { SET.knownLv = e.target.value; saveSet(); toast(SET.knownLv ? `已隱藏 ${SET.knownLv} 以下的文法` : '文法全部顯示'); };
   $('#exp').onclick = async () => {
@@ -3870,7 +4119,7 @@ const Picker = {
       if (e.target.closest('.pk-x')) return this.close();
       const b = e.target.closest('[data-v]');
       if (!b || !this.sel) return;
-      const sel = this.sel; this.close();
+      Sfx.tick(); const sel = this.sel; this.close();
       if (sel.value !== b.dataset.v) { sel.value = b.dataset.v; sel.dispatchEvent(new Event('change', { bubbles: true })); }
     });
   },
@@ -3910,6 +4159,9 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && Picker.el 
 // ================= 滑動開關：記住上一個位置，重畫後從舊位置滑到新位置 =================
 const segPrev = {};
 new MutationObserver(() => {
+  // 先把所有新的開關放到「上一次的位置」且不播動畫，統一排版一次，再一起滑到新位置；
+  // 這樣沒換選項的開關（例如切平假名時的「五十音表／練習」）就不會跳動。
+  const todo = [];
   document.querySelectorAll('.seg').forEach(seg => {
     const btns = [...seg.children].filter(b => b.tagName === 'BUTTON');
     const idx = btns.findIndex(b => b.getAttribute('aria-pressed') === 'true');
@@ -3917,13 +4169,13 @@ new MutationObserver(() => {
     const key = seg.getAttribute('aria-label') || '', prev = segPrev[key];
     seg.dataset.segi = idx; segPrev[key] = idx;
     seg.style.setProperty('--n', btns.length);
-    if (prev != null && prev !== idx) {
-      seg.classList.add('seg-noanim'); seg.style.setProperty('--i', prev);
-      void seg.offsetWidth;
-      seg.classList.remove('seg-noanim');
-    }
-    seg.style.setProperty('--i', idx);
+    seg.classList.add('seg-noanim');
+    seg.style.setProperty('--i', prev != null ? prev : idx);
+    todo.push([seg, idx]);
   });
+  if (!todo.length) return;
+  void document.body.offsetWidth;
+  for (const [seg, idx] of todo) { seg.classList.remove('seg-noanim'); seg.style.setProperty('--i', idx); }
 }).observe(document.body, { childList: true, subtree: true });
 
 // ================= 啟動 =================
