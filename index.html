@@ -582,6 +582,13 @@ body.hide-furi #gloss rt,body.hide-furi .furibtn rt{visibility:visible}
 .read-q{font-size:56px;letter-spacing:.04em}
 .psent{font-size:24px;line-height:2.1;text-align:center}
 .pblank{display:inline-block;min-width:2.4em;text-align:center;color:var(--pri);font-weight:700;border-bottom:2px solid var(--pri);margin:0 2px}
+
+/* 拗音：練字格改成兩格並排，小字寫在格子左下；格子裡的兩個字靠近一點 */
+.sqs{display:flex;gap:0}
+.sqs.two .sq{width:76px;height:76px;font-size:52px}
+.sqs.two .sq + .sq{border-left-width:0}
+.sq .sm{font-size:.62em;transform:translate(-18%,14%)}
+.kc .kk.kk2{letter-spacing:-.14em;margin-right:-.14em;font-feature-settings:"palt"}
 </style>
 
 <header class="top"><div class="wrap">
@@ -2785,7 +2792,16 @@ document.addEventListener('change', e => { if (e.target.matches('select') && !e.
 
 // 震動：答對短震一下，答錯震兩下（Android 支援；iPhone 的網頁不支援，會自動略過）
 const canVibrate = 'vibrate' in navigator;
-function buzz(ok) { if (SET.vib === 'on' && canVibrate) try { navigator.vibrate(ok ? 25 : [45, 60, 45]); } catch (e) {} }
+const inFrame = (() => { try { return window.top !== window.self; } catch (e) { return true; } })();
+function buzz(ok) { if (SET.vib === 'on' && canVibrate) try { navigator.vibrate(ok ? 45 : [70, 80, 70]); } catch (e) {} }
+// 測試震動：直接告訴使用者這台手機、這種開法能不能震
+function testBuzz() {
+  if (!canVibrate) return toast('這個瀏覽器不支援震動（iPhone 的網頁都不支援）');
+  let ok = false;
+  try { ok = navigator.vibrate([200, 100, 200]); } catch (e) {}
+  if (!ok) toast(inFrame ? '在 Claude 的預覽裡不能震動，請用 Chrome 或主畫面上的 App 開' : '瀏覽器擋下了震動，請檢查勿擾模式或震動設定', false);
+  else toast(inFrame ? '已送出震動；如果沒感覺，請改用主畫面上的 App 開' : '已送出震動；如果沒感覺，請關掉勿擾模式，並確認系統的震動有開');
+}
 
 // ================= 顯示工具 =================
 // 按鈕被底部分頁列擋住時，把頁面捲到剛好看得到（不會整頁跳走）
@@ -3174,7 +3190,7 @@ function renderKanaTable() {
   const list = KANA.filter(k => k.script === UI.script);
   const rows = {};
   list.forEach(k => { (rows[k.row] = rows[k.row] || []).push(k); });
-  const cell = k => k ? `<button class="kc s${kanaStatus(k.id)}${kanaSel === k.id ? ' sel' : ''}" data-k="${k.id}" aria-label="${k.kana} ${k.romaji}"><span class="kk" lang="ja">${k.kana}</span><span class="rr">${k.romaji}</span></button>` : '<span class="kc kgap" aria-hidden="true"></span>';
+  const cell = k => k ? `<button class="kc s${kanaStatus(k.id)}${kanaSel === k.id ? ' sel' : ''}" data-k="${k.id}" aria-label="${k.kana} ${k.romaji}"><span class="kk${[...k.kana].length > 1 ? ' kk2' : ''}" lang="ja">${k.kana}</span><span class="rr">${k.romaji}</span></button>` : '<span class="kc kgap" aria-hidden="true"></span>';
   let seion = '', daku = '', you = '';
   for (const [cat, row] of KANA_ROWS) {
     const arr = rows[rowLabel(row)] || [];
@@ -3213,7 +3229,7 @@ function showKanaDetail(k) {
   const r = getRec(k.id);
   const stTxt = ['還沒學', '練習中', '已學會'][kanaStatus(k.id)];
   $('#kdetail').innerHTML = `<div class="card kdetail">
-    <div class="sq" lang="ja"><span>${k.kana}</span></div>
+    <div class="sqs${[...k.kana].length > 1 ? ' two' : ''}" lang="ja">${[...k.kana].map(ch => `<div class="sq"><span${/[ゃゅょャュョっッぁぃぅぇぉァィゥェォ]/.test(ch) ? ' class="sm"' : ''}>${ch}</span></div>`).join('')}</div>
     <div class="kinfo">
       <div class="rom">${esc(k.romaji)}</div>
       <div class="meta">${esc(k.cat0)} · ${esc(k.row)} · ${stTxt}${r.n ? ` · 作答 ${r.n} 次` : ''}</div>
@@ -3648,7 +3664,8 @@ function renderLib() {
           <div class="meta">答對、答錯、按按鈕時的短音效。手機開靜音模式時通常不會出聲。</div>
           <label class="label" for="vibSel" style="margin-top:6px">答題震動</label>
           <select id="vibSel"${canVibrate ? '' : ' disabled'}>${[['on', '開'], ['off', '關']].map(([k, l]) => `<option value="${k}"${SET.vib === k ? ' selected' : ''}>${l}</option>`).join('')}</select>
-          <div class="meta">${canVibrate ? '答對短震一下，答錯震兩下。' : '這個瀏覽器不支援震動（iPhone 的網頁 App 目前都不支援）。'}</div>
+          <div class="meta">${canVibrate ? '答對短震一下，答錯震兩下。' : '這個瀏覽器不支援震動（iPhone 的網頁 App 目前都不支援）。'}${inFrame ? '<br>現在是在別的頁面裡預覽，手機通常不會震；用 Chrome 或主畫面上的 App 開才會震。' : ''}</div>
+          <button class="btn quiet" id="vibTest" style="min-height:40px;margin-top:6px">測試震動</button>
           <div class="label" style="margin-top:6px">試聽（同一類按鈕用同一個聲音）</div>
           <div class="sfx-try">${[['blue', '青軸：列入考題、下一題'], ['soft', '輕聲嘎：次要按鈕'], ['wood', '木魚：底部分頁'], ['toggle', '開關：上方按鈕'], ['slide', '滑動開關'], ['tick', '滴：篩選標籤'], ['mallet', '木琴：五十音'], ['flip', '翻頁：文法、清單'], ['peek', '啾：點單字'], ['pop', '啵：打開選單'], ['unpop', '收起'], ['ok', '答對'], ['ng', '答錯'], ['done', '一輪完成']].map(([k, l]) => `<button class="chip" data-sfx="${k}">${l}</button>`).join('')}</div>
         </section>
@@ -3695,6 +3712,7 @@ function renderLib() {
   $('#roundSel').onchange = e => { SET.round = Number(e.target.value); saveSet(); mcRound = null; fillRound = null; deck = null; kanaRound = null; toast(`每輪 ${SET.round} 題`); };
   $('#recentSet').onchange = e => { SET.recent = e.target.value; saveSet(); mcRound = null; fillRound = null; toast(`最近學過：${recentLabel()}`); renderLib(); };
   $('#vibSel').onchange = e => { SET.vib = e.target.value; saveSet(); buzz(true); };
+  $('#vibTest').onclick = testBuzz;
   $('#sfxSel').onchange = e => { SET.sfx = e.target.value; saveSet(); if (SET.sfx !== 'off') Sfx.ok(); };
   $('#meanSel').onchange = e => { SET.mean = e.target.value; saveSet(); mcRound = null; toast({ zh: '單字意思：中文', en: '單字意思：English', both: '單字意思：中文＋English' }[SET.mean]); };
   $('#knownLv').onchange = e => { SET.knownLv = e.target.value; saveSet(); toast(SET.knownLv ? `已隱藏 ${SET.knownLv} 以下的文法` : '文法全部顯示'); };
