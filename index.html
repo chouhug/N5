@@ -589,6 +589,29 @@ body.hide-furi #gloss rt,body.hide-furi .furibtn rt{visibility:visible}
 .sqs.two .sq + .sq{border-left-width:0}
 .sq .sm{font-size:.62em;transform:translate(-18%,14%)}
 .kc .kk.kk2{letter-spacing:-.14em;margin-right:-.14em;font-feature-settings:"palt"}
+
+/* 聽寫 */
+.dict-play{display:flex;align-items:center;justify-content:center;gap:14px;margin:14px 0 12px}
+.dict-big{width:84px;height:84px;border-radius:999px;border:2px solid var(--fill-deep);background:linear-gradient(180deg,color-mix(in srgb,var(--fill) 85%,#fff),var(--fill));color:var(--fill-ink);display:inline-flex;align-items:center;justify-content:center;box-shadow:0 4px 0 var(--fill-deep);transition:transform .08s,box-shadow .08s}
+.dict-big:active{transform:translateY(3px);box-shadow:0 1px 0 var(--fill-deep)}
+.dict-big svg{width:38px;height:38px}
+.hint.dict-hint{flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px}
+.linkbtn{border:0;background:none;color:var(--pri);font-weight:600;padding:4px 2px;text-decoration:underline;text-underline-offset:3px}
+.dict-mean{text-align:center;font-size:18px;font-weight:600;margin-top:8px}
+/* 首次使用導覽 */
+.tour-ring{position:fixed;z-index:70;border-radius:14px;box-shadow:0 0 0 3px var(--fill),0 0 0 9999px rgba(5,8,14,.55);pointer-events:none;transition:all .25s ease}
+.tour-ring.none{left:50%!important;top:40%!important;width:0!important;height:0!important;box-shadow:0 0 0 9999px rgba(5,8,14,.55)}
+.tour-card{position:fixed;z-index:71;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));max-width:480px;margin:0 auto;background:var(--surface);border:2px solid var(--frame);border-radius:16px;padding:16px 16px 14px;box-shadow:0 10px 30px rgba(0,0,0,.3);display:flex;flex-direction:column;gap:10px}
+.tour-card h3{margin:0;font-size:18px}
+.tour-card p{margin:0;color:var(--muted);font-size:15px}
+.tour-card .tour-step{font-size:13px;color:var(--muted)}
+.tour-card .row{display:flex;gap:8px;align-items:center}
+.tour-card .row .btn{flex:1}
+.tour-dots{display:flex;gap:6px;justify-content:center}
+.tour-dots i{width:7px;height:7px;border-radius:9px;background:var(--line)}
+.tour-dots i.on{background:var(--fill);width:18px}
+.tour-lang{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tour-art{display:block;width:100%;height:auto;max-height:110px}
 </style>
 
 <header class="top"><div class="wrap">
@@ -2122,12 +2145,12 @@ const GRAMMAR_POINTS = [
   { id: 'tekudasai', lv: 'N5', t: '「〜てください」請…', d: '動詞て形加「ください」，禮貌地請對方做某事。', m: c => byF(/^てください/)(c) || byE('f:てください')(c) },
   { id: 'naidekudasai', lv: 'N5', t: '「〜ないでください」請不要…', d: '動詞ない形加「でください」，禮貌地請對方不要做。', m: c => byF(/^ないでください/)(c) || byE('f:ないでください')(c) },
   { id: 'teimasu', lv: 'N5', t: '「〜ています」正在…／狀態', d: '動詞て形加「います」：正在做的事，或持續的狀態（住んでいます＝住在）。', m: c => byF(/^ていま/)(c) || byE('f:ています')(c) },
-  { id: 'temoii', lv: 'N5', t: '「〜てもいいですか」可以…嗎', d: '動詞て形加「もいいですか」，詢問許可。', m: byF(/^てもいいですか/) },
+  { id: 'temoii', lv: 'N5', t: '「〜てもいいですか」可以…嗎', d: '動詞て形加「もいいですか」，詢問許可。', m: c => byF(/^てもいいですか/)(c) || byE('f:てもいいですか')(c) },
   { id: 'tekara', lv: 'N5', t: '「〜てから」…之後', d: '動詞て形加「から」：做完 A 之後再做 B，強調先後順序。例如「食べてから、歯を磨きます」＝吃完再刷牙。', m: c => byF(/^てから/)(c) || byE('f:てから')(c) },
   { id: 'nagara', lv: 'N5', t: '「〜ながら」一邊…一邊…', d: '動詞ます形去掉「ます」加「ながら」：同時做兩件事，主要的動作放在後面。例如「音楽を聞きながら勉強します」。', m: byE('f:ながら') },
   { id: 'tari', lv: 'N5', t: '「〜たり〜たりする」列舉動作', d: '動詞た形加「り」，舉出幾個代表性的動作，最後用「する」收尾。例如「本を読んだり、映画を見たりします」。', m: byF(/^たり/) },
   { id: 'nai', lv: 'N5', t: '「〜ない」否定（普通體）', d: '「ません」的普通說法。', m: byF(/^ない形/) },
-  { id: 'ta', lv: 'N5', t: '「〜た」過去（普通體）', d: '「ました」的普通說法。', m: byF(/^た形/) },
+  { id: 'ta', lv: 'N5', t: '「〜た」過去（普通體）', d: '「ました」的普通說法。', m: c => byF(/^た形/)(c) || byE('f:た')(c) },
   { id: 'ikatta', lv: 'N5', t: 'い形容詞過去「〜かった」', d: '去掉「い」加「かった」：（那時）很…。禮貌說法再加「です」。', m: byF(/^過去：/) },
   { id: 'ikunai', lv: 'N5', t: 'い形容詞否定「〜くない」', d: '去掉「い」加「くない」：不…。', m: byF(/^否定：/) },
   { id: 'iku', lv: 'N5', t: 'い形容詞「〜く」', d: '去掉「い」加「く」變成副詞（大きく開ける＝張大），或接「なる」表示變化（寒くなる＝變冷）。', m: byF(/^副詞形/) },
@@ -2154,7 +2177,10 @@ function grammarOf(w, toks, D) {
     if (b.s === 'ください') f = 'てください：請…';
     else if (/^(います|いました|いません)$/.test(b.s)) f = 'ています：正在…、…著';
     else if (b.s === 'から') f = 'てから：…之後';
-    if (f) { list.splice(i, 2, { s: a.s + b.s, e: a.e, f }); }
+    if (f) { list.splice(i, 2, { s: a.s + b.s, e: a.e, f }); continue; }
+    // て形＋も＋いい＋ですか → 「〜てもいいですか」
+    const c2 = list[i + 2], d2 = list[i + 3];
+    if (b.s === 'も' && c2 && c2.s === 'いい' && d2 && /^ですか/.test(d2.s)) list.splice(i, 4, { s: a.s + 'もいいですか', e: a.e, f: 'てもいいですか：可以…嗎' });
   }
   const c = { toks: list, sent: w.sent };
   const out = [];
@@ -2565,6 +2591,10 @@ const GRAMMAR_MORE = [
 ["てから","てから","te kara","文法","…之後","ご飯を食べてから、歯を磨きます。","ごはんをたべてから、はをみがきます。","吃完飯之後刷牙。","てから","after doing ..."],
 ["たりします","たりします","tari shimasu","文法","又…又…(列舉動作)","日曜日は本を読んだり、映画を見たりします。","にちようびはほんをよんだり、えいがをみたりします。","星期日會看看書、看看電影。","たりします","do things like ... and ..."],
 ["でしょう","でしょう","deshou","文法","…吧(推測)","明日は雨でしょう。","あしたはあめでしょう。","明天會下雨吧。","でしょう","probably ..."],
+["てもいいですか","てもいいですか","te mo ii desu ka","文法","可以…嗎(詢問許可)","窓を開けてもいいですか。","まどをあけてもいいですか。","可以開窗戶嗎？","てもいいですか","may I ...? (asking permission)"],
+["てもいいですか","てもいいですか","te mo ii desu ka","文法","可以…嗎(詢問許可)","この傘を借りてもいいですか。","このかさをかりてもいいですか。","可以借這把傘嗎？","てもいいですか","may I ...? (asking permission)"],
+["た","た","ta","文法","…了(過去，普通體)","昨日、友達と映画を見た。","きのう、ともだちとえいがをみた。","昨天和朋友看了電影。（對朋友說）","た","past tense (plain form)"],
+["た","た","ta","文法","…了(過去，普通體)","今朝、パンを食べた。","けさ、パンをたべた。","今天早上吃了麵包。（對朋友說）","た","past tense (plain form)"],
 ];
 
 (function () {
@@ -2574,6 +2604,1329 @@ const GRAMMAR_MORE = [
   EN_LIST.push(...GRAMMAR_MORE.map(a => a[9]));
   GRAMMAR.push(...GRAMMAR_MORE.map(a => a.slice(0, 9)));
 })();
+
+// ===== 介面英文對照（設定 → 介面語言 選 English 時使用）=====
+// 程式裡的介面文字都用中文寫；畫面上出現的中文會照這裡換成英文（日文區塊不會動）。
+// dict：整段中文 → 英文。re：含數字或可變內容的句子，用正規表示式比對。
+// 例句翻譯（I18N_SENT）和五十音例字（kanaEx）在檔案最後，由 build 前整理好的清單產生。
+const I18N = { en: { dict: {}, re: [], kanaEx: {} } };
+(() => {
+const D = {
+// ---- 上方、分頁 ----
+'日語': 'Japanese', '今日 0/20 題': 'Today 0/20', '分頁': 'Tabs',
+'五十音': 'Kana', '單選': 'Choice', '字卡': 'Cards', '填空': 'Fill-in', '文法': 'Grammar', '單字庫': 'Words',
+'漢字上的假名：開': 'Furigana: on', '漢字上的假名：開（點一下隱藏）': 'Furigana: on (tap to hide)', '漢字上的假名：關（點一下顯示）': 'Furigana: off (tap to show)',
+'顯示羅馬拼音': 'Show romaji', '外觀': 'Appearance', '外觀：淺色': 'Appearance: light', '外觀：深色': 'Appearance: dark',
+'外觀：淺色（點一下切換）': 'Appearance: light (tap to switch)', '外觀：深色（點一下切換）': 'Appearance: dark (tap to switch)',
+'顯示漢字的假名': 'Showing furigana', '已隱藏假名，點單字可以看讀音': 'Furigana hidden — tap a word to see its reading',
+'單字意思': 'Word meaning', '選擇': 'Choose', '關閉': 'Close', '收起': 'Collapse',
+// ---- 通用 ----
+'答對了': 'Correct', '答錯了': 'Wrong', '答錯了（看了答案）': 'Wrong (answer shown)', '（看了答案）': ' (answer shown)', '答對': 'Correct', '答錯': 'Wrong',
+'下一題（Enter）': 'Next (Enter)', '下一題': 'Next', '送出': 'Submit', '看答案': 'Show answer', '正確答案：': 'Answer: ',
+'這一輪完成了': 'Round complete', '再來一輪': 'Another round', '播放例句': 'Play sentence', '播放單字': 'Play word', '播放發音': 'Play sound',
+'發音': 'Sound', '例字': 'Example', '例句': 'Example', '單字': 'Word', '題型': 'Question type', '題目來源': 'Source', '範圍': 'Range',
+'詞性': 'Part of speech', '全部': 'All', '名詞': 'Noun', '動詞': 'Verb', 'い形容詞': 'i-adjective', 'な形容詞': 'na-adjective', '副詞': 'Adverb',
+'指示詞・連接詞': 'Demonstratives & conjunctions', '指示連接': 'Demonst./conj.', '數字與時間': 'Numbers & time', '數字時間': 'Numbers & time',
+'招呼語與常用句': 'Greetings & phrases', '招呼語': 'Greetings', '助詞・語尾': 'Particle / ending', '助詞': 'Particles',
+'動詞(一類)': 'Verb (group 1)', '動詞(二類)': 'Verb (group 2)', '動詞(三類)': 'Verb (group 3)',
+'未學': 'New', '待考': 'To test', '已學會': 'Learned', '已排除': 'Excluded', '已列入考題': 'Added to quiz', '練習中': 'Practicing', '還沒學': 'Not learned',
+'最近學過': 'Recently learned', '最近學過的範圍': 'Recently learned range', '最近 1 天': 'Last 1 day', '最近 3 天': 'Last 3 days', '最近 7 天': 'Last 7 days',
+'最近 10 個字': 'Last 10 words', '最近 20 個字': 'Last 20 words', '最近 30 個字': 'Last 30 words', '最近 50 個字': 'Last 50 words',
+'錯題': 'Mistakes', '錯題複習': 'Mistake review', '錯題複習中': 'Reviewing mistakes', '到期複習': 'Due review', '單選錯題': 'Choice mistakes', '填空錯題': 'Fill-in mistakes',
+'單選錯題複習': 'Choice mistake review', '填空錯題複習': 'Fill-in mistake review', '單選複習': 'Choice review', '填空複習': 'Fill-in review', '複習已學會': 'Review learned',
+'新字': 'New words', '單選最近學過': 'Choice: recently learned', '填空最近學過': 'Fill-in: recently learned', '複習單選': 'Review with choice', '複習字卡': 'Review with cards',
+'今天到期': 'Due today', '開': 'On', '關': 'Off', '小聲': 'Quiet',
+// ---- 空狀態 ----
+'目前沒有錯題。': 'No mistakes right now.', '目前沒有錯題複習。': 'No mistakes to review.', '今天沒有到期的假名。': 'No kana due today.', '這個範圍沒有題目。': 'No questions in this range.',
+'練習全部假名': 'Practice all kana', '這個來源裡沒有漢字詞。可以換一個題目來源，或先到字卡把有漢字的字列入考題。': 'No kanji words in this source. Pick another source, or add words with kanji to your quiz from Cards.',
+'還沒有待考的字。先到「字卡」把想練的字「列入考題」。': 'No words to test yet. Go to Cards and tap “Add to quiz” on the words you want to practice.',
+'去字卡挑字': 'Pick words in Cards', '目前沒有單選錯題。': 'No choice mistakes right now.', '練習待考的字': 'Practice words to test', '目前沒有單選錯題複習。': 'No choice mistakes to review.',
+'還沒有已學會的字。填空答對就算學會。': 'No learned words yet. A word counts as learned when you get it right in Fill-in.', '去填空': 'Go to Fill-in',
+'目前沒有填空錯題。': 'No fill-in mistakes right now.', '目前沒有填空錯題複習。': 'No fill-in mistakes to review.', '今天沒有到期要複習的字。': 'Nothing due for review today.',
+'目前沒有聽寫錯題。': 'No dictation mistakes right now.', '這個分類沒有題目。': 'No questions in this category.', '回到待考': 'Back to words to test',
+// ---- 五十音 ----
+'假名': 'Kana', '檢視': 'View', '平假名': 'Hiragana', '片假名': 'Katakana', '五十音表': 'Chart', '練習': 'Practice', '表格分類': 'Chart sections',
+'清音': 'Basic', '濁音': 'Voiced', '半濁音': 'Semi-voiced', '拗音': 'Combined', '濁音・半濁音': 'Voiced & semi-voiced',
+'開始練習': 'Start practice', '開始練習平假名': 'Practice hiragana', '開始練習片假名': 'Practice katakana', '容易混淆：': 'Easy to confuse: ',
+'促音「っ」與長音的說明': 'About the small っ and long vowels', '促音「っ／ッ」': 'Small tsu (っ／ッ)',
+'寫成小的「っ」，不發音，但要': 'Written as a small っ. It has no sound of its own, but you', '停頓一拍': 'pause for one beat',
+'，下一個子音像是重複一次。羅馬拼音寫成重複的子音。': ', as if the next consonant were doubled. In romaji it is written as a double consonant.',
+'長音': 'Long vowels', '母音拉長一拍。平假名用加上母音的方式寫（あ段＋あ、い段＋い、う段＋う、え段＋い或え、お段＋う或お）；片假名用「ー」。長短不同，意思就不同。': 'The vowel is held for an extra beat. Hiragana adds a vowel (a-row + あ, i-row + い, u-row + う, e-row + い or え, o-row + う or お); katakana uses ー. Long and short vowels change the meaning.',
+'看假名選拼音': 'Kana → romaji', '看拼音選假名': 'Romaji → kana', '聽發音選假名': 'Listen → kana', '假名→拼音': 'Kana → romaji', '拼音→假名': 'Romaji → kana', '聽→假名': 'Listen → kana',
+'按下按鈕聽發音，再選出假名': 'Tap the button to hear it, then pick the kana', '（日語固有詞幾乎不用）': '(almost never used in native words)',
+'（片假名的ヲ幾乎不用）': '(katakana ヲ is almost never used)', '（片假名的ヅ幾乎不用）': '(katakana ヅ is almost never used)', '（外來語很少用到）': '(rare even in loanwords)',
+// ---- 單選 ----
+'看日文選中文': 'Japanese → meaning', '看中文選日文': 'Meaning → Japanese', '聽發音選中文': 'Listen → meaning',
+'日→中': 'JP → meaning', '中→日': 'Meaning → JP', '聽→中': 'Listen → meaning', '漢字讀音': 'Kanji reading', '助詞填空': 'Particles',
+'按下按鈕聽發音，再選出意思': 'Tap the button to hear it, then pick the meaning', '選出正確的讀音': 'Pick the correct reading',
+// ---- 字卡 ----
+'字卡來源': 'Card source', '這個分類的新字都看過了。': 'You have seen all new words in this category.', '還沒有待考的字。': 'No words to test yet.',
+'這個分類目前沒有字。': 'No words in this category yet.', '這一疊看完了': 'Stack finished', '再拿一疊': 'Next stack', '看新字': 'See new words',
+'已經會了': 'I know this', '列入考題': 'Add to quiz', '下一張': 'Next card', '變化形・詞性': 'Forms & part of speech', '看它的變化形': 'See its forms',
+// ---- 填空・聽寫 ----
+'填空模式': 'Fill-in mode', '句子填空': 'Sentence', '聽寫': 'Dictation', '聽寫錯題': 'Dictation mistakes',
+'漢字、平假名或拼音': 'Kanji, hiragana or romaji', '填入答案': 'Type your answer', '提示：第一個假名是': 'Hint: the first kana is',
+'寫下聽到的字': 'Write what you hear', '平假名、拼音或漢字': 'Hiragana, romaji or kanji', '慢速': 'Slow', '再聽一次': 'Listen again', '看意思': 'Show meaning',
+// ---- 單字庫 ----
+'搜尋單字': 'Search words', '搜尋：日文、假名、拼音或中文': 'Search: Japanese, kana, romaji or English',
+'目前沒有要複習的題目。練習時答錯的字、到期的字會出現在這裡。': 'Nothing to review right now. Words you miss and words that come due will show up here.',
+'清單（待考、已學會、錯題）': 'Lists (to test, learned, mistakes)', '目前是空的': 'Empty for now', '找不到符合的字。': 'No matching words.',
+'移除': 'Remove', '移回未學': 'Move back to new', '恢復': 'Restore', '級': 'level',
+// ---- 設定 ----
+'設定': 'Settings', '音效': 'Sound effects', '按鈕和答題音效': 'Button & answer sounds',
+'答對、答錯、按按鈕時的短音效。手機開靜音模式時通常不會出聲。': 'Short sounds for right/wrong answers and button taps. Phones in silent mode usually stay quiet.',
+'答題震動': 'Vibration', '答對短震一下，答錯震兩下。': 'One short buzz when right, two when wrong.',
+'這個瀏覽器不支援震動（iPhone 的網頁 App 目前都不支援）。': 'This browser can’t vibrate (iPhone web apps don’t support it yet).',
+'現在是在別的頁面裡預覽，手機通常不會震；用 Chrome 或主畫面上的 App 開才會震。': 'This is a preview inside another page, so phones usually won’t vibrate. Open it in Chrome or from the home-screen app.',
+'測試震動': 'Test vibration', '試聽（同一類按鈕用同一個聲音）': 'Preview (buttons of the same kind share a sound)', '試聽': 'Preview',
+'青軸：列入考題、下一題': 'Click: add to quiz, next', '輕聲嘎：次要按鈕': 'Soft clack: secondary buttons', '木魚：底部分頁': 'Wood block: bottom tabs',
+'開關：上方按鈕': 'Toggle: top buttons', '滑動開關': 'Slide switch', '滴：篩選標籤': 'Tick: filter chips', '木琴：五十音': 'Xylophone: kana',
+'翻頁：文法、清單': 'Page flip: grammar, lists', '啾：點單字': 'Chirp: tap a word', '啵：打開選單': 'Pop: open a menu', '一輪完成': 'Round complete',
+'練習': 'Practice', '每輪題數': 'Questions per round', '「最近學過」的範圍': '“Recently learned” range',
+'每輪題數會套用到五十音、單選、字卡和填空。「最近學過」一輪會出完範圍內的全部字；錯題複習固定每輪隨機 10 題。': 'Round size applies to Kana, Choice, Cards and Fill-in. A “Recently learned” round covers every word in the range; mistake review always uses 10 random questions.',
+'介面語言 Language': 'Language 介面語言', '介面語言': 'Interface language',
+'切換後會重新載入。日文內容不變；選 English 時，單字意思和例句翻譯也會換成英文。': 'The app reloads after switching. Japanese stays the same; in English, word meanings and sentence translations switch to English too.',
+'重看使用導覽': 'Replay the tour', '顯示哪種語言的意思': 'Show meanings in',
+'字卡、單選、單字庫和點字看意思都會跟著換。例句翻譯跟著介面語言。': 'Applies to cards, choice questions, the word list and word pop-ups. Sentence translations follow the interface language.',
+'文法補充': 'Grammar notes', '已經會的文法等級（不再顯示）': 'Grammar levels you already know (hidden)', '全部顯示': 'Show all',
+'選了之後，字卡「文法」裡那些等級的文法就不再顯示。': 'Grammar at these levels will no longer appear under “Grammar” on cards.',
+'同步與備份': 'Sync & backup', '匯出進度': 'Export progress', '匯入進度': 'Import progress', '每輪：全部': 'Per round: all',
+'單字意思：中文': 'Word meaning: Chinese', '單字意思：English': 'Word meaning: English', '單字意思：中文＋English': 'Word meaning: Chinese + English',
+'中文': 'Chinese', '中文＋English': 'Chinese + English', '文法全部顯示': 'Showing all grammar',
+'複製': 'Copy', '已選取，請按複製': 'Selected — please copy', '已複製': 'Copied', '合併匯入': 'Merge import', '逐題取較新的紀錄，不會整份覆蓋。': 'Keeps the newer record for each item instead of overwriting everything.',
+'貼上備份碼（N5 開頭）': 'Paste a backup code (starts with N5)', '貼上備份碼': 'Paste backup code', '備份碼': 'Backup code',
+'無法讀取：請貼上完整的備份碼（以 N5 開頭）。': 'Couldn’t read it: paste the full backup code (starting with N5).',
+// 語音
+'這個瀏覽器不支援語音播放': 'This browser can’t play speech', '無法播放聲音': 'Couldn’t play sound',
+'這個瀏覽器不支援語音播放。建議改用 Safari、Chrome 或 Edge。': 'This browser can’t play speech. Try Safari, Chrome or Edge.',
+'日文語音（這台裝置）': 'Japanese voice (this device)', '還沒有讀到日文語音，系統會用預設聲音。': 'No Japanese voice found yet; the system default will be used.',
+'速度': 'Speed', '設定只存在這台裝置。': 'This setting is saved on this device only.', '這台裝置的日文語音聽起來比較機械。': 'The Japanese voices on this device sound robotic.',
+'iPhone／Mac：到「設定 → 輔助使用 → 朗讀內容 → 聲音 → 日文」下載「增強」或「高品質」的語音。': 'iPhone/Mac: go to Settings → Accessibility → Spoken Content → Voices → Japanese and download an “Enhanced” or “Premium” voice.',
+'Windows：建議改用 Edge 瀏覽器，會有較自然的線上語音。': 'Windows: use the Edge browser for more natural online voices.',
+// 震動
+'這個瀏覽器不支援震動（iPhone 的網頁都不支援）': 'This browser can’t vibrate (no iPhone web page can)',
+'在 Claude 的預覽裡不能震動，請用 Chrome 或主畫面上的 App 開': 'Vibration doesn’t work in the Claude preview; open it in Chrome or from the home-screen app',
+'瀏覽器擋下了震動，請檢查勿擾模式或震動設定': 'The browser blocked vibration; check Do Not Disturb or your vibration settings',
+'已送出震動；如果沒感覺，請改用主畫面上的 App 開': 'Vibration sent; if you felt nothing, open the home-screen app instead',
+'已送出震動；如果沒感覺，請關掉勿擾模式，並確認系統的震動有開': 'Vibration sent; if you felt nothing, turn off Do Not Disturb and check that system vibration is on',
+// 同步
+'進度只存在這台裝置': 'Progress is saved on this device only', '還沒登入。登入 Google 後，進度會存到雲端，換手機也能接著練。': 'Not signed in. Sign in with Google to save progress to the cloud and pick up on any phone.',
+'正在連線帳號…': 'Connecting to your account…', '已同步到你的帳號': 'Synced to your account', '已同步到 Google 帳號': 'Synced to your Google account', '正在同步…': 'Syncing…',
+'暫時無法同步，進度仍存在這台裝置': 'Can’t sync right now; progress is still saved on this device', '這個連結無法寫入你的帳號，進度只存在這台裝置': 'This link can’t write to your account; progress is saved on this device only',
+'已登入': 'Signed in', '已連帳號': 'Account linked', '未登入': 'Not signed in', '只存本機': 'This device only', '已登出，進度仍保留在這台裝置': 'Signed out; progress stays on this device',
+'登入失敗：Firebase 還沒允許這個網址，請到 Authentication → Settings → Authorized domains 加入 chouhug.github.io': 'Sign-in failed: Firebase doesn’t allow this address yet. Add the domain under Authentication → Settings → Authorized domains.',
+'登入失敗：請確認網路連線': 'Sign-in failed: check your connection', '登入失敗：Firebase 還沒打開 Google 登入': 'Sign-in failed: Google sign-in isn’t enabled in Firebase', '登入失敗，請再試一次': 'Sign-in failed, please try again',
+'用 Google 帳號存進度': 'Save progress with Google', '登入後，換手機、換電腦都能接著練。': 'Sign in to continue on any phone or computer.', '登入': 'Sign in', '登出': 'Sign out', '用 Google 登入': 'Sign in with Google',
+// ---- 點字看意思、變化形 ----
+'單字意思': 'Word meaning', '這句是固定的招呼語，整句記起來就好，不用拆文法。': 'This is a set phrase — just memorize it whole, no need to break down the grammar.',
+'以下）。可以到「單字庫 → 文法補充」調整。': 'and below). You can change this under Words → Grammar notes.',
+'這句的文法都在你已經會的等級（': 'All the grammar in this sentence is at levels you already know (',
+'句中：': 'In the sentence: ', '看更多例句 ›': 'More examples ›', '另有': 'Plus', '個已經會的文法沒有顯示。': 'grammar points you already know are hidden.',
+'這句例句用到的文法': 'Grammar used in this sentence', '返回上一個字': 'Back to previous word', '這類詞不會變化，直接記住就好。': 'Words like this don’t change form — just memorize them.',
+'主要變化（點一行看例句）': 'Main forms (tap a row for examples)', '句型範例': 'Pattern examples', '還沒有這個形的例句。': 'No examples for this form yet.',
+'句中的「': 'In this sentence “', '詞性變化規則': 'Conjugation rules', '變化規則': 'Conjugation rules',
+// ---- 文法分頁 ----
+'搜尋文法': 'Search grammar', '搜尋文法：は、て形、想要…': 'Search grammar: は, て-form, want to…', '‹ 文法列表': '‹ Grammar list',
+'點一下看完整的變化表。': 'Tap to see the full conjugation table.', '句尾與「です」': 'Sentence endings & です', '動詞的變化與句型': 'Verb forms & patterns',
+'形容詞': 'Adjectives', '其他句型': 'Other patterns', '其他': 'Other', '找不到符合的文法。': 'No matching grammar.', '出自單字：': 'From the word: ',
+'目前的單字例句裡還沒有用到這個文法。': 'None of the current example sentences use this grammar yet.',
+'一類動詞': 'Group 1 verbs', '五段動詞': 'godan verbs', '二類動詞': 'Group 2 verbs', '一段動詞': 'ichidan verbs', '三類動詞': 'Group 3 verbs', '不規則動詞': 'irregular verbs',
+'字尾是う段音（う、く、ぐ、す、つ、ぬ、ぶ、む、る）。變化時，最後一個字在あ、い、う、え、お段之間移動。': 'Ends in a u-row sound (う, く, ぐ, す, つ, ぬ, ぶ, む, る). When conjugating, the last kana moves between the a, i, u, e and o rows.',
+'ます形': 'ます-form', '字尾換成い段＋ます（む→み）': 'Change the ending to the i-row + ます (む → み)', '否定': 'Negative', '字尾換成い段＋ません': 'Change the ending to the i-row + ません',
+'過去': 'Past', '字尾換成い段＋ました': 'Change the ending to the i-row + ました', '過去否定': 'Past negative', '字尾換成い段＋ませんでした': 'Change the ending to the i-row + ませんでした',
+'て形': 'て-form', '看字尾決定（見下面的表）': 'Depends on the ending (see the table below)', 'て形＋ください': 'て-form + ください', 'て形＋います': 'て-form + います',
+'ない形': 'ない-form', '字尾換成あ段＋ない；「う」結尾的換成「わ」（買う→買わない）': 'Change the ending to the a-row + ない; a final う becomes わ (買う → 買わない)',
+'た形': 'た-form', '把て形的「て／で」換成「た／だ」': 'Swap the て／で of the て-form for た／だ', '字尾換成い段＋たい': 'Change the ending to the i-row + たい',
+'字尾是「る」，前面通常是い段或え段的音。變化最簡單：去掉「る」，直接接後面的部分。': 'Ends in る, usually after an i-row or e-row sound. The easiest group: drop る and add the ending.',
+'去掉る＋ます': 'Drop る + ます', '去掉る＋ません': 'Drop る + ません', '去掉る＋ました': 'Drop る + ました', '去掉る＋ませんでした': 'Drop る + ませんでした', '去掉る＋て': 'Drop る + て',
+'去掉る＋てください': 'Drop る + てください', '去掉る＋ています': 'Drop る + ています', '去掉る＋ない': 'Drop る + ない', '去掉る＋た': 'Drop る + た', '去掉る＋たい': 'Drop る + たい',
+'只有「する」（做）和「来る」（來），加上「名詞＋する」（勉強する、散歩する）。沒有規則可套，要直接背。「来る」的漢字讀音會變：きます、きて、こない。': 'Only する (do) and 来る (come), plus “noun + する” verbs (勉強する, 散歩する). There is no rule — memorize them. The reading of 来 changes: きます, きて, こない.',
+'する→します；来る→来ます（きます）': 'する → します; 来る → 来ます (きます)', 'しません；来ません（きません）': 'しません; 来ません (きません)', 'しました；来ました（きました）': 'しました; 来ました (きました)',
+'しませんでした；来ませんでした（きませんでした）': 'しませんでした; 来ませんでした (きませんでした)', 'して；来て（きて）': 'して; 来て (きて)', 'してください；来てください（きてください）': 'してください; 来てください (きてください)',
+'しています；来ています（きています）': 'しています; 来ています (きています)', 'しない；来ない（こない）': 'しない; 来ない (こない)', 'した；来た（きた）': 'した; 来た (きた)', 'したい；来たい（きたい）': 'したい; 来たい (きたい)',
+'以「い」結尾，可以直接放在名詞前面（大きい犬）。變化都發生在最後的「い」。「いい」變化時要換成「よ」。': 'Ends in い and can go straight before a noun (大きい犬). All changes happen to the final い. いい changes to よ when conjugated.',
+'原形＋です': 'Base form + です', 'い→くない＋です（也可以說「くありません」）': 'い → くない + です (くありません also works)', 'い→くて（又…又…）': 'い → くて (… and …)', 'い→く（接動詞，或接「なる」表示變得…）': 'い → く (before a verb, or before なる for “become …”)',
+'本身不變化，變化都在後面的「です」，跟名詞一樣。放在名詞前面要加「な」，當副詞用要加「に」。': 'Doesn’t change itself; the changes are in the です after it, just like nouns. Add な before a noun and に to use it as an adverb.',
+'＋じゃありません（正式：ではありません）': '+ じゃありません (formal: ではありません)', '＋な＋名詞': '+ な + noun', '修飾名詞時加「な」：静かな町': 'Add な before a noun: 静かな町', '當副詞時加「に」：静かに話す': 'Add に to make an adverb: 静かに話す',
+'名詞本身不變化，變化都在後面的「です」。': 'Nouns don’t change; the changes are in the です after them.', '＋です（是…）': '+ です (is …)',
+'例外：行く': 'Exception: 行く', 'て形・た形：看字尾': 'て-form & た-form: look at the ending', '長得像二類的一類動詞': 'Group 1 verbs that look like group 2',
+'這些字是い段或え段＋る 結尾，看起來像二類，其實是一類，要特別記：': 'These end in an i-row or e-row sound + る, so they look like group 2, but they are group 1 — memorize them:',
+'特別注意': 'Watch out', '「いい」（好）變化時要換成「よい」：よかった、よくない、よくて。「きれい」「嫌い」雖然是い結尾，其實是な形容詞（きれいな花、嫌いな食べ物）。': 'いい (good) becomes よい when conjugated: よかった, よくない, よくて. きれい and 嫌い end in い but are na-adjectives (きれいな花, 嫌いな食べ物).',
+'文法列表': 'Grammar list',
+// ---- 導覽 ----
+'上一步': 'Back', '下一步': 'Next', '略過': 'Skip', '開始學習': 'Start learning',
+'歡迎使用日語 N5': 'Welcome to Japanese N5', '從五十音開始，一路學到 N5 的單字和文法。先選介面語言，接下來用 30 秒認識每個分頁。': 'Start with kana and work up to N5 vocabulary and grammar. Pick a language first, then take 30 seconds to meet each tab.',
+'平假名、片假名的表，點一個字可以聽發音、看例字；切到「練習」做認字測驗。': 'Hiragana and katakana charts. Tap a kana to hear it and see an example word; switch to “Practice” to quiz yourself.',
+'字卡：挑要學的字': 'Cards: pick words to learn', '新字一張一張看：已經會的按「已經會了」，想練的按「列入考題」，之後單選和填空就會出這些字。': 'Go through new words one by one: tap “I know this” for words you know and “Add to quiz” for ones to practice. Choice and Fill-in will then quiz you on them.',
+'日→中、中→日、聽發音、漢字讀音、助詞填空，左上角可以換題型和題目來源。': 'Japanese → meaning, meaning → Japanese, listening, kanji readings and particles. Change the question type and source at the top left.',
+'填空・聽寫': 'Fill-in & dictation', '看例句打出空格裡的字，答對才算「已學會」，之後照時間排到期複習。切到「聽寫」可以練聽力。': 'Type the missing word in a sentence. Getting it right marks the word as learned, and it comes back for review on a schedule. Switch to “Dictation” to train your ear.',
+'每個文法點都有說明和例句，也有動詞、形容詞的變化規則。': 'Every grammar point has an explanation and examples, plus conjugation rules for verbs and adjectives.',
+'單字庫・設定': 'Words & settings', '看進度、搜尋單字、進入錯題和到期複習。下面的「設定」可以調音效、用 Google 登入同步進度、換介面語言。': 'See your progress, search words, and jump into mistakes and due reviews. “Settings” below has sounds, Google sign-in for syncing, and the language switch.',
+'上方的小按鈕': 'The small buttons on top', '「漢」切換漢字上的假名，「Aa」顯示羅馬拼音，最右邊切換淺色／深色。': '“漢” toggles furigana, “Aa” shows romaji, and the last one switches light/dark.',
+'小提示': 'Tip', '例句裡的單字都可以點，會跳出意思和讀音。準備好就開始吧！': 'Tap any word in a sentence to see its meaning and reading. Ready? Let’s go!',
+// ---- gloss.js：點字看到的說明 ----
+'助詞：標出主題（這裡念 wa）': 'Particle: marks the topic (read “wa” here)', '助詞：標出主語、喜好或存在的對象；也可當「但是」': 'Particle: marks the subject, or what is liked or exists; also “but”',
+'助詞：標出動作的對象（念 o）': 'Particle: marks the object of an action (read “o”)', '助詞：在（時間點、存在的地方）、給（對象）、往': 'Particle: at (a time, where something is), to (a person), toward',
+'助詞：在（動作的地方）、用（工具、手段）、因為': 'Particle: at (where an action happens), with/by (tool, means), because of', '助詞：往（方向，念 e）': 'Particle: toward (direction, read “e”)',
+'助詞：和（一起）、…和…': 'Particle: with (together); … and …', '助詞：也': 'Particle: also', '助詞：的；也可把動作變成名詞': 'Particle: ’s / of; can also turn an action into a noun',
+'助詞：從（起點）；接在句子後是「因為」': 'Particle: from (starting point); after a clause it means “because”', '助詞：到（終點）': 'Particle: until / to (end point)',
+'助詞：…和…等（列舉一部分）': 'Particle: … and … (among others)', '助詞：比…': 'Particle: than …', '助詞：放句尾表示疑問「嗎」': 'Particle: at the end of a sentence makes a question',
+'句尾助詞：…呢（希望對方同意）': 'Sentence-ending particle: …, right? (seeking agreement)', '句尾助詞：…喔（告訴對方）': 'Sentence-ending particle: … you know (telling someone)',
+'な形容詞接名詞時的連接詞': 'Links a na-adjective to a noun', '敬語的前綴，讓詞語更禮貌': 'Polite prefix that makes a word more respectful', '敬語的前綴': 'Polite prefix',
+'接在人名後的敬稱：先生、小姐': 'Honorific after a name: Mr./Ms.', '是（禮貌的斷定）': 'is (polite)', '是（過去，禮貌）': 'was (polite)', '是…嗎': 'is it …?',
+'不是（禮貌）': 'is not (polite)', '不是（禮貌，較正式）': 'is not (polite, more formal)', '…吧（推測）': 'probably … (guess)', '是（普通體）': 'is (plain form)', '因為': 'because',
+'一邊…一邊…（接在動詞ます形後面）': 'while … (after a verb’s ます-stem)', '這個（後面接名詞）': 'this (followed by a noun)', '那個（靠近對方，後面接名詞）': 'that (near you, followed by a noun)',
+'那個（遠處，後面接名詞）': 'that (over there, followed by a noun)', '哪個（後面接名詞）': 'which (followed by a noun)', '什麼樣的': 'what kind of', '哪裡、哪邊（禮貌）': 'where, which way (polite)', '那樣、是的': 'like that; yes',
+'動詞的禮貌語尾': 'polite verb ending', '動詞的禮貌語尾（過去）': 'polite verb ending (past)', '動詞的禮貌語尾（否定）': 'polite verb ending (negative)', '動詞的禮貌語尾（過去否定）': 'polite verb ending (past negative)',
+'…吧（提議）': 'let’s … (suggestion)', '要不要…（邀請）': 'won’t you …? (invitation)', '想要（做某事）': 'want to (do)', '想要（做某事，禮貌）': 'want to (do), polite',
+'請…': 'please …', '請不要…': 'please don’t …', '正在…；…著的狀態': 'is …ing; ongoing state', '不（否定）': 'not (negative)', 'い形容詞的否定': 'negative of an i-adjective',
+'變成': 'become', '變成了': 'became', '做': 'do', '「する」的て形': 'て-form of する', '加（算數）': 'plus (math)', '減（算數）': 'minus (math)', '那麼': 'well then',
+'各、每': 'each', '大約': 'about', '…左右（時間）': 'around … (time)', '只有': 'only', '只（後面接否定）': 'only (with a negative)', '等等': 'and so on',
+'請給我…；接て形是「請…」': 'please give me …; after a て-form: please …', '因為是…': 'because it is …', '因為沒有…': 'because there is no …', '「する」（做）的變化形': 'a form of する (do)',
+'三個人': 'three people', '五個人': 'five people', '六個人': 'six people', '七個人': 'seven people', '八個人': 'eight people', '九個人': 'nine people', '十個人': 'ten people',
+'台灣人': 'Taiwanese (person)', '幾歲': 'how old', '十歲': 'ten years old', '四個人': 'four people', '二十個人': 'twenty people', '三十個人': 'thirty people',
+'身高、背': 'height; back', '高（い形容詞的一部分）': 'high (part of an i-adjective)', '溫柔的': 'kind', '便利商店': 'convenience store', '林（姓氏）': 'Lin (surname)', '田中（姓氏）': 'Tanaka (surname)',
+'櫻花': 'cherry blossom', '村子': 'village', '大象': 'elephant', '兔子': 'rabbit', '橘子': 'mandarin orange', '壽司': 'sushi', '拉麵': 'ramen', '香菸': 'cigarette', '剪刀': 'scissors', '按鈕': 'button',
+'考試、測驗': 'exam; test', '電腦': 'computer', '新幹線（高鐵）': 'Shinkansen (bullet train)', '麵包店': 'bakery', '花店': 'flower shop', '…店': '… shop', '二樓': 'second floor', '五樓': 'fifth floor',
+'三本（書）': 'three (books)', '三張': 'three (flat things)', '一瓶、一枝（細長的東西）': 'one (long, thin thing)', '一次': 'once', '八點': 'eight o’clock', '九點': 'nine o’clock', '十點': 'ten o’clock',
+'七點': 'seven o’clock', '六點': 'six o’clock', '五點': 'five o’clock', '四點': 'four o’clock', '十一點': 'eleven o’clock', '十二點': 'twelve o’clock', '一千日圓': '1,000 yen', '一百日圓': '100 yen',
+'下一個': 'next', '前面；之前': 'in front; before', '少（「少し」的一部分）': 'few (part of 少し)', '再…一點': 'a little more …', '各位、大家': 'everyone', '什麼': 'what',
+'（後接否定）什麼都不': '(with a negative) nothing', '之後': 'after', '等一下、之後': 'later', '謝謝（口語）': 'thanks (casual)', '（過去）很好吃': 'was delicious',
+'心、精神（「気をつける」的一部分）': 'mind, spirit (part of 気をつける)', '「つける」的て形（小心、注意）': 'て-form of つける (be careful)', '遲到（「遅れる」的て形）': 'be late (て-form of 遅れる)', '遲到': 'be late', '擅長': 'good at',
+'把前面的動作變成名詞＋が': 'turns the action before it into a noun + が', '「開ける」（打開）的變化形': 'a form of 開ける (open)', '「入る」（進入）的變化形': 'a form of 入る (enter)',
+'畫（「かく」的ます形）': 'draw (ます-form of かく)', '穿（鞋、襪、褲子；「はく」的ます形）': 'put on (shoes, socks, trousers; ます-form of はく)', '穿著（鞋、襪、褲子）': 'wearing (shoes, socks, trousers)',
+'二類': 'group 2', '原形（字典形）': 'base form (dictionary form)', 'ます形：禮貌的說法': 'ます-form: polite', 'ます形否定：不…': 'ます-form negative: not …', 'ます形過去：…了': 'ます-form past: did …',
+'ます形過去否定：沒有…': 'ます-form past negative: didn’t …', '想要…': 'want to …', 'ます形＋に：去做…（目的）': 'ます-stem + に: go to do … (purpose)', 'て形：連接下一個動作': 'て-form: links to the next action',
+'ています：正在…、…著': 'ています: is …ing / state', 'ていました：過去一直…': 'ていました: was …ing', 'ていません：還沒…': 'ていません: hasn’t … yet', 'てください：請…': 'てください: please …',
+'てもいいですか：可以…嗎': 'てもいいですか: may I …?', 'た形：…了（普通體）': 'た-form: did … (plain)', 'たり：…啦…啦（列舉幾個動作）': 'たり: things like … and … (listing actions)',
+'ない形：不…': 'ない-form: not …', 'ないで：不要…': 'ないで: without …', 'ないでください：請不要…': 'ないでください: please don’t …', 'なくて：因為沒有…': 'なくて: because not …',
+'連用形': 'continuative form', '未然形（接ない等）': 'irrealis form (before ない etc.)', 'て形的一部分': 'part of a て-form', '原形': 'Base form', '過去：（那時）很好': 'past: was good',
+'副詞形': 'adverb form', '否定：不好': 'negative: not good', '過去：（那時）很…': 'past: was …', '副詞形：…地；接なる是「變得…」': 'adverb form: …ly; with なる: “become …”',
+'否定：不…': 'negative: not …', 'て形：連接下一句': 'て-form: links to the next clause', '變得…了': 'became …', '＋な：修飾後面的名詞': '+ な: describes the noun after it', '＋に：副詞用法': '+ に: used as an adverb',
+'數字＋量詞': 'number + counter', '這句裡的變化形': 'the form used in this sentence', 'てから：…之後': 'てから: after …', '變得': 'become',
+// 文法點
+'「は」主題': 'は — topic', '放在主題後面，意思像「說到…的話」。助詞的「は」念 wa。': 'Comes after the topic, like “as for …”. The particle は is read “wa”.',
+'「が」主語': 'が — subject', '標出「誰／什麼」做這件事或存在；喜歡、討厭、擅長、懂、有的對象也用「が」。': 'Marks who or what does something or exists. The thing you like, dislike, are good at, understand or have also takes が.',
+'「を」動作的對象': 'を — object', '放在動作的對象後面，例如「パンを食べます」（吃麵包）。念 o。': 'Comes after the object of an action, e.g. パンを食べます (eat bread). Read “o”.',
+'「に」時間、地點、對象': 'に — time, place, target', '表示時間點（七時に）、人或物存在的地方（部屋に）、動作的對象（母に）或目的地。': 'Marks a point in time (七時に), where someone or something is (部屋に), the person an action is aimed at (母に), or a destination.',
+'「で」地點、手段': 'で — place, means', '表示動作發生的地方（公園で），或使用的工具、交通方式（バスで）。': 'Marks where an action happens (公園で), or the tool or transport used (バスで).',
+'「へ」方向': 'へ — direction', '表示移動的方向，常和「行きます、来ます、帰ります」一起用。念 e。': 'Marks the direction of movement, often with 行きます, 来ます, 帰ります. Read “e”.',
+'「と」和': 'と — and / with', '「AとB」是 A 和 B；「人と」是和某人一起。': 'AとB means A and B; person + と means together with someone.',
+'「も」也': 'も — also', '取代「は、が、を」，表示「也是這樣」。': 'Replaces は, が or を to mean “also”.',
+'「の」的': 'の — ’s / of', '連接兩個名詞，表示所屬或說明，例如「先生の傘」（老師的傘）。': 'Links two nouns to show possession or description, e.g. 先生の傘 (the teacher’s umbrella).',
+'「から」從、因為': 'から — from, because', '接在名詞後是「從…」（九時から）；接在句子後是「因為…」（雨ですから）。': 'After a noun it means “from …” (九時から); after a clause it means “because …” (雨ですから).',
+'「まで」到': 'まで — until / to', '表示終點，常和「から」配對：「AからBまで」＝從 A 到 B。': 'Marks an end point, often paired with から: AからBまで = from A to B.',
+'「や」列舉': 'や — listing', '「AやB」＝A 和 B 等等，只舉出其中幾個。': 'AやB = A, B and so on — naming just a few.',
+'「だけ」只有': 'だけ — only', '接在名詞或數量後面：只…。例如「一つだけ」＝只有一個。': 'After a noun or amount: only …. E.g. 一つだけ = just one.',
+'「ずつ」各…、每…': 'ずつ — each', '接在數量後面，表示平均分配或每次的量。例如「一人に二つずつ」＝每人各兩個。': 'After an amount, for sharing equally or how much at a time. E.g. 一人に二つずつ = two for each person.',
+'「ぐらい／くらい」大約': 'ぐらい／くらい — about', '接在數量、時間、距離後面表示大概的量。例如「十分ぐらい」＝大約十分鐘。': 'After an amount, time or distance to mean roughly. E.g. 十分ぐらい = about ten minutes.',
+'「など」等等': 'など — and so on', '列舉之後加「など」，表示還有其他的，常和「や」一起用：りんごやみかんなど＝蘋果、橘子等等。': 'Added after a list to show there are more; often used with や: りんごやみかんなど = apples, mandarins and so on.',
+'「より」比較': 'より — comparison', '「AよりBが…」＝B 比 A 更…。': 'AよりBが… = B is more … than A.',
+'句尾「か」疑問': 'Sentence-final か — question', '放在句尾就變成問句，語調上揚，不需要問號也可以。': 'At the end of a sentence it makes a question, with rising intonation; no question mark needed.',
+'句尾「ね」': 'Sentence-final ね', '…呢。說話者覺得對方也會同意時加上。': '…, right? Used when you expect the listener to agree.',
+'句尾「よ」': 'Sentence-final よ', '…喔。告訴對方他可能不知道的事。': '… you know. Tells the listener something they may not know.',
+'「です」禮貌的「是」': 'です — polite “is”', '放在名詞或形容詞後面，讓句子變禮貌。過去是「でした」。': 'After a noun or adjective to make the sentence polite. The past is でした.',
+'「じゃありません」不是': 'じゃありません — is not', '「です」的否定。比較正式的寫法是「ではありません」。': 'The negative of です. The more formal version is ではありません.',
+'「でしょう」推測': 'でしょう — probably', '…吧。對不確定的事表示推測，或確認對方是否同意。': 'Probably …. A guess about something uncertain, or checking that the listener agrees.',
+'「〜ます」禮貌形': '〜ます — polite form', '動詞的禮貌說法，用在現在的習慣或未來要做的事。': 'The polite form of a verb, for habits or things you will do.',
+'「〜ません」否定': '〜ません — negative', '「ます」的否定：不…。': 'The negative of ます: don’t ….',
+'「〜ました」過去': '〜ました — past', '「ます」的過去：…了。': 'The past of ます: did ….',
+'「〜ませんでした」過去否定': '〜ませんでした — past negative', '沒有…（過去）。': 'Didn’t … (past).',
+'「〜ましょう」提議': '〜ましょう — let’s', '…吧。邀對方一起做，或主動提議。': 'Let’s …. Inviting someone to do something together, or offering.',
+'「〜ませんか」邀請': '〜ませんか — invitation', '要不要…？比「ましょう」更客氣的邀約。': 'Won’t you …? A politer invitation than ましょう.',
+'「〜たい」想要做': '〜たい — want to', '動詞ます形去掉「ます」加「たい」：想做…。禮貌說法再加「です」。': 'Drop ます from the ます-form and add たい: want to …. Add です to be polite.',
+'「〜に行く」去做…': '〜に行く — go to do', '動詞ます形去掉「ます」加「に」，再接「行く、来る」：去（來）做某事。': 'Drop ます, add に, then 行く or 来る: go (come) to do something.',
+'「て形」連接': 'て-form — linking', '把兩個動作接在一起：先做 A，再做 B。也是很多句型的基礎。': 'Joins two actions: do A, then B. It is also the base of many patterns.',
+'「〜てください」請…': '〜てください — please', '動詞て形加「ください」，禮貌地請對方做某事。': 'て-form + ください: politely asking someone to do something.',
+'「〜ないでください」請不要…': '〜ないでください — please don’t', '動詞ない形加「でください」，禮貌地請對方不要做。': 'ない-form + でください: politely asking someone not to do something.',
+'「〜ています」正在…／狀態': '〜ています — ongoing / state', '動詞て形加「います」：正在做的事，或持續的狀態（住んでいます＝住在）。': 'て-form + います: something in progress, or an ongoing state (住んでいます = live in).',
+'「〜てもいいですか」可以…嗎': '〜てもいいですか — may I', '動詞て形加「もいいですか」，詢問許可。': 'て-form + もいいですか: asking for permission.',
+'「〜てから」…之後': '〜てから — after', '動詞て形加「から」：做完 A 之後再做 B，強調先後順序。例如「食べてから、歯を磨きます」＝吃完再刷牙。': 'て-form + から: do B after finishing A, stressing the order. E.g. 食べてから、歯を磨きます = brush teeth after eating.',
+'「〜ながら」一邊…一邊…': '〜ながら — while', '動詞ます形去掉「ます」加「ながら」：同時做兩件事，主要的動作放在後面。例如「音楽を聞きながら勉強します」。': 'Drop ます and add ながら: doing two things at once, with the main action last. E.g. 音楽を聞きながら勉強します.',
+'「〜たり〜たりする」列舉動作': '〜たり〜たりする — listing actions', '動詞た形加「り」，舉出幾個代表性的動作，最後用「する」收尾。例如「本を読んだり、映画を見たりします」。': 'た-form + り names a few typical actions, ending with する. E.g. 本を読んだり、映画を見たりします.',
+'「〜ない」否定（普通體）': '〜ない — negative (plain)', '「ません」的普通說法。': 'The plain version of ません.',
+'「〜た」過去（普通體）': '〜た — past (plain)', '「ました」的普通說法。': 'The plain version of ました.',
+'い形容詞過去「〜かった」': 'i-adjective past 〜かった', '去掉「い」加「かった」：（那時）很…。禮貌說法再加「です」。': 'Drop い and add かった: was …. Add です to be polite.',
+'い形容詞否定「〜くない」': 'i-adjective negative 〜くない', '去掉「い」加「くない」：不…。': 'Drop い and add くない: not ….',
+'い形容詞「〜く」': 'i-adjective 〜く', '去掉「い」加「く」變成副詞（大きく開ける＝張大），或接「なる」表示變化（寒くなる＝變冷）。': 'Drop い and add く to make an adverb (大きく開ける = open wide), or add なる for a change (寒くなる = get cold).',
+'「〜くなる」變得…': '〜くなる — become', 'い形容詞去掉「い」加「くなる」，表示狀態改變：寒くなりました＝變冷了。': 'Drop い from an i-adjective and add くなる for a change of state: 寒くなりました = it got cold.',
+'な形容詞＋「な」＋名詞': 'na-adjective + な + noun', 'な形容詞放在名詞前要加「な」：静かな所（安靜的地方）。': 'Put な between a na-adjective and a noun: 静かな所 (a quiet place).',
+'這個／那個（近對方）／那個（遠處），後面一定接名詞。': 'This / that (near you) / that (over there) — always followed by a noun.',
+'「あります／います」存在': 'あります／います — existence', '東西、植物用「あります」；人、動物用「います」。常見句型：「地點に＋東西が＋あります」。': 'Things and plants use あります; people and animals use います. Common pattern: place に + thing が + あります.',
+// 詞性說明
+'一類動詞（五段動詞）': 'Group 1 verbs (godan)', '字尾是う段音（う、く、ぐ、す、つ、ぬ、ぶ、む、る）。變化時，字尾在あ、い、う、え、お段之間移動：ます形把字尾換成い段（飲む → 飲みます），ない形換成あ段（飲む → 飲まない，う結尾的換成わ）。て形看字尾：う・つ・る → って，む・ぶ・ぬ → んで，く → いて，ぐ → いで，す → して。「行く」是例外，て形是「行って」。': 'Ends in a u-row sound (う, く, ぐ, す, つ, ぬ, ぶ, む, る). The ending moves between the a, i, u, e and o rows: the ます-form uses the i-row (飲む → 飲みます), the ない-form the a-row (飲む → 飲まない; a final う becomes わ). The て-form depends on the ending: う・つ・る → って, む・ぶ・ぬ → んで, く → いて, ぐ → いで, す → して. 行く is an exception: 行って.',
+'二類動詞（一段動詞）': 'Group 2 verbs (ichidan)', '字尾是「る」，前面通常是い段或え段的音（見る、食べる）。變化最簡單：去掉「る」，直接加ます、て、ない、た（食べる → 食べます、食べて、食べない、食べた）。': 'Ends in る, usually after an i-row or e-row sound (見る, 食べる). The easiest group: drop る and add ます, て, ない, た (食べる → 食べます, 食べて, 食べない, 食べた).',
+'三類動詞（不規則動詞）': 'Group 3 verbs (irregular)', '只有「する」（做）和「来る」（來）兩個，加上「名詞＋する」的動詞（勉強する、散歩する）。變化不規則，要直接背：する → します、して、しない；来る → 来ます（きます）、来て（きて）、来ない（こない）。': 'Just する (do) and 来る (come), plus “noun + する” verbs (勉強する, 散歩する). They are irregular, so memorize them: する → します, して, しない; 来る → 来ます (きます), 来て (きて), 来ない (こない).',
+'以「い」結尾的形容詞，可以直接放在名詞前面（大きい犬）。變化發生在最後的「い」：過去換成「かった」，否定換成「くない」，連接下一句換成「くて」。「いい」比較特別，變化時要用「よ」開頭（よかった、よくない）。': 'Adjectives ending in い; they go straight before a noun (大きい犬). Changes happen to the final い: past かった, negative くない, linking くて. いい is special and uses よ when conjugated (よかった, よくない).',
+'放在名詞前面要加「な」（静かな町）。本身不變化，變化都在後面的「です」：でした、じゃありません。變成副詞時加「に」（静かに）。': 'Add な before a noun (静かな町). They don’t change themselves; the changes are in the です after them: でした, じゃありません. Add に for an adverb (静かに).',
+'表示人、事、物、地方的詞，本身不變化。後面加「です」是「是…」；過去加「でした」，否定加「じゃありません」。': 'Words for people, things and places. They don’t change; add です for “is …”, でした for the past, じゃありません for the negative.',
+'用來形容動作或形容詞的程度、方式（とても、ゆっくり），本身不變化，通常放在動詞或形容詞前面。': 'Describe how or how much (とても, ゆっくり). They don’t change and usually come before a verb or adjective.',
+'「こそあど」系列的詞（この・その・あの・どの、こちら・そちら…）和連接句子的詞（そして、しかし、それから）。本身不變化：この、その這類後面一定要接名詞；連接詞放在句子開頭，用來接上一句。': 'The こそあど words (この・その・あの・どの, こちら・そちら…) and words that link sentences (そして, しかし, それから). They don’t change: この, その and so on are always followed by a noun; conjunctions start a sentence and link it to the previous one.',
+'數字、日期、時間的說法本身不變化。注意有些數字在不同場合念法不同，例如「四」可以念よん或し，「七」可以念なな或しち。': 'Numbers, dates and times don’t change. Some numbers have more than one reading: 四 can be よん or し, 七 can be なな or しち.',
+'固定的說法，不用拆開變化，整句記起來，在對的場合使用就好。': 'Set expressions — no need to break them down. Memorize them whole and use them in the right situation.',
+'助詞或句型，接在其他詞的後面，用來表示關係或語氣。': 'Particles and patterns that follow other words to show relationships or tone.',
+'字典上查到的樣子；接「の」「前に」等句型時要用原形': 'The form you find in a dictionary; used before patterns like の and 前に', '禮貌的說法': 'polite', '不…（禮貌）': 'not … (polite)', '…了（禮貌）': 'did … (polite)',
+'沒有…（禮貌）': 'didn’t … (polite)', '連接下一個動作；很多句型的基礎': 'links to the next action; the base of many patterns', '正在…、…著': 'is …ing; ongoing state', '不…（普通體）': 'not … (plain)', '…了（普通體）': 'did … (plain)',
+'不規則：沒有': 'irregular: there isn’t', '可以直接放在名詞前面': 'can go straight before a noun', '（那時）很…': 'was …', '不…': 'not …', '（那時）不…': 'wasn’t …', '連接下一句：又…又…': 'links clauses: … and …',
+'…地；接「なる」是變得…': '…ly; with なる: become …', '修飾名詞，例：': 'describes a noun, e.g. ', '變成副詞：…地': 'makes an adverb: …ly', '是…': 'is …', '（那時）是…': 'was …', '不是…': 'is not …',
+'注意：「行く」的て形是例外，是「行って」，不是「行いて」。': 'Note: the て-form of 行く is an exception: 行って, not 行いて.', '注意：「ある」的否定是「ない」，不是「あらない」。': 'Note: the negative of ある is ない, not あらない.',
+'注意：「いい」變化時要換成「よ」：よかった、よくない、よくて。': 'Note: いい changes to よ: よかった, よくない, よくて.', '注意：「': 'Note: “',
+'」雖然是 い段或え段＋る 結尾，看起來像二類，但其實是一類動詞，要特別記住。': '” ends in an i-row or e-row sound + る and looks like group 2, but it is actually a group 1 verb — remember it.',
+'〜です': '〜です', '過去否定': 'Past negative', '副詞': 'Adverb', '＋に': '+ に',
+};
+const re = [];
+const t = s => I18N.en.dict[s] ?? s;
+const R = (r, f) => re.push([r, f]);
+R(/^今日 (\d+)\/(\d+) 題( ✓)?$/, 'Today $1/$2$3');
+R(/^今天的 (\d+) 題完成了！$/, 'Today’s $1 questions done!');
+R(/^剩 (\d+) · 共 (\d+)$/, '$1 left · $2 total');
+R(/^本輪還剩 (\d+) 題，此分類共 (\d+) 題$/, '$1 left in this round, $2 in this category');
+R(/^這疊還剩 (\d+) 張，此分類共 (\d+) 張$/, '$1 cards left in this stack, $2 in this category');
+R(/^(\d+) 題$/, '$1 questions');
+R(/^每輪 (\d+) 題$/, '$1 per round');
+R(/^([\d.]+) 倍$/, '$1×');
+R(/^，?共 (\d+) 個假名$/, (m, n) => (m.startsWith('，') ? ', ' : '') + n + ' kana');
+R(/^你的答案：([\s\S]*)$/, 'Your answer: $1');
+R(/^播放 (.+)$/, 'Play $1');
+R(/^看「(.+)」的詞性和變化形$/, 'Part of speech and forms of “$1”');
+R(/^目前只顯示「(.+)」，可以改選「全部」。$/, (m, a) => `Only showing “${t(a)}”. You can switch to “All”.`);
+R(/^「(.+)」範圍內還沒有學過的字。可以在上方把範圍調大，或先到字卡把字列入考題。$/, (m, a) => `No words learned in “${t(a)}”. Widen the range above, or add words to your quiz from Cards.`);
+R(/^已標記為學會，(\d+) 天後會再考一次$/, 'Marked as learned — it will come back in $1 days');
+R(/^已學會，明天（(.+)）會出現在到期複習。$/, 'Learned! It will be in due review tomorrow ($1).');
+R(/^下次複習：(.+)$/, 'Next review: $1');
+R(/^已學會 (\d+)\/(\d+)$/, 'Learned $1/$2');
+R(/^作答 (\d+) 次$/, 'answered $1 times');
+R(/^最近學過：(.+)$/, (m, a) => 'Recently learned: ' + t(a));
+R(/^(N5(?:～N\d)?) 已經會了$/, (m, a) => 'I know ' + a.replace('～', '–'));
+R(/^已隱藏 (N\d) 以下的文法$/, 'Hiding grammar at $1 and below');
+R(/^App 裡的(.+)（(\d+)）$/, (m, a, n) => `${t(a)} in the app (${n})`);
+R(/^變化規則（例：(.+)）$/, 'Conjugation rules (e.g. $1)');
+R(/^例句（(\d+)）$/, 'Examples ($1)');
+R(/^再顯示 (\d+) 句（共 (\d+) 句）$/, 'Show $1 more ($2 total)');
+R(/^已匯入 (\d+) 筆紀錄$/, 'Imported $1 records');
+R(/^共 (\d+) 字。換裝置時貼到「匯入進度」。$/, '$1 characters. Paste it into “Import progress” on your other device.');
+R(/^已同步到 Google 帳號（(.+)）$/, 'Synced to your Google account ($1)');
+R(/^(.*)（較自然）$/, '$1 (more natural)');
+R(/^」：(.+)$/, (m, a) => '”: ' + t(a));
+R(/^用到「(.+)」的例句$/, 'Sentences using “$1”');
+R(/^句型範例：用其他(動詞|詞)示範「(.+)」的用法，換成「(.+)」也是一樣的道理$/, (m, k, a, b) => `Pattern examples: other ${k === '動詞' ? 'verbs' : 'words'} showing “${t(a)}”; it works the same way with “${b}”`);
+R(/^另有 (\d+) 個已經會的文法沒有顯示。$/, '$1 grammar points you already know are hidden.');
+R(/^(.+?) (\d+)$/, (m, a, n) => I18N.en.dict[a] != null ? `${I18N.en.dict[a]} ${n}` : m);
+R(/^(.+)行$/, (m, a) => /^[ぁ-ゖァ-ヺー]+$/.test(a) ? a + '-row' : m);
+R(/^.+ · .+$/, m => m.split(' · ').map(x => I18N.en.dict[x] ?? (/^(.+)行$/.test(x) ? x.replace(/行$/, '-row') : /^作答 (\d+) 次$/.test(x) ? x.replace(/^作答 (\d+) 次$/, 'answered $1 times') : x)).join(' · '));
+R(/^每輪：全部$/, 'Per round: all');
+Object.assign(I18N.en.dict, D);
+I18N.en.re = re;
+})();
+
+// ===== 例句翻譯（中文 → English，對應 vocab.js、vocab2.js 與變化形例句）=====
+Object.assign(I18N.en.dict, {
+"我是學生。": "I am a student.",
+"你是日本人嗎？": "Are you Japanese?",
+"弟弟是學生。": "My younger brother is a student.",
+"那個人是老師。": "That person is a teacher.",
+"和朋友看電影。": "I watch a movie with a friend.",
+"我家有四個人。": "There are four people in my family.",
+"我爸爸在銀行工作。": "My father works at a bank.",
+"這是我媽媽的傘。": "This is my mother's umbrella.",
+"我哥哥個子很高。": "My older brother is tall.",
+"我姊姊住在東京。": "My older sister lives in Tokyo.",
+"弟弟十歲。": "My younger brother is ten years old.",
+"妹妹喜歡貓。": "My younger sister likes cats.",
+"爸爸在哪裡？": "Where is Dad?",
+"令堂好嗎？": "How is your mother?",
+"你哥哥幾歲？": "How old is your older brother?",
+"你姊姊真溫柔。": "Your older sister is kind, isn't she?",
+"爺爺早上會散步。": "Grandpa takes a walk in the morning.",
+"和奶奶一起住。": "I live with my grandmother.",
+"父母住在台南。": "My parents live in Tainan.",
+"你有兄弟姊妹嗎？": "Do you have any brothers or sisters?",
+"您太太好嗎？": "How is your wife?",
+"公園裡有小孩。": "There are children in the park.",
+"大人一千日圓。": "Adults are 1,000 yen.",
+"那個人是誰？": "Who is that person?",
+"來了一位男士。": "A man came.",
+"有位女士在唱歌。": "A woman is singing a song.",
+"大家一起拍照吧。": "Let's all take a picture together.",
+"店裡有很多客人。": "There are lots of customers in the shop.",
+"哥哥是上班族。": "My older brother is an office worker.",
+"姊姊是醫生。": "My older sister is a doctor.",
+"不知道路，所以問了警察。": "I didn't know the way, so I asked a police officer.",
+"請問您叫什麼名字？": "What is your name?",
+"要吃什麼？": "What will you eat?",
+"誰來了？": "Who came?",
+"要去哪裡？": "Where are you going?",
+"什麼時候來日本的？": "When did you come to Japan?",
+"這個包包多少錢？": "How much is this bag?",
+"這是我的傘。": "This is my umbrella.",
+"那是什麼？": "What is that?",
+"那是車站。": "That is the station.",
+"這裡是教室。": "This is the classroom.",
+"請坐在那裡。": "Please sit there.",
+"那裡有便利商店。": "There is a convenience store over there.",
+"日本的食物很好吃。": "Japanese food is delicious.",
+"我來自台灣。": "I came from Taiwan.",
+"東京是個大城市。": "Tokyo is a big city.",
+"您是哪國人？": "Which country are you from?",
+"哥哥在國外工作。": "My older brother works abroad.",
+"這個城鎮外國人很多。": "This town has a lot of foreigners.",
+"日語很有趣。": "Japanese is interesting.",
+"英文課在星期一。": "English class is on Monday.",
+"這個詞是什麼意思？": "What does this word mean?",
+"不懂這個漢字的意思。": "I don't understand the meaning of this kanji.",
+"漢字很難。": "Kanji are difficult.",
+"八點去學校。": "I go to school at eight.",
+"姊姊在大學念英文。": "My older sister studies English at university.",
+"教室裡有二十個學生。": "There are twenty students in the classroom.",
+"我們班有三十人。": "My class has thirty people.",
+"課四點結束。": "Class ends at four.",
+"作業已經做完了。": "I've already finished my homework.",
+"明天有考試。": "There is an exam tomorrow.",
+"有問題嗎？": "Do you have any questions?",
+"我不懂這個題目。": "I don't understand this question.",
+"在圖書館念書。": "I study at the library.",
+"工作從九點開始。": "Work starts at nine.",
+"爸爸的公司在車站附近。": "My father's company is near the station.",
+"明天放假。": "Tomorrow is a day off.",
+"暑假很長。": "Summer vacation is long.",
+"你生日是什麼時候？": "When is your birthday?",
+"星期六要開派對。": "We're having a party on Saturday.",
+"送了禮物給媽媽。": "I gave my mother a present.",
+"暑假要去旅行。": "I'll travel during summer vacation.",
+"去百貨公司購物。": "I'm going shopping at the department store.",
+"要不要去看電影？": "Would you like to go see a movie?",
+"我喜歡聽音樂。": "I like listening to music.",
+"你知道這首歌嗎？": "Do you know this song?",
+"妹妹很會畫畫。": "My younger sister is good at drawing.",
+"你喜歡什麼運動？": "What sports do you like?",
+"和哥哥打了網球。": "I played tennis with my older brother.",
+"夏天在游泳池游泳。": "In summer I swim in the pool.",
+"鋼琴的聲音很好聽。": "The sound of the piano is beautiful.",
+"哥哥會彈吉他。": "My older brother plays the guitar.",
+"車站在哪裡？": "Where is the station?",
+"搭電車去公司。": "I go to the office by train.",
+"公車九點來。": "The bus comes at nine.",
+"搭計程車到車站。": "I'll take a taxi to the station.",
+"爸爸開車去。": "My father goes by car.",
+"騎腳踏車去學校。": "I go to school by bicycle.",
+"搭飛機回台灣。": "I'll fly back to Taiwan.",
+"在車站買車票。": "I buy a ticket at the station.",
+"把地圖放進包包了。": "I put the map in my bag.",
+"請告訴我到車站的路。": "Please tell me the way to the station.",
+"那個轉角有麵包店。": "There is a bakery on that corner.",
+"請過那座橋。": "Please cross that bridge.",
+"這個城鎮很安靜。": "This town is quiet.",
+"這裡是個安靜的地方呢。": "This is a quiet place, isn't it?",
+"那家店很便宜。": "That shop is cheap.",
+"在百貨公司買了衣服。": "I bought clothes at the department store.",
+"超市營業到晚上十點。": "The supermarket is open until 10 p.m.",
+"在書店買了字典。": "I bought a dictionary at the bookstore.",
+"在蔬果店買菜。": "I buy vegetables at the greengrocer.",
+"在車站前的咖啡店等。": "I'll wait at the café in front of the station.",
+"車站前有一家餐廳。": "There is a restaurant in front of the station.",
+"午餐在食堂吃。": "I eat lunch at the cafeteria.",
+"在銀行領錢。": "I take out money at the bank.",
+"在郵局買郵票。": "I buy stamps at the post office.",
+"醫院在車站前面。": "The hospital is in front of the station.",
+"在圖書館看書。": "I read books at the library.",
+"星期天在公園散步。": "I take a walk in the park on Sunday.",
+"車站前有派出所。": "There is a police box in front of the station.",
+"這家飯店很新。": "This hotel is new.",
+"京都有很多寺廟。": "There are many temples in Kyoto.",
+"那棟白色建築是醫院。": "That white building is a hospital.",
+"在學校大門前等。": "I'm waiting in front of the school gate.",
+"在家吃晚餐。": "I eat dinner at home.",
+"房間裡有書桌。": "There is a desk in the room.",
+"媽媽在廚房。": "My mother is in the kitchen.",
+"廁所在哪裡？": "Where is the toilet?",
+"晚上泡澡。": "I take a bath at night.",
+"早上淋浴。": "I take a shower in the morning.",
+"狗在院子裡玩。": "A dog is playing in the yard.",
+"公園的池塘裡有魚。": "There are fish in the pond in the park.",
+"走樓梯上二樓。": "I take the stairs to the second floor.",
+"搭電梯到五樓。": "I take the elevator to the fifth floor.",
+"請打開窗戶。": "Please open the window.",
+"請關門。": "Please close the door.",
+"書桌上有書。": "There is a book on the desk.",
+"請坐在椅子上。": "Please sit on the chair.",
+"餐桌上有盤子。": "There is a plate on the table.",
+"十一點上床。": "I go to bed at eleven.",
+"冰箱裡有牛奶。": "There is milk in the fridge.",
+"關了房間的燈。": "I turned off the light in the room.",
+"晚上看電視。": "I watch TV at night.",
+"在車上聽廣播。": "I listen to the radio in the car.",
+"用電腦工作。": "I work on the computer.",
+"晚上打電話給媽媽。": "I call my mother at night.",
+"用相機拍花的照片。": "I take pictures of flowers with my camera.",
+"在這裡拍照吧。": "Let's take a picture here.",
+"這支錶很貴。": "This watch is expensive.",
+"買了三本書。": "I bought three books.",
+"爸爸早上看報紙。": "My father reads the newspaper in the morning.",
+"在車站買了雜誌。": "I bought a magazine at the station.",
+"請借我字典。": "Please lend me your dictionary.",
+"在筆記本上寫名字。": "I write my name in the notebook.",
+"在紙上畫畫。": "I draw a picture on paper.",
+"請用鉛筆寫。": "Please write with a pencil.",
+"這支筆一百日圓。": "This pen is 100 yen.",
+"請用原子筆寫名字。": "Please write your name with a ballpoint pen.",
+"包包裡有錢包。": "There is a wallet in the bag.",
+"忘了帶錢包。": "I forgot my wallet.",
+"沒有錢。": "I have no money.",
+"因為下雨，帶傘去。": "It's raining, so I'll take an umbrella.",
+"鎖門了嗎？": "Did you lock the door?",
+"箱子裡有什麼？": "What's in the box?",
+"行李很重。": "The luggage is heavy.",
+"請給我三張郵票。": "Three stamps, please.",
+"寫信給朋友。": "I write a letter to a friend.",
+"買了新衣服。": "I bought new clothes.",
+"很冷所以穿外套。": "It's cold, so I'll put on a jacket.",
+"買了黑色大衣。": "I bought a black coat.",
+"穿著白襯衫。": "I'm wearing a white shirt.",
+"這條褲子很長。": "These trousers are long.",
+"請在這裡脫鞋。": "Please take off your shoes here.",
+"穿白襪子。": "I put on white socks.",
+"戴著白色帽子。": "I'm wearing a white hat.",
+"爸爸戴著眼鏡。": "My father wears glasses.",
+"爸爸生日時送了領帶。": "I gave my father a tie for his birthday.",
+"一起吃飯吧。": "Let's eat together.",
+"每天早上吃早餐。": "I eat breakfast every morning.",
+"午餐吃拉麵。": "I'll have ramen for lunch.",
+"七點吃晚餐。": "I eat dinner at seven.",
+"中午吃便當。": "I eat a boxed lunch at noon.",
+"你喜歡什麼食物？": "What is your favorite food?",
+"飲料要什麼好呢？": "What would you like to drink?",
+"媽媽做的菜很好吃。": "My mother's cooking is delicious.",
+"早上吃麵包。": "I eat bread in the morning.",
+"我喜歡吃肉。": "I like meat.",
+"這家店的魚很好吃。": "The fish at this shop is delicious.",
+"請多吃蔬菜。": "Please eat lots of vegetables.",
+"你喜歡什麼水果？": "What fruit do you like?",
+"請給我三顆蘋果。": "Three apples, please.",
+"買了兩顆蛋。": "I bought two eggs.",
+"小孩喜歡零食。": "Children like sweets.",
+"生日吃了蛋糕。": "I ate cake on my birthday.",
+"今晚做咖哩。": "I'll make curry tonight.",
+"紅茶裡加糖。": "I put sugar in my tea.",
+"請加一點鹽。": "Please add a little salt.",
+"請給我水。": "Water, please.",
+"要不要喝茶？": "Would you like some tea?",
+"請給我紅茶和蛋糕。": "Tea and cake, please.",
+"每天早上喝咖啡。": "I drink coffee every morning.",
+"請給我一瓶牛奶。": "One bottle of milk, please.",
+"爸爸不喝酒。": "My father doesn't drink alcohol.",
+"洗盤子。": "I wash the dishes.",
+"把水倒進杯子。": "I pour water into the glass.",
+"今天天氣真好呢。": "Nice weather today, isn't it?",
+"下午開始會下雨。": "It will rain from the afternoon.",
+"冬天會下雪。": "It snows in winter.",
+"今天風很強。": "The wind is strong today.",
+"天空很藍。": "The sky is blue.",
+"那座山很高。": "That mountain is high.",
+"在河裡看到了魚。": "I saw fish in the river.",
+"夏天在海裡游泳。": "In summer I swim in the sea.",
+"院子裡有漂亮的花。": "There are pretty flowers in the yard.",
+"家門前有一棵大樹。": "There is a big tree in front of the house.",
+"和狗散步。": "I go for walks with my dog.",
+"貓在椅子下面。": "The cat is under the chair.",
+"樹上有鳥。": "There is a bird in the tree.",
+"你喜歡哪種動物？": "Which animal do you like?",
+"請保重身體。": "Please take care of yourself.",
+"頭痛。": "I have a headache.",
+"早上洗臉。": "I wash my face in the morning.",
+"妹妹眼睛很大。": "My younger sister has big eyes.",
+"兔子耳朵很長。": "Rabbits have long ears.",
+"大象的鼻子很長。": "Elephants have long noses.",
+"請把嘴巴張大。": "Please open your mouth wide.",
+"小孩的牙齒很小。": "Children's teeth are small.",
+"吃飯前洗手。": "I wash my hands before eating.",
+"走了很多路，腳很痛。": "I walked a lot, and my feet hurt.",
+"肚子痛。": "I have a stomachache.",
+"因為生病向學校請假。": "I was off school because I was sick.",
+"媽媽感冒在睡覺。": "My mother is in bed with a cold.",
+"請吃這個藥。": "Please take this medicine.",
+"這個顏色真漂亮。": "This color is pretty, isn't it?",
+"外面發出很大的聲音。": "There was a loud noise outside.",
+"老師的聲音很大。": "The teacher's voice is loud.",
+"聽到了有趣的事。": "I heard an interesting story.",
+"看電視新聞。": "I watch the news on TV.",
+"桌子上有貓。": "There is a cat on the desk.",
+"床底下有鞋子。": "There are shoes under the bed.",
+"在車站前面等。": "I'll wait in front of the station.",
+"我後面有誰？": "Who is behind me?",
+"請看包包裡面。": "Please look inside the bag.",
+"外面很冷。": "It's cold outside.",
+"請在下個轉角右轉。": "Please turn right at the next corner.",
+"銀行在左邊。": "The bank is on the left.",
+"銀行隔壁有郵局。": "There is a post office next to the bank.",
+"電視旁邊有時鐘。": "There is a clock beside the TV.",
+"銀行和書店之間有花店。": "There is a flower shop between the bank and the bookstore.",
+"這附近有車站嗎？": "Is there a station near here?",
+"河的對面有山。": "There are mountains across the river.",
+"車站東邊有公園。": "There is a park east of the station.",
+"西邊的天空是紅的。": "The western sky is red.",
+"台灣南部很溫暖。": "The south of Taiwan is warm.",
+"學校在車站北邊。": "The school is north of the station.",
+"每天去公司。": "I go to the office every day.",
+"朋友來家裡了。": "A friend came to my house.",
+"六點回家。": "I go home at six.",
+"我每天早上吃麵包。": "I eat bread every morning.",
+"喝很多水。": "I drink a lot of water.",
+"晚上看了電影。": "I watched a movie at night.",
+"每天聽音樂。": "I listen to music every day.",
+"在電車上看書。": "I read books on the train.",
+"請在這裡寫名字。": "Please write your name here.",
+"和媽媽講了電話。": "I talked with my mother on the phone.",
+"請再說一次。": "Please say it once more.",
+"在超市買蔬菜。": "I buy vegetables at the supermarket.",
+"那家店在賣鞋子。": "That shop sells shoes.",
+"在車站遇到朋友。": "I met a friend at the station.",
+"請稍等一下。": "Please wait a moment.",
+"你有帶傘嗎？": "Do you have an umbrella?",
+"星期天九點起床。": "On Sundays I get up at nine.",
+"十一點睡覺。": "I go to bed at eleven.",
+"姊姊在醫院工作。": "My older sister works at a hospital.",
+"累了，所以休息一下。": "I'm tired, so I'll rest a little.",
+"星期天打網球。": "I play tennis on Sundays.",
+"和朋友一起念書了。": "I studied together with a friend.",
+"星期天打掃房間。": "I clean my room on Sundays.",
+"星期六洗衣服。": "I do the laundry on Saturdays.",
+"晚上在公園散步。": "I take a walk in the park at night.",
+"等一下打給你。": "I'll call you later.",
+"姊姊下個月結婚。": "My older sister is getting married next month.",
+"媽媽做晚餐。": "My mother makes dinner.",
+"每天使用電腦。": "I use a computer every day.",
+"請進房間。": "Please come into the room.",
+"八點出門。": "I leave home at eight.",
+"把信寄出去了。": "I mailed the letter.",
+"媽媽現在出門了。": "My mother is out right now.",
+"打開了箱子。": "I opened the box.",
+"很冷，所以關窗。": "It's cold, so I'll close the window.",
+"請開燈。": "Please turn on the light.",
+"請關掉電視。": "Please turn off the TV.",
+"走路到車站。": "I walk to the station.",
+"每天早上在公園跑步。": "I run in the park every morning.",
+"在海裡游泳了。": "I swam in the sea.",
+"小孩在公園玩。": "Children are playing in the park.",
+"大家一起唱歌吧。": "Let's all sing a song together.",
+"老師在教日語。": "The teacher teaches Japanese.",
+"在學鋼琴。": "I'm taking piano lessons.",
+"你懂這個漢字嗎？": "Do you understand this kanji?",
+"你知道那個人的名字嗎？": "Do you know that person's name?",
+"今天穿大衣。": "I'll wear a coat today.",
+"請脫外套。": "Please take off your jacket.",
+"戴帽子。": "I put on a hat.",
+"洗了車。": "I washed the car.",
+"搭公車。": "I get on the bus.",
+"在下一站下車。": "I get off at the next station.",
+"住在大阪。": "I live in Osaka.",
+"可以坐這裡嗎？": "May I sit here?",
+"請大家站起來。": "Everyone, please stand up.",
+"請把那個鹽遞給我。": "Please pass me that salt.",
+"拍了照片。": "I took a picture.",
+"借書給朋友。": "I lent a book to a friend.",
+"在圖書館借書。": "I borrow books from the library.",
+"明天還書。": "I'll return the book tomorrow.",
+"給了妹妹零食。": "I gave my younger sister some sweets.",
+"從爸爸那裡收到手錶。": "I got a watch from my father.",
+"請叫計程車。": "Please call a taxi.",
+"課九點開始。": "Class starts at nine.",
+"工作五點結束。": "Work ends at five.",
+"忘了作業。": "I forgot my homework.",
+"記新單字。": "I memorize new words.",
+"沒錢很困擾。": "I'm in trouble because I have no money.",
+"請不要在這裡抽菸。": "Please don't smoke here.",
+"打電話給朋友。": "I call a friend.",
+"每天晚上淋浴。": "I take a shower every night.",
+"咖啡要加糖嗎？": "Do you take sugar in your coffee?",
+"車站前有人在排隊。": "People are lining up in front of the station.",
+"在那個轉角左轉。": "I turn left at that corner.",
+"請過這條路。": "Please cross this road.",
+"正在下雨。": "It's raining.",
+"春天櫻花開。": "Cherry blossoms bloom in spring.",
+"把包包放在桌上。": "I put my bag on the desk.",
+"請給我看照片。": "Please show me the photo.",
+"妹妹會彈鋼琴。": "My younger sister plays the piano.",
+"感冒了。": "I caught a cold.",
+"請回答問題。": "Please answer the question.",
+"今天非常累。": "I'm very tired today.",
+"我在台北出生。": "I was born in Taipei.",
+"桌上有字典。": "There is a dictionary on the desk.",
+"教室裡有老師。": "The teacher is in the classroom.",
+"這個工作需要電腦。": "This job needs a computer.",
+"鳥在天上飛。": "Birds are flying in the sky.",
+"請按這個按鈕。": "Please press this button.",
+"睡前刷牙。": "I brush my teeth before bed.",
+"和朋友爬了山。": "I climbed a mountain with a friend.",
+"用剪刀剪紙。": "I cut paper with scissors.",
+"明天應該會放晴。": "It will probably be sunny tomorrow.",
+"這間房子很大。": "This house is big.",
+"有一隻小狗。": "There is a small dog.",
+"買了新鞋子。": "I bought new shoes.",
+"這座寺廟很古老。": "This temple is old.",
+"東京的飯店很貴。": "Hotels in Tokyo are expensive.",
+"這家店的蔬菜很便宜。": "The vegetables at this shop are cheap.",
+"這張椅子很矮。": "This chair is low.",
+"這條河很長。": "This river is long.",
+"這支鉛筆很短。": "This pencil is short.",
+"今天非常熱。": "It's very hot today.",
+"今天早上非常冷。": "It was very cold this morning.",
+"今天很溫暖呢。": "It's warm today, isn't it?",
+"晚上很涼爽。": "It's cool at night.",
+"這杯茶很燙。": "This tea is hot.",
+"想喝冰水。": "I want to drink cold water.",
+"這個蛋糕很好吃。": "This cake is delicious.",
+"這道菜很難吃。": "This dish tastes bad.",
+"這顆蘋果很甜。": "This apple is sweet.",
+"咖哩有點辣。": "Curry is a little spicy.",
+"這個城鎮車很多。": "This town has a lot of cars.",
+"這個村子人很少。": "This village has few people.",
+"學校離家很近。": "The school is close to my house.",
+"車站離這裡遠嗎？": "Is the station far from here?",
+"這個房間很寬敞。": "This room is spacious.",
+"我的房間很小。": "My room is small.",
+"這個包包很重。": "This bag is heavy.",
+"這台電腦很輕。": "This computer is light.",
+"爸爸早上很早起。": "My father gets up early in the morning.",
+"新幹線非常快。": "The Shinkansen is very fast.",
+"這班公車很慢。": "This bus is slow.",
+"這個房間很明亮。": "This room is bright.",
+"外面已經暗了。": "It's already dark outside.",
+"哥哥網球很厲害。": "My older brother is good at tennis.",
+"我酒量很差。": "I can't hold my alcohol.",
+"這個問題很難。": "This question is difficult.",
+"這次考試很簡單。": "This test was easy.",
+"爸爸每天都很忙。": "My father is busy every day.",
+"旅行非常愉快。": "The trip was a lot of fun.",
+"這本書很有趣。": "This book is interesting.",
+"這部電影很無聊。": "This movie is boring.",
+"牙齒痛。": "My tooth hurts.",
+"我喜歡白色的貓。": "I like white cats.",
+"穿著黑色的鞋子。": "I'm wearing black shoes.",
+"買了紅蘋果。": "I bought red apples.",
+"海很藍。": "The sea is blue.",
+"那位老師很年輕。": "That teacher is young.",
+"這隻貓很可愛。": "This cat is cute.",
+"弟弟的房間很髒。": "My younger brother's room is dirty.",
+"這本字典非常好。": "This dictionary is very good.",
+"今天天氣不好。": "The weather is bad today.",
+"想要新的腳踏車。": "I want a new bicycle.",
+"這棵樹很粗。": "This tree is thick.",
+"這條路很窄。": "This road is narrow.",
+"在路上玩很危險。": "Playing in the street is dangerous.",
+"隔壁的狗很吵。": "The neighbor's dog is noisy.",
+"買了圓桌。": "I bought a round table.",
+"我喜歡貓。": "I like cats.",
+"我超喜歡壽司。": "I love sushi.",
+"弟弟討厭蔬菜。": "My younger brother hates vegetables.",
+"姊姊很會唱歌。": "My older sister is good at singing.",
+"我不擅長做菜。": "I'm bad at cooking.",
+"這個房間很乾淨。": "This room is clean.",
+"圖書館很安靜。": "The library is quiet.",
+"晚上的街道很熱鬧。": "The town is lively at night.",
+"奶奶非常有精神。": "Grandma is very healthy.",
+"這座寺廟很有名。": "This temple is famous.",
+"這本字典很方便。": "This dictionary is handy.",
+"這是很珍貴的照片。": "This is a precious photo.",
+"我沒事。": "I'm fine.",
+"明天有空嗎？": "Are you free tomorrow?",
+"車站的人很親切。": "The people at the station were kind.",
+"這道菜很簡單。": "This dish is easy.",
+"每天的工作很辛苦。": "Work every day is hard.",
+"這個包包很耐用。": "This bag is sturdy.",
+"去過各式各樣的國家。": "I've been to all kinds of countries.",
+"我和哥哥同一間學校。": "My older brother and I go to the same school.",
+"哥哥很帥。": "My older brother is handsome.",
+"這個蛋糕非常好吃。": "This cake is very delicious.",
+"懂一點點日語。": "I understand a little Japanese.",
+"稍微休息一下吧。": "Let's take a short break.",
+"公園裡有很多人。": "There are lots of people in the park.",
+"哥哥常常看電影。": "My older brother often watches movies.",
+"有時候會做菜。": "I sometimes cook.",
+"爸爸總是七點起床。": "My father always gets up at seven.",
+"已經吃午餐了嗎？": "Have you eaten lunch yet?",
+"作業還沒做完。": "I haven't finished my homework yet.",
+"馬上就去。": "I'll go right away.",
+"請再來。": "Please come again.",
+"一起回去吧。": "Let's go home together.",
+"把蛋糕全部吃完了。": "I ate all the cake.",
+"我不太喝酒。": "I don't drink much alcohol.",
+"完全不看電視。": "I never watch TV.",
+"請說慢一點。": "Please speak slowly.",
+"直接回家了。": "I went straight home.",
+"真的非常感謝。": "Thank you so much.",
+"明天大概會下雨。": "It will probably rain tomorrow.",
+"請多吃一點。": "Please eat some more.",
+"水果中最喜歡蘋果。": "Of all fruits, I like apples best.",
+"漸漸變冷了。": "It gradually got colder.",
+"第一次去日本。": "I went to Japan for the first time.",
+"現在剛好十二點。": "It's exactly twelve o'clock now.",
+"作業大致上做完了。": "I've mostly finished my homework.",
+"請再讀一次。": "Please read it once more.",
+"請進。": "Please come in.",
+"非常感謝。": "Thank you very much.",
+"請先回去。": "Please go home ahead of me.",
+"請早點睡。": "Please go to bed early.",
+"昨天一直待在家。": "I stayed home all day yesterday.",
+"一加二等於三。": "One plus two is three.",
+"二加三等於五。": "Two plus three is five.",
+"三加四等於七。": "Three plus four is seven.",
+"四加五等於九。": "Four plus five is nine.",
+"五加一等於六。": "Five plus one is six.",
+"六加二等於八。": "Six plus two is eight.",
+"七加二等於九。": "Seven plus two is nine.",
+"八加二等於十。": "Eight plus two is ten.",
+"九加一等於十。": "Nine plus one is ten.",
+"十減三等於七。": "Ten minus three is seven.",
+"五十加五十等於一百。": "Fifty plus fifty is one hundred.",
+"五百加五百等於一千。": "Five hundred plus five hundred is one thousand.",
+"這支錶一萬日圓。": "This watch is 10,000 yen.",
+"這個麵包一百日圓。": "This bread is 100 yen.",
+"請給我一顆蘋果。": "One apple, please.",
+"吃了兩個麵包。": "I ate two pieces of bread.",
+"請給我三個橘子。": "Three mandarin oranges, please.",
+"有四個箱子。": "There are four boxes.",
+"買了五個點心。": "I bought five sweets.",
+"一個人去旅行。": "I'll travel alone.",
+"兩個人看了電影。": "The two of us watched a movie.",
+"今天很熱。": "It's hot today.",
+"明天要和朋友見面。": "I'll meet a friend tomorrow.",
+"昨天下雨。": "It rained yesterday.",
+"每天學日語。": "I study Japanese every day.",
+"現在幾點？": "What time is it now?",
+"早上很忙。": "Mornings are busy.",
+"中午在食堂吃。": "At noon I eat at the cafeteria.",
+"晚上在家休息。": "In the evening I rest at home.",
+"晚上早點睡。": "I go to bed early at night.",
+"上午有課。": "I have classes in the morning.",
+"下午去買東西。": "I'll go shopping in the afternoon.",
+"今天早上喝了咖啡。": "I drank coffee this morning.",
+"今晚打電話給你。": "I'll call you tonight.",
+"每天早上六點起床。": "I get up at six every morning.",
+"每天晚上看電視。": "I watch TV every night.",
+"這週很忙。": "I'm busy this week.",
+"下週有考試。": "There is an exam next week.",
+"上週去了京都。": "I went to Kyoto last week.",
+"這個月常下雨。": "It has rained a lot this month.",
+"下個月回國。": "I'll go back to my country next month.",
+"上個月買了相機。": "I bought a camera last month.",
+"今年上了大學。": "I started university this year.",
+"明年去日本。": "I'll go to Japan next year.",
+"去年住在台北。": "I lived in Taipei last year.",
+"一整天待在家。": "I stayed home all day.",
+"沒有時間。": "I don't have time.",
+"現在三點。": "It's three o'clock now.",
+"到車站要五分鐘。": "It's five minutes to the station.",
+"七點半起床。": "I get up at seven thirty.",
+"課從幾點開始？": "What time does class start?",
+"今天星期幾？": "What day is it today?",
+"星期一要上班。": "I work on Mondays.",
+"星期二去游泳池。": "I go to the pool on Tuesday.",
+"星期三休息。": "Wednesday is my day off.",
+"星期四有考試。": "There is an exam on Thursday.",
+"星期五晚上很忙。": "Friday nights are busy.",
+"星期六朋友會來。": "A friend is coming on Saturday.",
+"星期天要做什麼？": "What will you do on Sunday?",
+"春天櫻花很美。": "The cherry blossoms are beautiful in spring.",
+"台灣的夏天很熱。": "Summer in Taiwan is hot.",
+"秋天很涼爽。": "Autumn is cool.",
+"冬天很冷。": "Winter is cold.",
+"老師，早安。": "Good morning, teacher.",
+"田中先生，你好。": "Hello, Mr. Tanaka.",
+"大家晚上好。": "Good evening, everyone.",
+"媽媽，晚安。": "Good night, Mom.",
+"大家再見。": "Goodbye, everyone.",
+"謝謝你的禮物。": "Thank you for the present.",
+"「謝謝。」「不客氣。」": "\"Thank you.\" \"You're welcome.\"",
+"不好意思，請問車站在哪裡？": "Excuse me, where is the station?",
+"遲到了，對不起。": "Sorry I'm late.",
+"那麼，我開動了。": "Well then, let's eat.",
+"很好吃，謝謝招待。": "That was delicious. Thank you for the meal.",
+"媽媽，我出門了。": "Mom, I'm off.",
+"小心點，路上慢走。": "Take care, see you later.",
+"媽媽，我回來了。": "Mom, I'm home.",
+"歡迎回來，很冷吧。": "Welcome home. It must have been cold.",
+"初次見面，我姓林。": "Nice to meet you, I'm Lin.",
+"我姓林，請多指教。": "I'm Lin. Nice to meet you.",
+"麻煩給我一杯咖啡。": "One coffee, please.",
+"是的，沒錯。": "Yes, that's right.",
+"不，我不是學生。": "No, I'm not a student.",
+"歡迎光臨，請進。": "Welcome, please come in.",
+"老師，打擾了。": "Excuse me, teacher.",
+"林先生，你好嗎？": "How are you, Mr. Lin?",
+"生日快樂。": "Happy birthday.",
+"天色暗了，請小心。": "It's dark, so please be careful.",
+"喂，我是林。": "Hello, this is Lin.",
+"白天變長了。": "The days have gotten longer.",
+"新的一年要開始了。": "A new year is beginning.",
+"等一下再打電話給你。": "I'll call you later.",
+"車站旁邊有銀行。": "There is a bank near the station.",
+"自己做菜。": "I cook for myself.",
+"那位是日文老師。": "That person is a Japanese teacher.",
+"這邊的比較便宜。": "This one is cheaper.",
+"那家店有各式各樣的東西。": "That shop has all kinds of things.",
+"我爸爸在汽車公司工作。": "My father works at a car company.",
+"田中先生家是四口之家。": "The Tanaka household is a family of four.",
+"爺爺住在小村子裡。": "Grandpa lives in a small village.",
+"這個班有三十個學生。": "There are thirty students in this class.",
+"每天練習鋼琴。": "I practice the piano every day.",
+"把信投進郵筒了。": "I put the letter in the mailbox.",
+"各位早安。": "Good morning, everyone.",
+"蛋糕吃了一半。": "I ate half of the cake.",
+"很冷，請把門關上。": "It's cold, so please close the door.",
+"請小心火。": "Please be careful with fire.",
+"日本大使館在哪裡？": "Where is the Japanese embassy?",
+"請告訴我電話號碼。": "Please tell me your phone number.",
+"明天應該是晴天吧。": "It will probably be sunny tomorrow.",
+"今天從早上就是陰天。": "It's been cloudy since this morning.",
+"明天有漢字測驗。": "There is a kanji test tomorrow.",
+"把咖啡倒進杯子。": "I pour coffee into the cup.",
+"住在車站附近的公寓。": "I live in an apartment near the station.",
+"搭地下鐵去公司。": "I take the subway to the office.",
+"在玄關脫鞋。": "I take off my shoes at the entrance.",
+"我們班有很多留學生。": "There are many international students in my class.",
+"寄了明信片給朋友。": "I sent a postcard to a friend.",
+"這張紙請影印三份。": "Please make three copies of this paper.",
+"入口在那邊。": "The entrance is over there.",
+"出口在哪裡？": "Where is the exit?",
+"這篇文章有點難。": "This passage is a little difficult.",
+"用日文寫了作文。": "I wrote an essay in Japanese.",
+"女孩在公園玩。": "A girl is playing in the park.",
+"那個男孩是我弟弟。": "That boy is my younger brother.",
+"那位女士是誰？": "Who is that woman?",
+"車站前站著一個男人。": "A man is standing in front of the station.",
+"傍晚和狗去散步。": "I walk my dog in the evening.",
+"我的寵物是貓。": "My pet is a cat.",
+"用刀子切肉。": "I cut the meat with a knife.",
+"用叉子吃蛋糕。": "I eat cake with a fork.",
+"用湯匙吃咖哩。": "I eat curry with a spoon.",
+"日本人用筷子吃飯。": "Japanese people eat rice with chopsticks.",
+"這個碗很舊了。": "This rice bowl is very old.",
+"在超市買了牛肉。": "I bought beef at the supermarket.",
+"做了豬肉咖哩。": "I made pork curry.",
+"我喜歡雞肉。": "I like chicken.",
+"在麵包上塗奶油。": "I spread butter on bread.",
+"在魚上淋醬油。": "I pour soy sauce on the fish.",
+"喝蘋果汁。": "I drink apple juice.",
+"洗手間在哪裡？": "Where is the restroom?",
+"請不要在走廊上奔跑。": "Please don't run in the hallway.",
+"書架上有很多書。": "There are lots of books on the bookshelf.",
+"桌上有菸灰缸。": "There is an ashtray on the table.",
+"把花插進花瓶了。": "I put flowers in the vase.",
+"從爸爸那裡收到一支鋼筆。": "I got a fountain pen from my father.",
+"把信放進信封。": "I put the letter in an envelope.",
+"口袋裡有手帕。": "There is a handkerchief in my pocket.",
+"把鑰匙放進口袋了。": "I put the key in my pocket.",
+"很冷，所以穿毛衣。": "It's cold, so I'll wear a sweater.",
+"姊姊穿著紅色的裙子。": "My older sister is wearing a red skirt.",
+"爸爸穿西裝去公司。": "My father wears a suit to work.",
+"在房間裡穿拖鞋。": "I wear slippers in the room.",
+"很冷，開暖爐吧。": "It's cold, so let's turn on the heater.",
+"星期日去了電影院。": "I went to the movie theater on Sunday.",
+"老師的字很漂亮。": "The teacher's handwriting is beautiful.",
+"哥哥個子很高。": "My older brother is tall.",
+"向警察問了路。": "I asked a police officer for directions.",
+"叔叔在銀行工作。": "My uncle works at a bank.",
+"從阿姨那裡收到了蛋糕。": "I got a cake from my aunt.",
+"我們是台灣人。": "We are Taiwanese.",
+"寒假要去日本。": "I'll go to Japan during winter vacation.",
+"請借我橡皮擦。": "Please lend me an eraser.",
+"老師在黑板上寫字。": "The teacher writes on the blackboard.",
+"請把答案寫在紙上。": "Please write your answers on paper.",
+"小時候常在河邊玩。": "When I was a child, I often played in the river.",
+"接下來輪到你了。": "Next is your turn.",
+"那是真的嗎？": "Is that true?",
+"下次一起看電影吧。": "Let's watch a movie together next time.",
+"我家有兩隻貓。": "We have two cats at home.",
+"還有其他問題嗎？": "Are there any other questions?",
+"小時候住在台灣。": "I lived in Taiwan when I was a child.",
+"請用平假名寫名字。": "Please write your name in hiragana.",
+"片假名有點難。": "Katakana is a little difficult.",
+"買了咖啡色的包包。": "I bought a brown bag.",
+"這個公園綠意很多。": "This park has a lot of greenery.",
+"買了五百公克的肉。": "I bought 500 grams of meat.",
+"到車站有兩公里。": "It's two kilometers to the station.",
+"這個游泳池是五十公尺。": "This pool is fifty meters.",
+"請讀第十頁。": "Please read page ten.",
+"那把傘是誰的？": "Whose umbrella is that?",
+"那棟建築是圖書館。": "That building is the library.",
+"哪一台車是你的？": "Which car is yours?",
+"你的包包是哪一個？": "Which one is your bag?",
+"這位是田中先生。": "This is Mr. Tanaka.",
+"你那邊在下雨嗎？": "Is it raining there?",
+"洗手間在那邊。": "The restroom is over there.",
+"車站在哪邊？": "Which way is the station?",
+"請到這邊來。": "Please come over here.",
+"那邊很危險喔。": "It's dangerous over there!",
+"那邊有一個大公園。": "There is a big park over there.",
+"咖啡和紅茶你喜歡哪一個？": "Which do you like, coffee or tea?",
+"想要這樣的包包。": "I want a bag like this.",
+"那樣的鞋子我不買。": "I won't buy shoes like that.",
+"想住那樣的大房子。": "I want to live in a big house like that.",
+"你喜歡什麼樣的音樂？": "What kind of music do you like?",
+"日文很難。但是很有趣。": "Japanese is difficult. However, it's interesting.",
+"吃了早餐，然後去了學校。": "I ate breakfast. And then I went to school.",
+"寫了作業，之後看了電視。": "I did my homework. After that, I watched TV.",
+"正在下雨。可是我要出門。": "It's raining. But I'm going out.",
+"那麼，明天見。": "Well then, see you tomorrow.",
+"這件襯衫怎麼樣？": "How about this shirt?",
+"為什麼沒去上學？": "Why were you absent from school?",
+"為什麼不吃蔬菜？": "Why don't you eat vegetables?",
+"星期日通常都在家。": "On Sundays I'm usually at home.",
+"春天到了。": "Spring has come.",
+"作業做了嗎？": "Did you do your homework?",
+"答案不對。": "The answer is wrong.",
+"媽媽會彈鋼琴。": "My mother can play the piano.",
+"哥哥在銀行上班。": "My older brother works for a bank.",
+"去年我的狗死了。": "My dog died last year.",
+"燈熄了。": "The light went out.",
+"把作業交給老師了。": "I handed my homework to the teacher.",
+"拜託朋友幫忙工作。": "I asked a friend to help with work.",
+"公車停在車站前。": "The bus stopped in front of the station.",
+"九點到了車站。": "I arrived at the station at nine.",
+"把盤子擺到桌上。": "I set the plates out on the table.",
+"把錢包弄丟了。": "I lost my wallet.",
+"門開了。": "The door opened.",
+"窗戶關著。": "The window is closed.",
+"爸爸每天早上打領帶。": "My father puts on a tie every morning.",
+"在玄關穿鞋。": "I put on my shoes at the entrance.",
+"下雨了，所以撐傘。": "It's raining, so I put up my umbrella.",
+"鳥在樹上叫。": "A bird is singing in the tree.",
+"小孩在哭。": "A child is crying.",
+"在信封上貼了郵票。": "I put a stamp on the envelope.",
+"從下午開始天空變陰了。": "The sky clouded over from the afternoon.",
+"從家裡到車站要花十分鐘。": "It takes ten minutes from my house to the station.",
+"今天風很大。": "A strong wind is blowing today.",
+"向老師提問了。": "I asked the teacher a question.",
+"每年和家人去旅行。": "Every year I travel with my family.",
+"這張紙很薄。": "This paper is very thin.",
+"讀了一本很厚的書。": "I read a thick book.",
+"黃色的花開著。": "Yellow flowers are blooming.",
+"我討厭下雨天。": "I don't like rainy days.",
+"真是氣派的建築呢。": "What a magnificent building!",
+"不，不用了。": "No, I'm fine, thank you.",
+"有六張椅子。": "There are six chairs.",
+"買了七顆蘋果。": "I bought seven apples.",
+"有八個箱子。": "There are eight boxes.",
+"有九顆蛋。": "There are nine eggs.",
+"請給我十個橘子。": "Ten mandarin oranges, please.",
+"四月一號是星期日。": "April 1st is a Sunday.",
+"五月二號要去日本。": "I'm going to Japan on May 2nd.",
+"休息了三天。": "I took three days off.",
+"七月四號是我的生日。": "July 4th is my birthday.",
+"五號朋友會來。": "A friend is coming on the 5th.",
+"六號放假。": "The 6th is a holiday.",
+"考試是七號。": "The test is on the 7th.",
+"八號收到了信。": "The letter arrived on the 8th.",
+"九號下雨。": "It rained on the 9th.",
+"十號要和朋友見面。": "I'm meeting a friend on the 10th.",
+"二十號要回國。": "I'm going back to my country on the 20th.",
+"一月非常冷。": "January is very cold.",
+"二月下雪了。": "It snowed in February.",
+"學校三月結束。": "School ends in March.",
+"花在四月開。": "Flowers bloom in April.",
+"五月天氣很好。": "The weather is nice in May.",
+"六月雨很多。": "It rains a lot in June.",
+"從七月開始放暑假。": "Summer vacation starts in July.",
+"八月非常熱。": "August is very hot.",
+"學校九月開學。": "School starts in September.",
+"十月很涼爽。": "October is cool.",
+"十一月要去旅行。": "I'm traveling in November.",
+"十二月很忙。": "December is busy.",
+"你的生日是幾月？": "Which month is your birthday?",
+"今天是幾號？": "What's the date today?",
+"你家有幾個人？": "How many people are in your family?",
+"請給我兩張郵票。": "Two stamps, please.",
+"買了一本雜誌。": "I bought one magazine.",
+"有三支鉛筆。": "There are three pencils.",
+"有一隻狗。": "There is one dog.",
+"有兩台車。": "There are two cars.",
+"買了三顆蛋。": "I bought three eggs.",
+"書店在三樓。": "The bookstore is on the third floor.",
+"一個星期去兩次游泳池。": "I go to the pool twice a week.",
+"喝了一杯咖啡。": "I drank a cup of coffee.",
+"在日本待了兩個星期。": "I was in Japan for two weeks.",
+"學了三個月的日文。": "I studied Japanese for three months.",
+"兩年前結婚了。": "I got married two years ago.",
+"每週日打網球。": "I play tennis every Sunday.",
+"每個月打電話給媽媽。": "I call my mother every month.",
+"每年夏天去海邊。": "Every summer I go to the beach.",
+"前天下雨了。": "It rained the day before yesterday.",
+"後天有考試。": "There is an exam the day after tomorrow.",
+"前年去了日本。": "I went to Japan the year before last.",
+"昨晚睡得很好。": "I slept well last night.",
+"今晚應該會下雪吧。": "It will probably snow tonight.",
+"現在三點多。": "It's a little after three now.",
+"姊姊二十歲。": "My older sister is twenty.",
+"有人在嗎？我是田中。": "Excuse me, anyone home? It's Tanaka.",
+"感冒了嗎？請保重。": "A cold? Take care of yourself.",
+"這是筆。": "This is a pen.",
+"院子裡有狗。": "There is a dog in the yard.",
+"吃麵包。": "I eat bread.",
+"七點起床。": "I get up at seven.",
+"房間裡有貓。": "There is a cat in the room.",
+"打電話給媽媽。": "I call my mother.",
+"在公園打網球。": "I play tennis in the park.",
+"搭公車去學校。": "I go to school by bus.",
+"下週要去京都。": "I'm going to Kyoto next week.",
+"和哥哥去了公園。": "I went to the park with my older brother.",
+"買了麵包和牛奶。": "I bought bread and milk.",
+"桌上有書和筆記本等東西。": "There are books, notebooks, and so on on the desk.",
+"我也是學生。": "I'm a student too.",
+"這是老師的傘。": "This is the teacher's umbrella.",
+"課從九點開始。": "Class starts at nine.",
+"從車站走到家。": "I walk from the station to my house.",
+"因為下雨，所以不出門。": "It's raining, so I won't go out.",
+"這家店很便宜，但不好吃。": "This shop is cheap, but the food isn't good.",
+"電車比公車快。": "The train is faster than the bus.",
+"這是你的傘嗎？": "Is this your umbrella?",
+"今天很熱呢。": "It's hot today, isn't it?",
+"這家店的蛋糕很好吃喔。": "The cake at this shop is delicious, you know.",
+"我是台灣人。": "I'm Taiwanese.",
+"我不是老師。": "I'm not a teacher.",
+"昨天是星期日。": "Yesterday was Sunday.",
+"每天看報紙。": "I read the newspaper every day.",
+"我不喝酒。": "I don't drink alcohol.",
+"昨天打了網球。": "I played tennis yesterday.",
+"昨天什麼都沒吃。": "I didn't eat anything yesterday.",
+"一起去吧。": "Let's go together.",
+"要不要一起吃午餐？": "Would you like to have lunch together?",
+"請再說慢一點。": "Please speak a little more slowly.",
+"請不要在這裡拍照。": "Please don't take pictures here.",
+"想去日本。": "I want to go to Japan.",
+"現在正在下雨。": "It's raining now.",
+"只吃了一顆蘋果。": "I ate just one apple.",
+"每人給兩個。": "I give two to each person.",
+"到車站大約十分鐘。": "It's about ten minutes to the station.",
+"買了蘋果、橘子等等。": "I bought apples, mandarin oranges, and so on.",
+"一邊聽音樂一邊讀書。": "I study while listening to music.",
+"吃完飯之後刷牙。": "After eating, I brush my teeth.",
+"星期日會看看書、看看電影。": "On Sundays I read books, watch movies, and so on.",
+"明天會下雨吧。": "It will probably rain tomorrow.",
+"可以開窗戶嗎？": "May I open the window?",
+"可以借這把傘嗎？": "May I borrow this umbrella?",
+"昨天和朋友看了電影。（對朋友說）": "I watched a movie with a friend yesterday. (casual)",
+"今天早上吃了麵包。（對朋友說）": "I ate bread this morning. (casual)",
+"睡覺前刷牙。": "I brush my teeth before going to bed.",
+"我每天早上喝咖啡。": "I drink coffee every morning.",
+"昨天看了電影。": "I watched a movie yesterday.",
+"吃完早餐，然後去學校。": "I eat breakfast and then go to school.",
+"姊姊住在東京。（持續的狀態）": "My older sister lives in Tokyo. (ongoing state)",
+"今天不去學校。（對朋友說）": "I'm not going to school today. (casual)",
+"昨天見到朋友了。（對朋友說）": "I met a friend yesterday. (casual)",
+"我想去日本。": "I want to go to Japan.",
+"有一隻大狗。": "There is a big dog.",
+"昨天很冷。": "It was cold yesterday.",
+"這道菜不辣。": "This dish isn't spicy.",
+"考試不難。": "The test wasn't difficult.",
+"這個房間又寬敞又明亮。": "This room is spacious and bright.",
+"請寫大一點。": "Please write it big.",
+"昨天很閒。": "I was free yesterday.",
+"考試不簡單。": "The test wasn't easy.",
+"我喜歡安靜的房間。": "I like quiet rooms.",
+"請小聲說話。": "Please speak quietly.",
+"今天是星期日。": "Today is Sunday.",
+"昨天是星期一。": "Yesterday was Monday.",
+"今天不是休假日。": "Today is not a day off."
+});
+// ===== 五十音例字（日文 → English）=====
+Object.assign(I18N.en.kanaEx, {
+"あめ": "rain",
+"いぬ": "dog",
+"うみ": "sea",
+"えき": "station",
+"おかね": "money",
+"かさ": "umbrella",
+"きって": "stamp",
+"くつ": "shoes",
+"たけ": "bamboo",
+"こども": "child",
+"さかな": "fish",
+"しお": "salt",
+"すし": "sushi",
+"せんせい": "teacher",
+"そら": "sky",
+"たまご": "egg",
+"ちず": "map",
+"つくえ": "desk",
+"て": "hand",
+"とり": "bird",
+"なつ": "summer",
+"にく": "meat",
+"ねこ": "cat",
+"のみもの": "drink",
+"はな": "flower",
+"ひと": "person",
+"ふね": "boat",
+"へや": "room",
+"ほん": "book",
+"まど": "window",
+"みみ": "ear",
+"むし": "insect",
+"め": "eye",
+"もも": "peach",
+"やま": "mountain",
+"ゆき": "snow",
+"よる": "night",
+"らいねん": "next year",
+"りんご": "apple",
+"くるま": "car",
+"れいぞうこ": "refrigerator",
+"いろ": "color",
+"わたし": "I; me",
+"ほんをよむ": "read a book (を used only as a particle)",
+"みかん": "mandarin orange",
+"がっこう": "school",
+"ぎんこう": "bank",
+"かぐ": "furniture",
+"げんき": "healthy; energetic",
+"ごはん": "rice; meal",
+"ざっし": "magazine",
+"じかん": "time",
+"かぜ": "wind",
+"ぞう": "elephant",
+"だいがく": "university",
+"はなぢ": "nosebleed",
+"つづく": "to continue",
+"でんわ": "telephone",
+"どこ": "where",
+"ばんごはん": "dinner",
+"えび": "shrimp",
+"ぶた": "pig",
+"べんとう": "boxed lunch",
+"ぼうし": "hat",
+"かんぱい": "cheers!",
+"えんぴつ": "pencil",
+"てんぷら": "tempura",
+"ぺこぺこ": "starving",
+"さんぽ": "walk; stroll",
+"きゃく": "guest; customer",
+"きゅうり": "cucumber",
+"きょう": "today",
+"しゃしん": "photo",
+"しゅくだい": "homework",
+"しょくどう": "cafeteria",
+"おちゃ": "tea",
+"ちゅうごく": "China",
+"ちょっと": "a little",
+"こんにゃく": "konjac",
+"ぎゅうにゅう": "milk",
+"にょろにょろ": "wriggling",
+"ひゃく": "one hundred",
+"ひゅうひゅう": "(wind) whistling",
+"ひょう": "leopard",
+"みゃく": "pulse",
+"みょうじ": "family name",
+"しょうりゃく": "omission",
+"りゅうがくせい": "international student",
+"りょこう": "travel",
+"ぎゃく": "opposite",
+"ぎゅうにく": "beef",
+"きんぎょ": "goldfish",
+"じゃんけん": "rock-paper-scissors",
+"じゅぎょう": "class; lesson",
+"じょうず": "skillful",
+"さんびゃく": "three hundred",
+"びゅうびゅう": "(wind) howling",
+"びょういん": "hospital",
+"はっぴゃく": "eight hundred",
+"ぴゅう": "whoosh",
+"はっぴょう": "presentation",
+"アイス": "ice cream",
+"イギリス": "the UK",
+"ウイスキー": "whisky",
+"エアコン": "air conditioner",
+"オレンジ": "orange",
+"カメラ": "camera",
+"キロ": "kilogram; kilometer",
+"クラス": "class",
+"ケーキ": "cake",
+"コーヒー": "coffee",
+"サラダ": "salad",
+"タクシー": "taxi",
+"スープ": "soup",
+"セーター": "sweater",
+"ソファー": "sofa",
+"タオル": "towel",
+"チーズ": "cheese",
+"ツアー": "tour",
+"テレビ": "TV",
+"トマト": "tomato",
+"ナイフ": "knife",
+"テニス": "tennis",
+"カヌー": "canoe",
+"ネクタイ": "necktie",
+"ノート": "notebook",
+"ハンカチ": "handkerchief",
+"フォーク": "fork",
+"ヘリコプター": "helicopter",
+"ホテル": "hotel",
+"マスク": "face mask",
+"ゲーム": "game",
+"メール": "email",
+"メモ": "memo",
+"タイヤ": "tire",
+"ユニフォーム": "uniform",
+"ヨーグルト": "yogurt",
+"ラジオ": "radio",
+"リボン": "ribbon",
+"ルール": "rule",
+"ロボット": "robot",
+"ワイン": "wine",
+"パン": "bread",
+"ガム": "chewing gum",
+"ギター": "guitar",
+"グラス": "glass",
+"ゴルフ": "golf",
+"デザート": "dessert",
+"ゼロ": "zero",
+"ゾーン": "zone",
+"ダンス": "dance",
+"チヂミ": "Korean pancake",
+"デパート": "department store",
+"ドア": "door",
+"バス": "bus",
+"ビール": "beer",
+"ブーツ": "boots",
+"ベッド": "bed",
+"ボール": "ball",
+"ピアノ": "piano",
+"プール": "swimming pool",
+"ペン": "pen",
+"ポスト": "mailbox",
+"キャンプ": "camping",
+"バーベキュー": "barbecue",
+"トーキョー": "Tokyo",
+"シャツ": "shirt",
+"シュークリーム": "cream puff",
+"ショップ": "shop",
+"チャンス": "chance",
+"チューリップ": "tulip",
+"チョコレート": "chocolate",
+"ニャー": "meow",
+"ニュース": "news",
+"ニョッキ": "gnocchi",
+"ヒャッホー": "yahoo! (a cheer)",
+"ヒューズ": "fuse",
+"ミャンマー": "Myanmar",
+"ミュージック": "music",
+"ミョウガ": "myoga ginger",
+"リャマ": "llama",
+"リュック": "backpack",
+"ギャグ": "gag; joke",
+"フィギュア": "figurine",
+"ギョーザ": "gyoza dumplings",
+"ジャム": "jam",
+"ジュース": "juice",
+"ジョギング": "jogging",
+"ビュッフェ": "buffet",
+"コンピューター": "computer",
+"ピョンピョン": "hopping",
+"カップ": "cup",
+"おかあさん": "mother",
+"おにいさん": "older brother",
+"くうき": "air",
+"おとうさん": "father"
+});
 
 </script>
 <script>
@@ -2621,12 +3974,54 @@ const ALL_IDS = KANA.map(k => k.id).concat(WORDS.map(w => w.id));
 let S = store.get('n5:progress', null);
 if (!S || typeof S !== 'object' || !S.items) S = { items: {}, days: {} };
 S.days = S.days || {};
-const SET = Object.assign({ vib: 'on', sfx: 'on', round: 20, recent: 'd1', mean: 'zh', furi: true, knownLv: '', romaji: false, theme: 'system', voice: '', rate: 0.9 }, store.get('n5:settings', {}));
-const UI = Object.assign({ gramOpen: false, kanaSec: 'seion', tab: 'kana', script: 'h', kanaView: 'table', kanaMode: 'k2r', kanaRange: 'all', mcMode: 'jp2zh', mcSrc: 'learn', fillSrc: 'learn', cardSrc: 'new', pos: 'all' }, store.get('n5:ui', {}));
+const SET = Object.assign({ vib: 'on', sfx: 'on', round: 20, recent: 'd1', mean: 'zh', lang: 'zh', furi: true, knownLv: '', romaji: false, theme: 'system', voice: '', rate: 0.9 }, store.get('n5:settings', {}));
+const UI = Object.assign({ fillMode: 'fill', dictSrc: 'learn', gramOpen: false, kanaSec: 'seion', tab: 'kana', script: 'h', kanaView: 'table', kanaMode: 'k2r', kanaRange: 'all', mcMode: 'jp2zh', mcSrc: 'learn', fillSrc: 'learn', cardSrc: 'new', pos: 'all' }, store.get('n5:ui', {}));
 const saveSet = () => store.set('n5:settings', SET);
 const saveUI = () => store.set('n5:ui', UI);
 const saveLocal = () => store.set('n5:progress', S);
 const getRec = id => S.items[id] || blankRec();
+
+// ================= 介面語言（中文／English） =================
+// 程式裡的介面文字都寫中文；選 English 時，畫面上的中文由 i18n.js 的對照表即時換成英文。
+// 日文（lang="ja" 的區塊）不會動。換語言時重新載入頁面，避免中英混雜。
+const LANG = SET.lang === 'en' && typeof I18N !== 'undefined' ? 'en' : 'zh';
+const I18 = LANG === 'en' ? I18N.en : null;
+const HAN = /[\u3400-\u9fff]/;
+const i18nMiss = new Set();
+function trText(str) {
+  if (!I18 || !str || !HAN.test(str)) return null;
+  const m = str.match(/^(\s*)([\s\S]*?)(\s*)$/), t = m[2];
+  let out = I18.dict[t];
+  if (out == null) {
+    for (const [re, rp] of I18.re) { if (re.test(t)) { out = t.replace(re, typeof rp === 'function' ? (...a) => rp(...a) : rp); break; } }
+  }
+  if (out == null) { i18nMiss.add(t); return null; }
+  return m[1] + out + m[3];
+}
+const L = str => trText(str) ?? str; // 給 toast、confirm 這類不經過畫面的文字用
+const TR_ATTRS = ['title', 'aria-label', 'placeholder'];
+function trNode(n) {
+  if (n.nodeType === 3) { const v = trText(n.nodeValue); if (v != null && v !== n.nodeValue) n.nodeValue = v; return; }
+  if (n.nodeType !== 1) return;
+  const tag = n.tagName;
+  if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'TEXTAREA' || n.getAttribute('lang') === 'ja' || n.classList.contains('ja') || n.hasAttribute('data-noi18n')) return;
+  for (const a of TR_ATTRS) { const v0 = n.getAttribute(a); if (v0) { const v = trText(v0); if (v != null && v !== v0) n.setAttribute(a, v); } }
+  for (let c = n.firstChild; c; c = c.nextSibling) trNode(c);
+}
+const inJa = n => { const e = n.nodeType === 1 ? n : n.parentElement; return !!(e && e.closest('[lang="ja"],.ja,[data-noi18n],textarea')); };
+if (I18) {
+  document.documentElement.lang = 'en';
+  document.title = 'Japanese N5';
+  trNode(document.body);
+  new MutationObserver(recs => {
+    for (const r of recs) {
+      if (r.type === 'childList') { for (const n of r.addedNodes) if (!inJa(n.parentNode || n)) trNode(n); }
+      else if (r.type === 'characterData') { if (!inJa(r.target)) trNode(r.target); }
+      else if (r.type === 'attributes') { const el = r.target, v0 = el.getAttribute(r.attributeName); if (v0 && !inJa(el)) { const v = trText(v0); if (v != null && v !== v0) el.setAttribute(r.attributeName, v); } }
+    }
+  }).observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: TR_ATTRS });
+  window.__i18nMiss = i18nMiss;
+}
 function putRec(id, rec) { S.items[id] = rec; saveLocal(); Cloud.schedule(); }
 function touch(id, patch) {
   const old = getRec(id), now = Date.now();
@@ -2674,7 +4069,7 @@ const Voice = {
     return this.list.slice().sort((a, b) => this.score(b) - this.score(a))[0] || null;
   },
   allRobotic() { return this.list.length > 0 && this.list.every(v => this.BAD.test(v.name) && !this.GOOD.test(v.name)); },
-  speak(text, voiceOverride) {
+  speak(text, voiceOverride, rate) {
     if (!this.ok || !text) { if (!this.ok) toast('這個瀏覽器不支援語音播放'); return; }
     try {
       speechSynthesis.cancel();
@@ -2682,7 +4077,7 @@ const Voice = {
       u.lang = 'ja-JP';
       const v = voiceOverride || this.best();
       if (v) u.voice = v;
-      u.rate = Number(SET.rate) || 0.9;
+      u.rate = rate || Number(SET.rate) || 0.9;
       speechSynthesis.speak(u);
     } catch (e) { toast('無法播放聲音'); }
   }
@@ -2840,6 +4235,9 @@ function meanText(zh, en) {
   return esc(zh);
 }
 const meanW = w => meanText(w.zh, w.en);
+const meanPlain = w => SET.mean === 'en' && w.en ? w.en : SET.mean === 'both' && w.en ? `${w.zh} / ${w.en}` : w.zh;
+// 五十音例字的意思：English 介面用 i18n.js 的對照
+const exMean = (ja, zh) => (I18 && I18.kanaEx[ja]) || zh;
 const sentHTML = (w, hl = true) => rubyHTML(w.segs, Object.assign({ toks: toksOf(w) }, hl && w.a0 >= 0 ? { hl: [w.a0, w.a1] } : {}));
 const romajiLine = txt => `<div class="romaji">${esc(txt)}</div>`;
 function exampleBlock(w) {
@@ -2897,6 +4295,7 @@ function wordPool(src) {
     mcReview: w => wrongOf(w.id, 'mc') === 2,
     fillWrong: w => wrongOf(w.id, 'fill') === 1,
     fillReview: w => wrongOf(w.id, 'fill') === 2,
+    dictWrong: w => wrongOf(w.id, 'dict') === 1,
     excluded: w => getRec(w.id).s === 'excluded'
   }[src];
   return WORDS.filter(w => f(w));
@@ -3236,13 +4635,13 @@ function showKanaDetail(k) {
     <div class="kinfo">
       <div class="rom">${esc(k.romaji)}</div>
       <div class="meta">${esc(k.cat0)} · ${esc(k.row)} · ${stTxt}${r.n ? ` · 作答 ${r.n} 次` : ''}</div>
-      ${k.ex ? `<div><span class="ja" style="font-size:20px">${esc(k.ex)}</span> <span class="meta">${esc(kanaToRoma(k.ex))}</span><br>${esc(k.exZh)}</div>` : `<div class="meta">${esc(k.exZh)}</div>`}
+      ${k.ex ? `<div><span class="ja" style="font-size:20px">${esc(k.ex)}</span> <span class="meta">${esc(kanaToRoma(k.ex))}</span><br>${esc(exMean(k.ex, k.exZh))}</div>` : `<div class="meta">${esc(k.exZh)}</div>`}
       ${conf.length ? `<div class="meta">容易混淆：<span class="ja" style="font-size:18px;color:var(--fg)">${conf.map(esc).join('・')}</span></div>` : ''}
       <div class="row">${playBtn(k.kana, '發音')}${k.ex ? playBtn(k.ex, '例字') : ''}</div>
     </div></div>`;
 }
 function kanaNotes() {
-  const ex = (ja, zh) => `<div class="exitem"><div><span class="ja">${ja}</span> <span class="meta">${esc(kanaToRoma(ja))}</span><br><span>${zh}</span></div>${playBtn(ja, '')}</div>`;
+  const ex = (ja, zh) => `<div class="exitem"><div><span class="ja">${ja}</span> <span class="meta">${esc(kanaToRoma(ja))}</span><br><span>${esc(exMean(ja, zh))}</span></div>${playBtn(ja, '')}</div>`;
   return `<details class="lst"><summary>促音「っ」與長音的說明</summary><div class="notes">
   <div class="note">
     <h3>促音「っ／ッ」</h3>
@@ -3306,7 +4705,7 @@ function nextKanaQ() {
     promptHTML: prompt,
     options: opts.map(o => ({ html: mode === 'k2r' ? esc(o.romaji) : `<span lang="ja">${o.kana}</span>`, cls: mode === 'k2r' ? '' : 'kanab', correct: o.id === k.id })),
     onAnswer: ok => { if (ok) R.right++; R.done = true; record(k, 'kana', ok, src); },
-    afterHTML: () => `<div class="example"><div class="row" style="gap:14px"><div class="sq small" lang="ja"><span>${k.kana}</span></div><div><div style="font-size:20px;font-weight:700">${esc(k.romaji)}</div>${k.ex ? `<span class="ja" style="font-size:18px">${esc(k.ex)}</span>　${esc(k.exZh)}` : `<span class="meta">${esc(k.exZh)}</span>`}</div></div><div class="row">${playBtn(k.kana, '發音')}${k.ex ? playBtn(k.ex, '例字') : ''}</div></div>`
+    afterHTML: () => `<div class="example"><div class="row" style="gap:14px"><div class="sq small" lang="ja"><span>${k.kana}</span></div><div><div style="font-size:20px;font-weight:700">${esc(k.romaji)}</div>${k.ex ? `<span class="ja" style="font-size:18px">${esc(k.ex)}</span>　${esc(exMean(k.ex, k.exZh))}` : `<span class="meta">${esc(k.exZh)}</span>`}</div></div><div class="row">${playBtn(k.kana, '發音')}${k.ex ? playBtn(k.ex, '例字') : ''}</div></div>`
   }, () => { R.idx++; R.done = false; nextKanaQ(); });
 }
 function roundDone(host, R, again) {
@@ -3363,7 +4762,8 @@ function emptyWords(host, src) {
     recent: [`「${recentLabel()}」範圍內還沒有學過的字。可以在上方把範圍調大，或先到字卡把字列入考題。`, '去字卡挑字', () => { UI.cardSrc = 'new'; saveUI(); showTab('card'); }],
     fillWrong: ['目前沒有填空錯題。', '練習待考的字', () => { UI.fillSrc = 'learn'; saveUI(); renderFill(); }],
     fillReview: ['目前沒有填空錯題複習。', '練習待考的字', () => { UI.fillSrc = 'learn'; saveUI(); renderFill(); }],
-    due: ['今天沒有到期要複習的字。', '練習待考的字', () => { UI.fillSrc = 'learn'; saveUI(); renderFill(); }]
+    due: ['今天沒有到期要複習的字。', '練習待考的字', () => { UI.fillSrc = 'learn'; saveUI(); renderFill(); }],
+    dictWrong: ['目前沒有聽寫錯題。', '練習待考的字', () => { UI.dictSrc = 'learn'; saveUI(); renderFill(); }]
   }[src] || ['這個分類沒有題目。', '回到待考', () => {}];
   const posNote = UI.pos !== 'all' ? `<p>目前只顯示「${POS_FILTERS.find(x => x[0] === UI.pos)[1]}」，可以改選「全部」。</p>` : '';
   host.innerHTML = `<div class="card empty"><p>${m[0]}</p>${posNote}<button class="btn solid" id="emptyGo">${m[1]}</button></div>`;
@@ -3516,13 +4916,22 @@ function updateCardCounts() {
 // ================= 填空 =================
 let fillRound = null;
 const FILL_SRCS = [['learn', '待考'], ['recent', '最近學過'], ['fillWrong', '填空錯題'], ['fillReview', '錯題複習'], ['due', '到期複習']];
+const fillModeSeg = () => `<div class="seg" role="group" aria-label="填空模式">
+      <button data-fmode="fill" aria-pressed="${UI.fillMode !== 'dict'}">句子填空</button>
+      <button data-fmode="dict" aria-pressed="${UI.fillMode === 'dict'}">聽寫</button>
+    </div>`;
+function bindFillMode(host) {
+  $$('[data-fmode]', host).forEach(b => b.onclick = () => { if (UI.fillMode === b.dataset.fmode) return; UI.fillMode = b.dataset.fmode; saveUI(); document.body.classList.remove('typing'); renderFill(); });
+}
 function renderFill() {
   const host = $('#tab-fill');
   Quiz.active = null;
+  if (UI.fillMode === 'dict') return renderDict();
   const counts = Object.fromEntries(FILL_SRCS.map(([k]) => [k, srcPool(k).length]));
-  host.innerHTML = `
+  host.innerHTML = `${fillModeSeg()}
     <div class="ctl">${pillSelect('fillSrc', '題目來源', FILL_SRCS.map(([k, l]) => [k, `${l} ${counts[k]}`]), UI.fillSrc)}${UI.fillSrc === 'recent' ? recentCtl().html : posChips()}</div>
     <div id="fq"></div>`;
+  bindFillMode(host);
   $('#fillSrc', host).onchange = e => { UI.fillSrc = e.target.value; saveUI(); fillRound = null; renderFill(); };
   recentCtl(renderFill).bind(host);
   bindPos(host, () => { fillRound = null; renderFill(); });
@@ -3615,6 +5024,98 @@ function scrollFillTop() {
 }
 if (window.visualViewport) window.visualViewport.addEventListener('resize', () => { if (document.body.classList.contains('typing')) scrollFillTop(); });
 
+// ================= 聽寫 =================
+// 聽單字的發音，打出假名（或拼音、漢字）。不影響「已學會」，答錯的字會進「聽寫錯題」。
+let dictRound = null;
+const DICT_SRCS = [['learn', '待考'], ['recent', '最近學過'], ['dictWrong', '聽寫錯題'], ['learned', '複習已學會']];
+const dictPool = src => srcPool(src).filter(w => w.pg !== '文法');
+function renderDict() {
+  const host = $('#tab-fill');
+  const counts = Object.fromEntries(DICT_SRCS.map(([k]) => [k, dictPool(k).length]));
+  host.innerHTML = `${fillModeSeg()}
+    <div class="ctl">${pillSelect('dictSrc', '題目來源', DICT_SRCS.map(([k, l]) => [k, `${l} ${counts[k]}`]), UI.dictSrc)}${UI.dictSrc === 'recent' ? recentCtl().html : posChips()}</div>
+    <div id="fq"></div>`;
+  bindFillMode(host);
+  $('#dictSrc', host).onchange = e => { UI.dictSrc = e.target.value; saveUI(); dictRound = null; renderFill(); };
+  recentCtl(() => { dictRound = null; renderFill(); }).bind(host);
+  bindPos(host, () => { dictRound = null; renderFill(); });
+  if (dictRound && dictRound.done) { dictRound.idx++; dictRound.done = false; }
+  const valid = dictRound && dictRound.src === UI.dictSrc && (UI.dictSrc === 'recent' || dictRound.pos === UI.pos);
+  if (!valid || dictRound.idx >= dictRound.queue.length) {
+    if (valid && dictRound.queue.length && dictRound.idx >= dictRound.queue.length) return roundDone($('#fq'), dictRound, () => { dictRound = null; renderFill(); });
+    const pool = dictPool(UI.dictSrc);
+    if (!pool.length) return emptyWords($('#fq'), UI.dictSrc);
+    dictRound = { queue: UI.dictSrc === 'recent' ? recentQueue(pool) : pickRound(pool, getRec, 'dict', roundSize(), UI.dictSrc === 'dictWrong'), idx: 0, total: pool.length, src: UI.dictSrc, pos: UI.pos, right: 0 };
+  }
+  nextDictQ();
+}
+function nextDictQ(keepFocus) {
+  const R = dictRound, host = $('#fq');
+  if (!host) return;
+  if (R.idx >= R.queue.length) { document.body.classList.remove('typing'); return roundDone(host, R, () => { dictRound = null; renderFill(); }); }
+  const w = R.queue[R.idx];
+  const src = R.src === 'dictWrong' ? 'wrong' : 'learn';
+  const len = kanaLen(w.reading);
+  host.innerHTML = `<div class="card" id="fillCard">
+    <div class="qhead">${progressLine(R, R.total)}</div>
+    <div class="dict-play">
+      <button class="dict-big" id="dictPlay" aria-label="再聽一次">${ICON.play}</button>
+      <button class="btn quiet" id="dictSlow" style="min-height:40px">慢速</button>
+    </div>
+    <div class="hint dict-hint">
+      <span class="pos">${esc(w.pos)}</span><span class="meta">共 ${len} 個假名</span>
+      <button class="linkbtn" id="dictHint">看意思</button>
+    </div>
+    <div class="dict-mean" id="dictMean" hidden>${meanW(w)}</div>
+    <form class="answerrow" id="fillForm" style="margin-top:12px" autocomplete="off">
+      <input id="fillIn" type="text" inputmode="text" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" placeholder="平假名、拼音或漢字" aria-label="寫下聽到的字">
+      <button class="btn solid" type="submit" id="fillGo">送出</button>
+    </form>
+    <div class="preview" id="fillPrev"></div>
+    <button class="btn quiet block" id="fillShow" style="margin-top:4px">看答案</button>
+    <div id="fillAfter"></div>
+  </div>`;
+  const inp = $('#fillIn'), prev = $('#fillPrev');
+  const say = slow => Voice.speak(w.reading, null, slow ? 0.6 : 0);
+  $('#dictPlay').onclick = () => say(false);
+  $('#dictSlow').onclick = () => say(true);
+  $('#dictHint').onclick = e => { e.currentTarget.hidden = true; $('#dictMean').hidden = false; };
+  let answered = false;
+  inp.addEventListener('input', () => { const v = inp.value, conv = /[a-z]/i.test(v) ? romaToKana(v, false) : v; prev.textContent = v && conv !== v ? `→ ${conv}` : ''; });
+  const target = { ans: w.word, ansR: w.reading, word: w.word, reading: w.reading, romaji: w.romaji };
+  const finish = (ok, shown) => {
+    answered = true; R.done = true;
+    if (ok) R.right++;
+    record(w, 'dict', ok, src);
+    ok ? Sfx.ok() : Sfx.ng(); buzz(ok);
+    inp.readOnly = true;
+    $('#fillGo').textContent = '下一題';
+    $('#fillShow').hidden = true;
+    $('#dictHint').hidden = true; $('#dictMean').hidden = true;
+    $('#fillAfter').innerHTML = `<div class="afterbox">
+      ${verdict(ok, shown ? '（看了答案）' : '')}
+      ${!ok && inp.value && !shown ? `<div class="meta">你的答案：${esc(inp.value)}</div>` : ''}
+      <div class="row" style="gap:12px;align-items:center"><span class="ja" style="font-size:26px">${wordHTML(w)}</span><span>${meanW(w)}</span>${iconPlay(w.reading, '播放單字')}</div>
+      ${romajiLine(w.romaji)}
+      ${exampleBlock(w)}
+    </div>`;
+  };
+  const next = () => { R.idx++; R.done = false; nextDictQ(true); };
+  $('#fillForm').addEventListener('submit', e => {
+    e.preventDefault();
+    if (answered) return next();
+    if (!inp.value.trim()) { inp.focus(); return; }
+    finish(checkFill(target, inp.value), false);
+  });
+  $('#fillGo').addEventListener('mousedown', e => e.preventDefault());
+  $('#fillShow').onclick = () => { if (!answered) finish(false, true); };
+  inp.addEventListener('focus', () => { document.body.classList.add('typing'); setTimeout(scrollFillTop, 280); });
+  inp.addEventListener('blur', () => setTimeout(() => { const a = document.activeElement; if (!a || a.id !== 'fillIn') document.body.classList.remove('typing'); }, 250));
+  if (keepFocus && window.matchMedia('(pointer:fine)').matches) inp.focus({ preventScroll: true });
+  else if (keepFocus && document.body.classList.contains('typing')) { inp.focus({ preventScroll: true }); scrollFillTop(); }
+  say(false);
+}
+
 // ================= 單字庫 =================
 function libCounts() {
   const t = today();
@@ -3679,10 +5180,16 @@ function renderLib() {
           <select id="recentSet">${RECENT_OPTS.map(([k, l]) => `<option value="${k}"${SET.recent === k ? ' selected' : ''}>${l}</option>`).join('')}</select>
           <div class="meta">每輪題數會套用到五十音、單選、字卡和填空。「最近學過」一輪會出完範圍內的全部字；錯題複習固定每輪隨機 10 題。</div>
         </section>
+        <section><h4>介面語言 Language</h4>
+          <label class="label" for="langSel">介面語言</label>
+          <select id="langSel" data-noi18n><option value="zh"${LANG === 'zh' ? ' selected' : ''}>中文（繁體）</option><option value="en"${LANG === 'en' ? ' selected' : ''}>English</option></select>
+          <div class="meta">切換後會重新載入。日文內容不變；選 English 時，單字意思和例句翻譯也會換成英文。</div>
+          <button class="btn quiet" id="tourBtn" style="min-height:40px;margin-top:6px">重看使用導覽</button>
+        </section>
         <section><h4>單字意思</h4>
           <label class="label" for="meanSel">顯示哪種語言的意思</label>
           <select id="meanSel"><option value="zh"${SET.mean === 'zh' ? ' selected' : ''}>中文</option><option value="en"${SET.mean === 'en' ? ' selected' : ''}>English</option><option value="both"${SET.mean === 'both' ? ' selected' : ''}>中文＋English</option></select>
-          <div class="meta">字卡、單選、單字庫和點字看意思都會跟著換。例句的翻譯維持中文。</div>
+          <div class="meta">字卡、單選、單字庫和點字看意思都會跟著換。例句翻譯跟著介面語言。</div>
         </section>
         <section><h4>文法補充</h4>
           <label class="label" for="knownLv">已經會的文法等級（不再顯示）</label>
@@ -3717,6 +5224,8 @@ function renderLib() {
   $('#vibSel').onchange = e => { SET.vib = e.target.value; saveSet(); buzz(true); };
   $('#vibTest').onclick = testBuzz;
   $('#sfxSel').onchange = e => { SET.sfx = e.target.value; saveSet(); if (SET.sfx !== 'off') Sfx.ok(); };
+  $('#langSel').onchange = e => setLang(e.target.value);
+  $('#tourBtn').onclick = () => Tour.start(0);
   $('#meanSel').onchange = e => { SET.mean = e.target.value; saveSet(); mcRound = null; toast({ zh: '單字意思：中文', en: '單字意思：English', both: '單字意思：中文＋English' }[SET.mean]); };
   $('#knownLv').onchange = e => { SET.knownLv = e.target.value; saveSet(); toast(SET.knownLv ? `已隱藏 ${SET.knownLv} 以下的文法` : '文法全部顯示'); };
   $('#exp').onclick = async () => {
@@ -4108,7 +5617,7 @@ function renderGram() {
       ${exs.length ? `<div class="gr-exs">${exs.slice(0, gramShow).map(({ w, s }) => {
         const r = segRange(w.segs, w.sent.indexOf(s), s.length);
         return `<div class="gr-ex"><div class="ex-row"><div class="sent" lang="ja">${rubyHTML(w.segs, { toks: toksOf(w), hl: r })}</div>${iconPlay(w.sent, '播放例句')}</div>
-          ${romajiLine(segsRomaji(w.segs))}<div class="zhline">${esc(w.sentZh)}</div><div class="from">出自單字：<span lang="ja">${esc(w.word)}</span>（${esc(w.zh)}）</div></div>`;
+          ${romajiLine(segsRomaji(w.segs))}<div class="zhline">${esc(w.sentZh)}</div><div class="from">出自單字：<span lang="ja">${esc(w.word)}</span>（${esc(meanPlain(w))}）</div></div>`;
       }).join('')}</div>${exs.length > gramShow ? `<button class="btn quiet gr-more" id="grMore">再顯示 ${Math.min(8, exs.length - gramShow)} 句（共 ${exs.length} 句）</button>` : ''}`
       : '<p class="meta">目前的單字例句裡還沒有用到這個文法。</p>'}
     </div>`;
@@ -4147,11 +5656,11 @@ const Picker = {
   open(sel) {
     if (!this.el) this.build();
     this.sel = sel;
-    const title = sel.getAttribute('aria-label') || '選擇';
+    const title = sel.getAttribute('aria-label') || L('選擇');
     const rows = [...sel.options].map(o => {
       const m = o.textContent.match(/^(.*?)\s+(\d+)$/);
       let name = m ? m[1] : o.textContent; const n = m ? +m[2] : null;
-      if (o.value === 'all' && name === '詞性') name = '全部';
+      if (o.value === 'all' && sel.hasAttribute('data-possel')) name = L('全部');
       const on = o.value === sel.value;
       return `<button class="pk-opt${on ? ' on' : ''}${n === 0 ? ' zero' : ''}" data-v="${esc(o.value)}" role="option" aria-selected="${on}">
         <span class="pk-n">${esc(name)}</span>${n !== null ? `<span class="pk-c">${n}</span>` : ''}<span class="pk-ck" aria-hidden="true">${on ? ICON.ok : ''}</span></button>`;
@@ -4199,6 +5708,86 @@ new MutationObserver(() => {
   for (const [seg, idx] of todo) { seg.classList.remove('seg-noanim'); seg.style.setProperty('--i', idx); }
 }).observe(document.body, { childList: true, subtree: true });
 
+// ================= 換介面語言 =================
+function setLang(lang, resumeTour) {
+  if (lang === LANG) return;
+  SET.lang = lang;
+  // 單字意思跟著換：中文介面配中文意思，English 介面配英文意思（「兩者都顯示」保留）
+  if (lang === 'en' && SET.mean === 'zh') SET.mean = 'en';
+  if (lang === 'zh' && SET.mean === 'en') SET.mean = 'zh';
+  saveSet();
+  if (resumeTour != null) store.set('n5:tourResume', resumeTour);
+  location.reload();
+}
+
+// ================= 首次使用導覽 =================
+const TOUR_ART = `<svg class="tour-art" viewBox="0 0 320 110" aria-hidden="true"><rect width="320" height="110" rx="12" fill="var(--surface2)"/><circle cx="252" cy="34" r="16" fill="var(--c2)"/><path d="M0 110 L70 46 L120 82 L170 30 L240 110Z" fill="var(--c1)"/><path d="M150 50 L170 30 L190 50 L180 46 L170 54 L160 46Z" fill="var(--surface)"/><path d="M120 110 L210 62 L320 104 L320 110Z" fill="var(--c3)"/><path d="M0 98 C60 88 110 104 170 96 S280 86 320 96 L320 110 L0 110Z" fill="var(--pri-soft)"/><rect x="26" y="20" width="44" height="44" rx="10" fill="var(--fill)"/><text x="48" y="51" text-anchor="middle" font-size="28" font-weight="700" fill="var(--fill-ink)" font-family="var(--font-kana)">あ</text></svg>`;
+const TOUR = [
+  { t: '歡迎使用日語 N5', d: '從五十音開始，一路學到 N5 的單字和文法。先選介面語言，接下來用 30 秒認識每個分頁。', lang: true },
+  { el: '[data-tab="kana"]', tab: 'kana', t: '五十音', d: '平假名、片假名的表，點一個字可以聽發音、看例字；切到「練習」做認字測驗。' },
+  { el: '[data-tab="card"]', tab: 'card', t: '字卡：挑要學的字', d: '新字一張一張看：已經會的按「已經會了」，想練的按「列入考題」，之後單選和填空就會出這些字。' },
+  { el: '[data-tab="mc"]', tab: 'mc', t: '單選', d: '日→中、中→日、聽發音、漢字讀音、助詞填空，左上角可以換題型和題目來源。' },
+  { el: '[data-tab="fill"]', tab: 'fill', t: '填空・聽寫', d: '看例句打出空格裡的字，答對才算「已學會」，之後照時間排到期複習。切到「聽寫」可以練聽力。' },
+  { el: '[data-tab="gram"]', tab: 'gram', t: '文法', d: '每個文法點都有說明和例句，也有動詞、形容詞的變化規則。' },
+  { el: '[data-tab="lib"]', tab: 'lib', t: '單字庫・設定', d: '看進度、搜尋單字、進入錯題和到期複習。下面的「設定」可以調音效、用 Google 登入同步進度、換介面語言。' },
+  { el: ['#furiBtn', '#romajiBtn', '#themeBtn'], t: '上方的小按鈕', d: '「漢」切換漢字上的假名，「Aa」顯示羅馬拼音，最右邊切換淺色／深色。' },
+  { t: '小提示', d: '例句裡的單字都可以點，會跳出意思和讀音。準備好就開始吧！', last: true }
+];
+const Tour = {
+  i: 0, ring: null, card: null,
+  start(i) {
+    this.i = i || 0;
+    if (!this.ring) {
+      this.ring = document.createElement('div'); this.ring.className = 'tour-ring';
+      this.card = document.createElement('div'); this.card.className = 'tour-card'; this.card.setAttribute('role', 'dialog'); this.card.setAttribute('aria-modal', 'true');
+      this.back = document.createElement('div'); this.back.style.cssText = 'position:fixed;inset:0;z-index:69';
+      document.body.append(this.back, this.ring, this.card);
+      window.addEventListener('resize', () => this.place());
+    }
+    this.back.hidden = this.ring.hidden = this.card.hidden = false;
+    this.show();
+  },
+  show() {
+    const st = TOUR[this.i];
+    if (st.tab && UI.tab !== st.tab) showTab(st.tab);
+    const dots = TOUR.map((_, j) => `<i class="${j === this.i ? 'on' : ''}"></i>`).join('');
+    this.card.setAttribute('aria-label', st.t);
+    this.card.innerHTML = `${this.i === 0 ? TOUR_ART : ''}<h3>${esc(st.t)}</h3><p>${esc(st.d)}</p>
+      ${st.lang ? `<div class="tour-lang" data-noi18n><button class="btn ${LANG === 'zh' ? 'solid' : 'quiet'}" data-tlang="zh">中文（繁體）</button><button class="btn ${LANG === 'en' ? 'solid' : 'quiet'}" data-tlang="en">English</button></div>` : ''}
+      <div class="tour-dots" aria-hidden="true">${dots}</div>
+      <div class="row">${st.last ? '' : '<button class="btn quiet" data-tour="skip">略過</button>'}${this.i > 0 && !st.last ? '<button class="btn quiet" data-tour="prev">上一步</button>' : ''}<button class="btn solid" data-tour="${st.last ? 'end' : 'next'}">${st.last ? '開始學習' : '下一步'}</button></div>`;
+    $$('[data-tlang]', this.card).forEach(b => b.onclick = () => { if (b.dataset.tlang === LANG) return this.go(1); setLang(b.dataset.tlang, 1); });
+    $$('[data-tour]', this.card).forEach(b => b.onclick = () => { const a = b.dataset.tour; if (a === 'next') this.go(this.i + 1); else if (a === 'prev') this.go(this.i - 1); else this.end(); });
+    this.place();
+    requestAnimationFrame(() => { const f = $('[data-tour="next"],[data-tour="end"]', this.card); if (f) f.focus({ preventScroll: true }); });
+  },
+  go(i) { this.i = Math.max(0, Math.min(TOUR.length - 1, i)); this.show(); },
+  place() {
+    if (!this.card || this.card.hidden) return;
+    const st = TOUR[this.i], vh = window.innerHeight;
+    const els = st.el ? [].concat(st.el).map(s => $(s)).filter(Boolean) : [];
+    this.card.style.top = this.card.style.bottom = '';
+    if (!els.length) {
+      this.ring.classList.add('none');
+      this.card.style.top = Math.max(16, (vh - this.card.offsetHeight) / 2) + 'px';
+      return;
+    }
+    this.ring.classList.remove('none');
+    const rs = els.map(e => e.getBoundingClientRect());
+    const r = { l: Math.min(...rs.map(x => x.left)), t: Math.min(...rs.map(x => x.top)), r: Math.max(...rs.map(x => x.right)), b: Math.max(...rs.map(x => x.bottom)) };
+    const pad = 4;
+    Object.assign(this.ring.style, { left: (r.l - pad) + 'px', top: (r.t - pad) + 'px', width: (r.r - r.l + pad * 2) + 'px', height: (r.b - r.t + pad * 2) + 'px' });
+    if (r.t > vh / 2) this.card.style.bottom = (vh - r.t + 14) + 'px';
+    else this.card.style.top = (r.b + 14) + 'px';
+  },
+  end() {
+    store.set('n5:toured', 1);
+    this.back.hidden = this.ring.hidden = this.card.hidden = true;
+    showTab('card');
+  }
+};
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && Tour.card && !Tour.card.hidden) Tour.end(); });
+
 // ================= 啟動 =================
 applyTheme();
 applyRomaji();
@@ -4207,6 +5796,11 @@ renderGoal();
 Voice.init();
 showTab(TABS.includes(UI.tab) ? UI.tab : 'kana');
 Cloud.init();
+{
+  const resume = store.get('n5:tourResume', null);
+  if (resume != null) { store.set('n5:tourResume', null); Tour.start(resume); }
+  else if (!store.get('n5:toured', 0) && !Object.keys(S.items).length) Tour.start(0);
+}
 })();
 
 </script>
