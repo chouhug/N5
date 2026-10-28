@@ -9,7 +9,7 @@
   const LANGS = [
     { id: 'ja', name: '日語', sub: 'N5', glyph: 'あ', path: 'index.html', ready: true },
     { id: 'it', name: '義大利文', sub: 'A1', glyph: 'à', path: 'it.html', ready: true },
-    { id: 'es', name: '西班牙文', sub: '', glyph: 'ñ', path: 'es.html', ready: false },
+    { id: 'es', name: '西班牙文', sub: 'A1', glyph: 'ñ', path: 'es.html', ready: true },
     { id: 'de', name: '德文', sub: '', glyph: 'ß', path: 'de.html', ready: false },
     { id: 'ru', name: '俄文', sub: '', glyph: 'Я', path: 'ru.html', ready: false },
     { id: 'en', name: '英文', sub: 'B2', glyph: 'Aa', path: 'en.html', ready: false }
