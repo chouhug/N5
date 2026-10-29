@@ -135,7 +135,8 @@
 
   function boot() {
     const st = document.createElement('style');
-    st.textContent = `.goal span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    st.textContent = `html{touch-action:manipulation}
+      .goal span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--fg);opacity:.85}
       .brand.lg-btn{cursor:pointer;display:inline-flex;align-items:center;gap:2px;border-radius:10px;padding:4px 6px;margin:-4px -6px;-webkit-tap-highlight-color:transparent}
       .brand.lg-btn:active{background:var(--pri-soft)}
       .brand.lg-btn .lg-chev{width:12px;height:12px;color:var(--muted);flex:none}
