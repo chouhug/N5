@@ -3722,6 +3722,7 @@ function renderLib() {
         <section><h4>音效</h4>
           <label class="label" for="sfxSel">按鈕和答題音效</label>
           <select id="sfxSel">${[['on', '開'], ['low', '小聲'], ['off', '關']].map(([k, l]) => `<option value="${k}"${SET.sfx === k ? ' selected' : ''}>${l}</option>`).join('')}</select>
+          <div class="meta">答對、答錯、按按鈕時的短音效。手機開靜音模式時通常不會出聲。</div>
           <label class="label" for="vibSel" style="margin-top:6px">答題震動</label>
           <select id="vibSel"${canVibrate ? '' : ' disabled'}>${[['on', '開'], ['off', '關']].map(([k, l]) => `<option value="${k}"${SET.vib === k ? ' selected' : ''}>${l}</option>`).join('')}</select>
           <div class="meta">${canVibrate ? '答對短震一下，答錯震兩下。' : '這個瀏覽器不支援震動（iPhone 的網頁 App 目前都不支援）。'}</div>
@@ -3734,15 +3735,23 @@ function renderLib() {
           <select id="roundSel">${[10, 15, 20, 30, 50, 'all'].map(n => `<option value="${n}"${String(SET.round) === String(n) ? ' selected' : ''}>${n === 'all' ? '全部' : n + ' 題'}</option>`).join('')}</select>
           <label class="label" for="recentSet">「最近學過」的範圍</label>
           <select id="recentSet">${RECENT_OPTS.map(([k, l]) => `<option value="${k}"${SET.recent === k ? ' selected' : ''}>${l}</option>`).join('')}</select>
-          <label class="label" for="meanSel">單字意思</label>
+          <div class="meta">每輪題數會套用到發音練習、單選、字卡和填空。「最近學過」一輪會出完範圍內的全部字；錯題複習固定每輪隨機 10 題。</div>
+        </section>
+        <section><h4>介面語言 Language</h4>
+          <label class="label" for="langSel">介面語言</label>
+          <select id="langSel"><option value="zh"${SET.lang !== 'en' ? ' selected' : ''}>中文（繁體）</option><option value="en"${SET.lang === 'en' ? ' selected' : ''}>English</option></select>
+          <div class="meta">${LC.name}頁目前只有中文介面；選 English 會套用到日語頁。</div>
+        </section>
+        <section><h4>單字意思</h4>
+          <label class="label" for="meanSel">顯示哪種語言的意思</label>
           <select id="meanSel"><option value="zh"${SET.mean === 'zh' ? ' selected' : ''}>中文</option><option value="en"${SET.mean === 'en' ? ' selected' : ''}>English</option><option value="both"${SET.mean === 'both' ? ' selected' : ''}>中文＋English</option></select>
-          <div class="meta">外觀、音效、震動、每輪題數、「最近學過」和單字意思，都和日文共用同一份設定。</div>
+          <div class="meta">字卡、單選、單字庫和點字看意思都會跟著換。</div>
         </section>
         <section><h4>同步與備份</h4>
           <div class="meta" id="syncLong">${esc(Cloud.label())}</div>
           <div id="authBox"></div>
           <div class="row"><button class="btn quiet" id="exp">匯出進度</button><button class="btn quiet" id="imp">匯入進度</button></div>
-          <div class="meta">各語言的進度存在同一個帳號裡；備份碼也是同一串，每個語言頁都能匯入。</div>
+          <div class="meta">各語言的進度存在同一個帳號裡；備份碼也是同一串，每個語言頁都能匯入。所有設定（外觀、音效、題數、意思、介面語言）各語言共用，在哪一頁改都一樣。</div>
           <div id="bk"></div>
         </section>
         <section><h4>重設</h4>
@@ -3771,6 +3780,7 @@ function renderLib() {
   $('#vibSel').onchange = e => { SET.vib = e.target.value; saveSet(); buzz(true); };
   $('#vibTest').onclick = testBuzz;
   $('#sfxSel').onchange = e => { SET.sfx = e.target.value; saveSet(); if (SET.sfx !== 'off') Sfx.ok(); };
+  $('#langSel').onchange = e => { SET.lang = e.target.value; saveSet(); toast(SET.lang === 'en' ? '日語頁會換成英文介面' : '介面語言：中文'); };
   $('#meanSel').onchange = e => { SET.mean = e.target.value; saveSet(); mcRound = null; toast({ zh: '單字意思：中文', en: '單字意思：English', both: '單字意思：中文＋English' }[SET.mean]); };
   $('#resetIt').onclick = () => {
     const el = Sheet.open(`清除${LC.name}紀錄`, `<p style="margin:0">確定要清除${LC.name}的所有學習紀錄嗎？這個動作不能復原，可以先「匯出進度」備份。其他語言的進度不會動。</p><div class="btnrow"><button class="btn quiet" id="rsNo">取消</button><button class="btn solid" id="rsYes">清除</button></div>`);
