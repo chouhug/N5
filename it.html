@@ -614,13 +614,13 @@ body.hide-furi #gloss rt,body.hide-furi .furibtn rt{visibility:visible}
 .tour-lang{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .tour-art{display:block;width:100%;height:auto;max-height:110px}
 
-/* 義大利文頁：沿用日文 App 的樣式（建置時從 ../index.html 抽出），這裡只補義大利文需要的部分 */
+/* 語言頁（義大利文、西班牙文…）：沿用日文 App 的樣式（建置時從 ../index.html 抽出），這裡只補語言頁需要的部分 */
 :root{--font-ja:var(--font-ui);--font-kana:var(--font-ui)}
-[lang="it"]{font-family:var(--font-ui)}
+[lang="it"],[lang="es"],[lang="de"],[lang="ru"],[lang="en"]{font-family:var(--font-ui)}
 .brand b{font-family:var(--font-ui);font-weight:800}
 .g-txt{font-family:var(--font-ui);font-weight:800}
 
-/* 句子：義大利文不用振り仮名，行高縮小 */
+/* 句子：歐洲語言不用振り仮名，行高縮小 */
 .sent{font-family:var(--font-ui);font-size:20px;line-height:1.75}
 .sent.sm{font-size:18px}
 .tk{display:inline;border:0;background-color:transparent;color:inherit;font:inherit;padding:0 0 2px;margin:0 1px}
@@ -681,6 +681,15 @@ table.t .iplay{width:36px;height:36px;margin:0}
 .zhs{color:var(--muted);font-size:15px}
 .grow{flex:1;min-width:0}
 
+.tk-top{padding:0 0 12px}
+.tk-an{align-items:flex-start}
+.tk-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tk-h b{font-size:18px}
+.tk-m{margin:6px 0 10px}
+.tk-ex{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:var(--pri-soft)}
+.tk-ex .grow{flex:1;min-width:0}
+.an .tk-more{margin-top:10px;width:100%}
+
 :root{--pat:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 900' preserveAspectRatio='xMidYMax slice'%3E%3Ccircle cx='330' cy='150' r='46' fill='%23f7e6cc'/%3E%3Crect x='40' y='120' width='90' height='12' rx='6' fill='%23e6ebf3'/%3E%3Crect x='70' y='140' width='60' height='12' rx='6' fill='%23e6ebf3'/%3E%3Crect x='250' y='250' width='110' height='12' rx='6' fill='%23e6ebf3'/%3E%3Crect x='290' y='270' width='70' height='12' rx='6' fill='%23e6ebf3'/%3E%3Cpath d='M80 210 q6 -6 12 0 q6 -6 12 0' fill='none' stroke='%23cdd5e2' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M110 232 q6 -6 12 0 q6 -6 12 0' fill='none' stroke='%23cdd5e2' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M-10 640 C 60 585 130 585 200 610 C 260 630 320 580 430 600 L430 910 L-10 910Z' fill='%23e6ebf3'/%3E%3Cg fill='%23dde4ef'%3E%3Crect x='238' y='548' width='9' height='44'/%3E%3Cpath d='M236 548 l6.5 -10 l6.5 10z'/%3E%3Crect x='252' y='572' width='18' height='22'/%3E%3Crect x='272' y='566' width='14' height='28'/%3E%3Crect x='288' y='576' width='20' height='18'/%3E%3Crect x='218' y='578' width='16' height='16'/%3E%3Cpath d='M200 594 a16 16 0 0 1 32 0z'/%3E%3C/g%3E%3Cg fill='%23d3dbe8'%3E%3Cpath d='M251 572 l10 -7 l10 7z'/%3E%3Cpath d='M271 566 l8 -6 l8 6z'/%3E%3Cpath d='M287 576 l11 -6 l11 6z'/%3E%3Cpath d='M217 578 l9 -6 l9 6z'/%3E%3C/g%3E%3Cpath d='M-10 720 C 70 670 150 690 220 705 C 290 720 350 670 430 685 L430 910 L-10 910Z' fill='%23d8e0ec'/%3E%3Cpath d='M40 706 q8 -35.2 8 -64 q0 28.8 8 64z' fill='%23c3cede'/%3E%3Cpath d='M62 708 q6.5 -25.3 6.5 -46 q0 20.7 6.5 46z' fill='%23c3cede'/%3E%3Cpath d='M338 690 q8 -38.5 8 -70 q0 31.5 8 70z' fill='%23c3cede'/%3E%3Cpath d='M360 694 q6.5 -27.500000000000004 6.5 -50 q0 22.5 6.5 50z' fill='%23c3cede'/%3E%3Cpath d='M-10 800 C 60 760 150 770 230 785 C 320 802 370 760 430 768 L430 910 L-10 910Z' fill='%23cfd8e6'/%3E%3Cpath d='M286 790 q9 -44 9 -80 q0 36 9 80z' fill='%23c3cede'/%3E%3Cpath d='M310 792 q7.5 -31.900000000000002 7.5 -58 q0 26.1 7.5 58z' fill='%23c3cede'/%3E%3Cpath d='M330 794 q6 -22 6 -40 q0 18 6 40z' fill='%23c3cede'/%3E%3Cpath d='M150 900 C 175 870, 230 860, 222 835 S 255 800, 300 790 L 308 795 C 270 806, 240 820, 245 840 S 200 875, 190 900 Z' fill='%23eef3fa'/%3E%3C/svg%3E")}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--pat:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 900' preserveAspectRatio='xMidYMax slice'%3E%3Ccircle cx='330' cy='150' r='46' fill='%23252d3a'/%3E%3Crect x='40' y='120' width='90' height='12' rx='6' fill='%23161c26'/%3E%3Crect x='70' y='140' width='60' height='12' rx='6' fill='%23161c26'/%3E%3Crect x='250' y='250' width='110' height='12' rx='6' fill='%23161c26'/%3E%3Crect x='290' y='270' width='70' height='12' rx='6' fill='%23161c26'/%3E%3Cpath d='M80 210 q6 -6 12 0 q6 -6 12 0' fill='none' stroke='%232a3342' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M110 232 q6 -6 12 0 q6 -6 12 0' fill='none' stroke='%232a3342' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M-10 640 C 60 585 130 585 200 610 C 260 630 320 580 430 600 L430 910 L-10 910Z' fill='%23141a23'/%3E%3Cg fill='%231a212c'%3E%3Crect x='238' y='548' width='9' height='44'/%3E%3Cpath d='M236 548 l6.5 -10 l6.5 10z'/%3E%3Crect x='252' y='572' width='18' height='22'/%3E%3Crect x='272' y='566' width='14' height='28'/%3E%3Crect x='288' y='576' width='20' height='18'/%3E%3Crect x='218' y='578' width='16' height='16'/%3E%3Cpath d='M200 594 a16 16 0 0 1 32 0z'/%3E%3C/g%3E%3Cg fill='%23202836'%3E%3Cpath d='M251 572 l10 -7 l10 7z'/%3E%3Cpath d='M271 566 l8 -6 l8 6z'/%3E%3Cpath d='M287 576 l11 -6 l11 6z'/%3E%3Cpath d='M217 578 l9 -6 l9 6z'/%3E%3C/g%3E%3Cpath d='M-10 720 C 70 670 150 690 220 705 C 290 720 350 670 430 685 L430 910 L-10 910Z' fill='%2318202b'/%3E%3Cpath d='M40 706 q8 -35.2 8 -64 q0 28.8 8 64z' fill='%23111720'/%3E%3Cpath d='M62 708 q6.5 -25.3 6.5 -46 q0 20.7 6.5 46z' fill='%23111720'/%3E%3Cpath d='M338 690 q8 -38.5 8 -70 q0 31.5 8 70z' fill='%23111720'/%3E%3Cpath d='M360 694 q6.5 -27.500000000000004 6.5 -50 q0 22.5 6.5 50z' fill='%23111720'/%3E%3Cpath d='M-10 800 C 60 760 150 770 230 785 C 320 802 370 760 430 768 L430 910 L-10 910Z' fill='%231c2531'/%3E%3Cpath d='M286 790 q9 -44 9 -80 q0 36 9 80z' fill='%23111720'/%3E%3Cpath d='M310 792 q7.5 -31.900000000000002 7.5 -58 q0 26.1 7.5 58z' fill='%23111720'/%3E%3Cpath d='M330 794 q6 -22 6 -40 q0 18 6 40z' fill='%23111720'/%3E%3Cpath d='M150 900 C 175 870, 230 860, 222 835 S 255 800, 300 790 L 308 795 C 270 806, 240 820, 245 840 S 200 875, 190 900 Z' fill='%2310151d'/%3E%3C/svg%3E")}}
 :root[data-theme="dark"]{--pat:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 900' preserveAspectRatio='xMidYMax slice'%3E%3Ccircle cx='330' cy='150' r='46' fill='%23252d3a'/%3E%3Crect x='40' y='120' width='90' height='12' rx='6' fill='%23161c26'/%3E%3Crect x='70' y='140' width='60' height='12' rx='6' fill='%23161c26'/%3E%3Crect x='250' y='250' width='110' height='12' rx='6' fill='%23161c26'/%3E%3Crect x='290' y='270' width='70' height='12' rx='6' fill='%23161c26'/%3E%3Cpath d='M80 210 q6 -6 12 0 q6 -6 12 0' fill='none' stroke='%232a3342' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M110 232 q6 -6 12 0 q6 -6 12 0' fill='none' stroke='%232a3342' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M-10 640 C 60 585 130 585 200 610 C 260 630 320 580 430 600 L430 910 L-10 910Z' fill='%23141a23'/%3E%3Cg fill='%231a212c'%3E%3Crect x='238' y='548' width='9' height='44'/%3E%3Cpath d='M236 548 l6.5 -10 l6.5 10z'/%3E%3Crect x='252' y='572' width='18' height='22'/%3E%3Crect x='272' y='566' width='14' height='28'/%3E%3Crect x='288' y='576' width='20' height='18'/%3E%3Crect x='218' y='578' width='16' height='16'/%3E%3Cpath d='M200 594 a16 16 0 0 1 32 0z'/%3E%3C/g%3E%3Cg fill='%23202836'%3E%3Cpath d='M251 572 l10 -7 l10 7z'/%3E%3Cpath d='M271 566 l8 -6 l8 6z'/%3E%3Cpath d='M287 576 l11 -6 l11 6z'/%3E%3Cpath d='M217 578 l9 -6 l9 6z'/%3E%3C/g%3E%3Cpath d='M-10 720 C 70 670 150 690 220 705 C 290 720 350 670 430 685 L430 910 L-10 910Z' fill='%2318202b'/%3E%3Cpath d='M40 706 q8 -35.2 8 -64 q0 28.8 8 64z' fill='%23111720'/%3E%3Cpath d='M62 708 q6.5 -25.3 6.5 -46 q0 20.7 6.5 46z' fill='%23111720'/%3E%3Cpath d='M338 690 q8 -38.5 8 -70 q0 31.5 8 70z' fill='%23111720'/%3E%3Cpath d='M360 694 q6.5 -27.500000000000004 6.5 -50 q0 22.5 6.5 50z' fill='%23111720'/%3E%3Cpath d='M-10 800 C 60 760 150 770 230 785 C 320 802 370 760 430 768 L430 910 L-10 910Z' fill='%231c2531'/%3E%3Cpath d='M286 790 q9 -44 9 -80 q0 36 9 80z' fill='%23111720'/%3E%3Cpath d='M310 792 q7.5 -31.900000000000002 7.5 -58 q0 26.1 7.5 58z' fill='%23111720'/%3E%3Cpath d='M330 794 q6 -22 6 -40 q0 18 6 40z' fill='%23111720'/%3E%3Cpath d='M150 900 C 175 870, 230 860, 222 835 S 255 800, 300 790 L 308 795 C 270 806, 240 820, 245 840 S 200 875, 190 900 Z' fill='%2310151d'/%3E%3C/svg%3E")}
@@ -712,6 +721,25 @@ table.t .iplay{width:36px;height:36px;margin:0}
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <noscript><p style="padding:16px">這個 App 需要開啟 JavaScript。</p></noscript>
 <script>
+/* 義大利文頁的設定 */
+window.LANGCFG = {
+  id: 'it', name: '義大利文', short: '義', level: 'A1', glyph: 'à', tts: 'it-IT',
+  ttsSample: 'Ciao! Come stai? Io sto bene, grazie.',
+  voiceNames: /alice|federica|paola|luca|elsa|isabella|diego|giorgio|emma|bianca/,
+  noVoiceHelp: '這台裝置沒有義大利文語音。iPhone／Mac：到「設定 → 輔助使用 → 朗讀內容 → 聲音 → 義大利文」下載語音。Android：到「文字轉語音」設定下載義大利文。',
+  persons: ['io', 'tu', 'lui/lei', 'noi', 'voi', 'loro'],
+  sayPerson: i => ['io', 'tu', 'lui', 'noi', 'voi', 'loro'][i],
+  impPersons: ['tu', 'Lei（您）', 'noi', 'voi'],
+  pastLabel: '過去式 passato prossimo',
+  artLabel: '冠詞介詞',
+  verbTags: c => [{ are: '-are 規則動詞', ere: '-ere 規則動詞', ire: '-ire 規則動詞', isc: '-ire 動詞（加 -isc-）', irr: '不規則動詞' }[c.cls] || '']
+    .concat(c.refl ? ['反身動詞'] : [], ['過去式用 ' + (c.aux === 'e' ? 'essere' : 'avere'), '過去分詞 ' + c.pp]),
+  ruleShort: { 'r-noun': '名詞', 'r-art': '冠詞', 'r-adj': '形容詞', 'r-are': '-are 動詞', 'r-ere': '-ere 動詞', 'r-ire': '-ire 動詞', 'r-ea': 'essere／avere', 'r-irr': '不規則動詞' },
+  letterGroups: [{ title: '義大利文字母（21 個）', from: 0, to: 21 }, { title: '外來字母', from: 21, to: 26, fo: true }],
+  letterNote: '點字母看發音和例字。母音只有 a、e、i、o、u 五個，幾乎每個字母都照拼字發音。'
+};
+
+;
 /* 義大利文變化引擎：冠詞、名詞複數、形容詞配合、動詞變化、斷詞與查詢 */
 (function (G) {
   'use strict';
@@ -2505,13 +2533,16 @@ table.t .iplay{width:36px;height:36px;margin:0}
 })(typeof window !== 'undefined' ? window : globalThis);
 
 ;
-/* 義大利文 A1：放在日文 N5 App 裡的語言頁
+/* 語言頁（義大利文、西班牙文…）：放在日文 N5 App 裡
+   語言專屬的文字和設定放在 window.LANGCFG，資料和變化引擎放在 window.LX
    - 介面、音效、下拉選單、間隔複習規則都跟日文頁一樣
-   - 進度存在同一份 n5:progress（id 以 it: 開頭），所以 Google 同步、每日目標直接共用
+   - 進度存在同一份 n5:progress（id 以語言代碼開頭，例如 it:、es:），所以 Google 同步、每日目標直接共用
    - 外觀、音效、震動、每輪題數、單字意思語言這些設定和日文頁共用（n5:settings） */
 (function () {
 'use strict';
-const IT = window.IT;
+const IT = window.LX || window.IT;
+const LC = window.LANGCFG;
+const LP = LC.id + ':';
 
 // ================= 基本工具 =================
 const $ = (s, r = document) => r.querySelector(s);
@@ -2540,18 +2571,18 @@ const playBtn = (text, label, extra = '') => `<button class="play" data-say="${e
 const iconPlay = (text, label) => `<button class="iplay" data-say="${esc(text)}" aria-label="${esc(label)}">${ICON.play}</button>`;
 
 // ================= 資料 =================
-const POS_ZH = { n: '名詞', adj: '形容詞', adv: '副詞', prep: '介係詞', art: '冠詞', pron: '代名詞', conj: '連接詞', num: '數字', det: '限定詞', q: '疑問詞', expr: '常用語', 'v-are': '動詞 -are', 'v-ere': '動詞 -ere', 'v-ire': '動詞 -ire', 'v-isc': '動詞 -ire（-isc-）', 'v-irr': '不規則動詞' };
+const POS_ZH = { n: '名詞', adj: '形容詞', adv: '副詞', prep: '介係詞', art: '冠詞', pron: '代名詞', conj: '連接詞', num: '數字', det: '限定詞', q: '疑問詞', expr: '常用語', 'v-are': '動詞 -are', 'v-ere': '動詞 -ere', 'v-ire': '動詞 -ire', 'v-isc': '動詞 -ire（-isc-）', 'v-irr': '不規則動詞', ...(LC.posZh || {}) };
 const isVerbPos = p => /^v/.test(p);
 const pgOf = p => isVerbPos(p) ? 'v' : (p === 'n' || p === 'adj' ? p : 'o');
 const WORDS = IT.W.map(e => {
   const pos = e[1];
   const title = pos === 'n' ? IT.nounForms(e).sg : e[0];
-  return { id: 'it:' + e[0] + '|' + pos, e, word: e[0], title, pos, pg: pgOf(pos), zh: e[4], en: e[5], sent: e[6], sentZh: e[7], ans: e[8], kind: 'w' };
+  return { id: LP + e[0] + '|' + pos, e, word: e[0], title, pos, pg: pgOf(pos), zh: e[4], en: e[5], sent: e[6], sentZh: e[7], ans: e[8], kind: 'w' };
 });
 const WMAP = Object.fromEntries(WORDS.map(w => [w.id, w]));
 const ALL_IDS = WORDS.map(w => w.id);
 const LOOK = IT.getLookup();
-const idOfEntry = e => 'it:' + e[0] + '|' + e[1];
+const idOfEntry = e => LP + e[0] + '|' + e[1];
 // 字卡順序：常用語先，再讓名詞、動詞、形容詞、其他輪流出現
 const ORDER = (() => {
   const g = { expr: [], n: [], v: [], adj: [], o: [] };
@@ -2573,12 +2604,12 @@ let S = store.get('n5:progress', null);
 if (!S || typeof S !== 'object' || !S.items) S = { items: {}, days: {} };
 S.days = S.days || {};
 const SET = Object.assign({ vib: 'on', sfx: 'on', round: 20, recent: 'd1', mean: 'zh', theme: 'system', rate: 0.9 }, store.get('n5:settings', {}));
-const ISET = Object.assign({ voice: '' }, store.get('it:settings', {}));
-const UI = Object.assign({ tab: 'card', pronSec: 'abc', pronMode: 'listen', mcMode: 'it2zh', mcSrc: 'learn', fillSrc: 'learn', cardSrc: 'new', pos: 'all', gramSel: '', gramQ: '' }, store.get('it:ui', {}));
+const ISET = Object.assign({ voice: '' }, store.get(LP + 'settings', {}));
+const UI = Object.assign({ tab: 'card', pronSec: 'abc', pronMode: 'listen', mcMode: 'it2zh', mcSrc: 'learn', fillSrc: 'learn', cardSrc: 'new', pos: 'all', gramSel: '', gramQ: '' }, store.get(LP + 'ui', {}));
 // 每次都重新讀一次共用設定再寫回，避免蓋掉日文頁剛改的值
 const saveSet = () => { const cur = store.get('n5:settings', {}); store.set('n5:settings', Object.assign(cur, SET)); };
-const saveISet = () => store.set('it:settings', ISET);
-const saveUI = () => store.set('it:ui', UI);
+const saveISet = () => store.set(LP + 'settings', ISET);
+const saveUI = () => store.set(LP + 'ui', UI);
 const saveLocal = () => store.set('n5:progress', S);
 // 別的分頁（日文頁）改了進度時，先合併再寫，不會互相覆蓋
 function reloadShared() { const cur = store.get('n5:progress', null); if (cur && cur.items) S = mergeState(S, cur); }
@@ -2710,20 +2741,20 @@ async function unzipCode(z) {
   return await new Response(new Blob([u8]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text();
 }
 
-// ================= 語音（義大利文） =================
+// ================= 語音 =================
 const Voice = {
   list: [], ok: 'speechSynthesis' in window,
   GOOD: /natural|neural|premium|enhanced|online|google|siri/i,
   score(v) {
     let s = 0; const n = (v.name + ' ' + v.voiceURI).toLowerCase();
-    if (/^it[-_]it/i.test(v.lang)) s += 10;
+    if (v.lang.replace('_', '-').toLowerCase() === LC.tts.toLowerCase()) s += 10;
     if (this.GOOD.test(n)) s += 40;
     if (/google/.test(n)) s += 30;
-    if (/alice|federica|paola|luca|elsa|isabella|diego|giorgio|emma|bianca/.test(n)) s += 8;
+    if (LC.voiceNames && LC.voiceNames.test(n)) s += 8;
     if (/compact|espeak/.test(n)) s -= 30;
     return s;
   },
-  refresh() { if (this.ok) this.list = speechSynthesis.getVoices().filter(v => /^it/i.test(v.lang)); },
+  refresh() { if (this.ok) this.list = speechSynthesis.getVoices().filter(v => v.lang.toLowerCase().startsWith(LC.id)); },
   best() {
     if (!this.list.length) this.refresh();
     if (ISET.voice) { const v = this.list.find(x => x.voiceURI === ISET.voice); if (v) return v; }
@@ -2735,7 +2766,7 @@ const Voice = {
       speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(String(text).replace(/_+/g, ' '));
       const v = this.best(); if (v) u.voice = v;
-      u.lang = v ? v.lang : 'it-IT';
+      u.lang = v ? v.lang : LC.tts;
       u.rate = rate || Number(SET.rate) || 0.9;
       speechSynthesis.speak(u);
     } catch (e) { /* 忽略 */ }
@@ -2884,7 +2915,7 @@ function sentHTML(s, o = {}) {
   return out;
 }
 function exampleBlock(w) {
-  return `<div class="example"><div class="ex-row"><div class="sent" lang="it">${sentHTML(w.sent)}</div>${iconPlay(w.sent, '播放例句')}</div><div class="zhline">${esc(w.sentZh)}</div></div>`;
+  return `<div class="example"><div class="ex-row"><div class="sent" lang="${LC.id}">${sentHTML(w.sent)}</div>${iconPlay(w.sent, '播放例句')}</div><div class="zhline">${esc(w.sentZh)}</div></div>`;
 }
 const posBadge = w => `<button class="posbtn" data-word="${esc(w.id)}" aria-label="看「${esc(w.word)}」的詞性和變化">${esc(POS_ZH[w.pos])}${w.pos === 'n' ? (w.e[2] === 'm' ? '・陽' : '・陰') : ''}<span aria-hidden="true">›</span></button>`;
 
@@ -2923,57 +2954,59 @@ function openToken(form) {
   const infos = LOOK.get(k) || [];
   const nm = IT.NAMES[k];
   let body = '';
-  if (nm) body += `<div class="an"><div class="grow"><b lang="it">${esc(nm[0])}</b><div class="meta">${esc(nm[1])}</div></div></div>`;
+  if (nm) body += `<div class="an"><div class="grow"><b lang="${LC.id}">${esc(nm[0])}</b><div class="meta">${esc(nm[1])}</div></div></div>`;
   const seen = new Set();
   for (const x of infos) {
     const key = x.lemma + '|' + x.desc; if (seen.has(key)) continue; seen.add(key);
     const e = x.idx >= 0 ? IT.W[x.idx] : null;
     if (e) {
       const w = WMAP[idOfEntry(e)];
-      body += `<div class="an"><div class="grow"><b lang="it">${esc(w.title)}</b> <span class="pos">${esc(POS_ZH[w.pos])}</span>${x.desc ? `<div class="meta">${esc(x.desc)}</div>` : ''}<div>${meanW(w)}</div></div><button class="btn quiet" data-word="${esc(w.id)}">詳細</button></div>`;
+      body += `<div class="an tk-an"><div class="grow"><div class="tk-h"><b lang="${LC.id}">${esc(w.title)}</b><span class="pos">${esc(POS_ZH[w.pos])}</span></div>${x.desc ? `<div class="meta">${esc(x.desc)}</div>` : ''}<p class="mean-big tk-m">${meanW(w)}</p>
+        <div class="tk-ex"><div class="grow"><div lang="${LC.id}">${esc(w.sent)}</div><div class="meta">${esc(w.sentZh)}</div></div>${iconPlay(w.sent, '播放例句')}</div>
+        <button class="btn quiet tk-more" data-word="${esc(w.id)}">看完整${isVerbPos(w.pos) ? '變化表' : '說明'}</button></div></div>`;
     } else {
       const ex = IT.EXTRA_FORMS[k] || IT.EXTRA_LOOKUP[k];
-      body += `<div class="an"><div class="grow"><b lang="it">${esc(x.lemma)}</b><div class="meta">${esc(x.desc || (ex && ex[1]) || '')}</div></div></div>`;
+      body += `<div class="an"><div class="grow"><b lang="${LC.id}">${esc(x.lemma)}</b><div class="meta">${esc(x.desc || (ex && ex[1]) || '')}</div></div></div>`;
     }
   }
   if (!infos.length && !nm) body += '<p class="meta">找不到這個字。</p>';
-  Sheet.open(`<span lang="it">${esc(form)}</span>`, `<div class="rowx"><span class="grow"></span>${playBtn(form, '播放')}</div>${body}`, form);
+  Sheet.open('查字', `<div class="rowx tk-top"><div class="grow"><div class="w1" lang="${LC.id}">${esc(form)}</div></div>${iconPlay(form, '播放 ' + form)}</div>${body}`, form);
 }
 function conjTable(w, which) {
   const c = IT.conjugate(w.word, w.pos);
-  const P = ['io', 'tu', 'lui/lei', 'noi', 'voi', 'loro'];
+  const P = LC.persons;
   let rows;
-  if (which === 'pres') rows = c.presentFull.map((f, i) => [P[i], f, P[i].replace('lui/lei', 'lui') + ' ' + f]);
-  else if (which === 'pass') rows = c.passato.map((f, i) => [P[i], f, P[i].replace('lui/lei', 'lui') + ' ' + f.split('/')[0]]);
-  else rows = c.imperative ? c.imperative.map((f, i) => [['tu', 'Lei（您）', 'noi', 'voi'][i], f, f.split('/')[0]]) : [];
+  if (which === 'pres') rows = c.presentFull.map((f, i) => [P[i], f, LC.sayPerson(i) + ' ' + f]);
+  else if (which === 'pass') rows = c.passato.map((f, i) => [P[i], f, LC.sayPerson(i) + ' ' + f.split('/')[0]]);
+  else rows = c.imperative ? c.imperative.map((f, i) => [LC.impPersons[i], f, f.split('/')[0]]).filter(r => r[1]) : [];
   if (!rows.length) return '<p class="meta">這個動詞沒有常用的命令式。</p>';
-  return `<table class="t"><tbody>${rows.map(([p, f, say]) => `<tr><td class="p">${esc(p)}</td><td class="f" lang="it">${esc(f)}</td><td class="a">${iconPlay(say, '播放 ' + f)}</td></tr>`).join('')}</tbody></table>`;
+  return `<table class="t"><tbody>${rows.map(([p, f, say]) => `<tr><td class="p">${esc(p)}</td><td class="f" lang="${LC.id}">${esc(f)}</td><td class="a">${iconPlay(say, '播放 ' + f)}</td></tr>`).join('')}</tbody></table>`;
 }
 function verbInfo(w) {
   const c = IT.conjugate(w.word, w.pos);
-  const type = { are: '-are 規則動詞', ere: '-ere 規則動詞', ire: '-ire 規則動詞', isc: '-ire 動詞（加 -isc-）', irr: '不規則動詞' }[c.cls] || '';
-  return `<div class="row"><span class="pos">${type}</span>${c.refl ? '<span class="pos">反身動詞</span>' : ''}<span class="pos">過去式用 ${c.aux === 'e' ? 'essere' : 'avere'}</span><span class="pos">過去分詞 ${esc(c.pp)}</span></div>${c.note ? `<div class="meta">${esc(c.note)}</div>` : ''}`;
+  const tags = LC.verbTags(c);
+  return `<div class="row">${tags.map(t => `<span class="pos">${esc(t)}</span>`).join('')}</div>${c.note ? `<div class="meta">${esc(c.note)}</div>` : ''}`;
 }
 function formsHTML(w) {
   const e = w.e;
   if (w.pos === 'n') {
     const f = IT.nounForms(e);
-    let h = `<table class="t"><tbody><tr><td class="p">${f.plOnly ? '複數（只用複數）' : '單數'}</td><td class="f" lang="it">${esc(f.sg)}</td><td class="a">${iconPlay(f.sg, '播放')}</td></tr>`;
-    if (f.pl) h += `<tr><td class="p">複數</td><td class="f" lang="it">${esc(f.pl)}</td><td class="a">${iconPlay(f.pl, '播放')}</td></tr>`;
-    if (f.indef) h += `<tr><td class="p">一個</td><td class="f" lang="it">${esc(f.indef + (f.indef.endsWith("'") ? '' : ' ') + e[0])}</td><td class="a"></td></tr>`;
+    let h = `<table class="t"><tbody><tr><td class="p">${f.plOnly ? '複數（只用複數）' : '單數'}</td><td class="f" lang="${LC.id}">${esc(f.sg)}</td><td class="a">${iconPlay(f.sg, '播放')}</td></tr>`;
+    if (f.pl) h += `<tr><td class="p">複數</td><td class="f" lang="${LC.id}">${esc(f.pl)}</td><td class="a">${iconPlay(f.pl, '播放')}</td></tr>`;
+    if (f.indef) h += `<tr><td class="p">一個</td><td class="f" lang="${LC.id}">${esc(f.indef + (f.indef.endsWith("'") ? '' : ' ') + e[0])}</td><td class="a"></td></tr>`;
     h += '</tbody></table>';
     if (f.plGender !== e[2]) h += `<div class="meta">注意：複數變成陰性（${esc(f.pl)}）。</div>`;
     return h;
   }
   if (w.pos === 'adj') {
     const f = IT.adjForms(e);
-    return `<table class="t"><thead><tr><th></th><th>單數</th><th>複數</th></tr></thead><tbody><tr><td class="p">陽性</td><td class="f" lang="it">${esc(f[0])}</td><td class="f" lang="it">${esc(f[2])}</td></tr><tr><td class="p">陰性</td><td class="f" lang="it">${esc(f[1])}</td><td class="f" lang="it">${esc(f[3])}</td></tr></tbody></table>` +
+    return `<table class="t"><thead><tr><th></th><th>單數</th><th>複數</th></tr></thead><tbody><tr><td class="p">陽性</td><td class="f" lang="${LC.id}">${esc(f[0])}</td><td class="f" lang="${LC.id}">${esc(f[2])}</td></tr><tr><td class="p">陰性</td><td class="f" lang="${LC.id}">${esc(f[1])}</td><td class="f" lang="${LC.id}">${esc(f[3])}</td></tr></tbody></table>` +
       (e[3].split('/').length > 3 ? `<div class="meta">放在名詞前面的形：${esc(e[3].split('/').slice(3).join('、'))}</div>` : '');
   }
   if (isVerbPos(w.pos)) {
     return verbInfo(w) + `<div class="seg" role="group" aria-label="動詞時態"><button data-tense="pres" aria-pressed="true">現在式</button><button data-tense="pass" aria-pressed="false">過去式</button><button data-tense="imp" aria-pressed="false">命令式</button></div><div id="conj">${conjTable(w, 'pres')}</div>`;
   }
-  if (e[3] && e[3] !== '-') return `<div>其他形：<span lang="it">${esc(e[3].split('/').join('、'))}</span></div>`;
+  if (e[3] && e[3] !== '-') return `<div>其他形：<span lang="${LC.id}">${esc(e[3].split('/').join('、'))}</span></div>`;
   return '';
 }
 const STATUS_TXT = { new: '未學', queued: '待考', learned: '已學會', excluded: '已排除' };
@@ -2987,11 +3020,11 @@ function openWord(id) {
   const btns = r.s === 'new' || r.s === 'excluded'
     ? `<div class="btnrow"><button class="btn known" data-wa="known">${ICON.ok}已經會了</button><button class="btn solid" data-wa="queue">列入考題</button></div>`
     : `<button class="btn quiet block" data-wa="reset">移回未學</button>`;
-  const body = `<div class="rowx"><div class="grow"><div class="w1" lang="it">${esc(w.title)}</div><div class="row" style="margin-top:6px"><span class="pos">${esc(POS_ZH[w.pos])}</span>${w.pos === 'n' ? `<span class="pos ${w.e[2]}">${w.e[2] === 'm' ? '陽性' : '陰性'}</span>` : ''}${tags.join('')}</div></div>${iconPlay(w.title, '播放單字')}</div>
+  const body = `<div class="rowx"><div class="grow"><div class="w1" lang="${LC.id}">${esc(w.title)}</div><div class="row" style="margin-top:6px"><span class="pos">${esc(POS_ZH[w.pos])}</span>${w.pos === 'n' ? `<span class="pos ${w.e[2]}">${w.e[2] === 'm' ? '陽性' : '陰性'}</span>` : ''}${tags.join('')}</div></div>${iconPlay(w.title, '播放單字')}</div>
     <p class="mean-big">${esc(w.zh)}</p><div class="meta" style="margin-top:-8px">${esc(w.en)}</div>
     ${formsHTML(w)}
     <div class="gp-title">例句</div>
-    <div class="ex-row"><div class="sent sm" lang="it">${sentHTML(w.sent)}</div>${iconPlay(w.sent, '播放例句')}</div><div class="zhline" style="margin-top:-6px">${esc(w.sentZh)}</div>
+    <div class="ex-row"><div class="sent sm" lang="${LC.id}">${sentHTML(w.sent)}</div>${iconPlay(w.sent, '播放例句')}</div><div class="zhline" style="margin-top:-6px">${esc(w.sentZh)}</div>
     ${dueTxt}${btns}`;
   const el = Sheet.open(esc(POS_ZH[w.pos]) + ' · 單字', body, w.word);
   $$('[data-tense]', el).forEach(b => b.onclick = () => { $$('[data-tense]', el).forEach(x => x.setAttribute('aria-pressed', String(x === b))); $('#conj', el).innerHTML = conjTable(w, b.dataset.tense); });
@@ -3222,12 +3255,11 @@ function renderPron() {
   const seg = `<div class="seg" role="group" aria-label="發音分頁">${[['abc', '字母'], ['rules', '規則'], ['practice', '練習']].map(([k, l]) => `<button data-psec="${k}" aria-pressed="${UI.pronSec === k}">${l}</button>`).join('')}</div>`;
   let body = '';
   if (UI.pronSec === 'abc') {
-    const cell = (a, i, fo) => `<button class="kc${fo ? ' fo' : ''}" data-letter="${i}" aria-label="${a[0]}，字母名稱 ${esc(a[1])}"><span class="kk">${a[0]}${a[0].toLowerCase()}</span><span class="rr" lang="it">${esc(a[1])}</span></button>`;
-    body = `<div class="card ksec"><h3 style="margin-top:0">義大利文字母（21 個）</h3><div class="ktable c5">${IT.ALPHABET.slice(0, 21).map((a, i) => cell(a, i)).join('')}</div>
-      <h3>外來字母</h3><div class="ktable c5">${IT.ALPHABET.slice(21).map((a, i) => cell(a, 21 + i, true)).join('')}</div>
-      <p class="meta" style="margin:12px 0 0">點字母看發音和例字。母音只有 a、e、i、o、u 五個，幾乎每個字母都照拼字發音。</p></div>`;
+    const cell = (a, i, fo) => `<button class="kc${fo ? ' fo' : ''}" data-letter="${i}" aria-label="${a[0]}，字母名稱 ${esc(a[1])}"><span class="kk">${a[0].length > 1 ? a[0].toLowerCase() : a[0] + a[0].toLowerCase()}</span><span class="rr" lang="${LC.id}">${esc(a[1])}</span></button>`;
+    body = `<div class="card ksec">${LC.letterGroups.map((g, k) => `<h3${k ? '' : ' style="margin-top:0"'}>${esc(g.title)}</h3><div class="ktable c5">${IT.ALPHABET.slice(g.from, g.to).map((a, i) => cell(a, g.from + i, g.fo)).join('')}</div>`).join('')}
+      <p class="meta" style="margin:12px 0 0">${LC.letterNote}</p></div>`;
   } else if (UI.pronSec === 'rules') {
-    body = IT.PRON_RULES.map(r => `<div class="card"><div class="gr-head"><h2 style="font-size:18px">${esc(r.t)}</h2></div><p class="gr-desc">${r.d}</p><div class="say-chips">${r.ex.map(x => `<button class="play" data-say="${esc(x[0])}">${ICON.play}<span lang="it">${esc(x[0])}</span><em>${esc(x[1])}</em></button>`).join('')}</div></div>`).join('');
+    body = IT.PRON_RULES.map(r => `<div class="card"><div class="gr-head"><h2 style="font-size:18px">${esc(r.t)}</h2></div><p class="gr-desc">${r.d}</p><div class="say-chips">${r.ex.map(x => `<button class="play" data-say="${esc(x[0])}">${ICON.play}<span lang="${LC.id}">${esc(x[0])}</span><em>${esc(x[1])}</em></button>`).join('')}</div></div>`).join('');
   } else {
     body = `<div class="ctl">${pillSelect('pronMode', '練習方式', [['listen', '聽音選拼字'], ['read', '看拼字選讀法']], UI.pronMode)}</div><div id="prq"></div>`;
   }
@@ -3244,10 +3276,10 @@ function renderPron() {
 function openLetter(i) {
   const a = IT.ALPHABET[i];
   const w = WORDS.find(x => x.word === a[4]);
-  Sheet.open(`字母 ${a[0]}`, `<div class="rowx"><div class="grow"><div class="w1">${a[0]} ${a[0].toLowerCase()}</div><div class="meta">字母名稱：<span lang="it">${esc(a[1])}</span></div></div>${iconPlay(a[1], '播放字母名稱')}</div>
+  Sheet.open(`字母 ${a[0]}`, `<div class="rowx"><div class="grow"><div class="w1">${a[0]} ${a[0].toLowerCase()}</div><div class="meta">字母名稱：<span lang="${LC.id}">${esc(a[1])}</span></div></div>${iconPlay(a[1], '播放字母名稱')}</div>
     <p class="mean-big">${esc(a[2])}</p><p style="margin:0">${esc(a[3])}</p>
     <div class="gp-title">例字</div>
-    <div class="an"><div class="grow"><b lang="it" style="font-size:22px">${esc(w ? w.title : a[4])}</b>${w ? `<div class="meta">${meanW(w)}</div>` : ''}</div>${iconPlay(w ? w.title : a[4], '播放例字')}${w ? `<button class="btn quiet" data-word="${esc(w.id)}">詳細</button>` : ''}</div>`, a[0]);
+    <div class="an"><div class="grow"><b lang="${LC.id}" style="font-size:22px">${esc(w ? w.title : a[4])}</b>${w ? `<div class="meta">${meanW(w)}</div>` : ''}</div>${iconPlay(w ? w.title : a[4], '播放例字')}${w ? `<button class="btn quiet" data-word="${esc(w.id)}">詳細</button>` : ''}</div>`, a[0]);
   setTimeout(() => Voice.speak(a[1]), 150);
 }
 function startPron() {
@@ -3265,20 +3297,20 @@ function nextPronQ() {
   const q = R.queue[R.idx];
   const prompt = R.mode === 'listen'
     ? `<button class="dict-big" data-say="${esc(q.say)}" aria-label="再聽一次">${ICON.play}</button><span class="meta">聽發音，選出你聽到的拼法</span>`
-    : `<div class="word-row"><div class="big" lang="it">${boldPart(q.w, q.part)}</div>${iconPlay(q.w, '播放')}</div><span class="meta">畫線的「${esc(q.part)}」怎麼唸？</span>`;
+    : `<div class="word-row"><div class="big" lang="${LC.id}">${boldPart(q.w, q.part)}</div>${iconPlay(q.w, '播放')}</div><span class="meta">畫線的「${esc(q.part)}」怎麼唸？</span>`;
   renderChoice(host, {
     head: `<div class="qhead">${progressLine(R, R.queue.length)}</div>`,
     promptHTML: prompt,
-    options: q.options.map(o => ({ html: esc(o), correct: o === q.answer, lang: R.mode === 'listen' ? 'it' : '' })),
+    options: q.options.map(o => ({ html: esc(o), correct: o === q.answer, lang: R.mode === 'listen' ? LC.id : '' })),
     onAnswer: ok => { if (ok) R.right++; bumpDay(); },
-    afterHTML: () => R.mode === 'listen' ? `<div class="say-chips">${q.options.map(o => `<button class="play" data-say="${esc(o)}">${ICON.play}<span lang="it">${esc(o)}</span></button>`).join('')}</div>` : ''
+    afterHTML: () => R.mode === 'listen' ? `<div class="say-chips">${q.options.map(o => `<button class="play" data-say="${esc(o)}">${ICON.play}<span lang="${LC.id}">${esc(o)}</span></button>`).join('')}</div>` : ''
   }, () => { R.idx++; nextPronQ(); });
   if (R.mode === 'listen') setTimeout(() => Voice.speak(q.say), 250);
 }
 
 // ================= 單選 =================
 let mcRound = null;
-const MC_MODES = [['it2zh', '義→中'], ['zh2it', '中→義'], ['listen', '聽→中'], ['verb', '動詞變化'], ['art', '冠詞介詞']];
+const MC_MODES = [['it2zh', LC.short + '→中'], ['zh2it', '中→' + LC.short], ['listen', '聽→中'], ['verb', '動詞變化'], ['art', LC.artLabel]];
 const MC_SRCS = [['learn', '待考'], ['recent', '最近學過'], ['mcWrong', '單選錯題'], ['mcReview', '錯題複習'], ['learned', '複習已學會']];
 function mcPool(src) {
   let pool = srcPool(src);
@@ -3318,7 +3350,7 @@ function renderMC() {
 function artHint(x) {
   if (x.kind === 'artprep') { const a = IT.ART_PREPS[x.answer]; return `${x.answer} ＝ ${a.prep} ＋ ${a.art}（${IT.ART_INFO[a.art]}）`; }
   if (x.kind === 'art') return `${x.answer}：${IT.ART_INFO[x.answer] || ''}`;
-  return `${x.answer}：${{ un: '陽性', uno: '陽性（s+子音、z 前）', una: '陰性', "un'": '陰性（母音前）' }[x.answer] || ''}`;
+  return `${x.answer}：${(IT.INDEF_INFO || { un: '陽性', uno: '陽性（s+子音、z 前）', una: '陰性', "un'": '陰性（母音前）' })[x.answer] || ''}`;
 }
 function nextMCQ() {
   const R = mcRound, host = $('#mcq'); if (!host) return;
@@ -3327,20 +3359,20 @@ function nextMCQ() {
   const src = { mcWrong: 'wrong', mcReview: 'review' }[R.src] || (R.src === 'learned' ? 'learned' : 'learn');
   const head = `<div class="qhead">${progressLine(R, R.total)}</div>`;
   const next = () => { R.idx++; R.done = false; nextMCQ(); };
-  const wordAfter = w => `<div class="example"><div class="row" style="gap:12px;align-items:center"><b lang="it" style="font-size:22px">${esc(w.title)}</b><span>${meanW(w)}</span>${iconPlay(w.title, '播放單字')}</div></div>${exampleBlock(w)}`;
+  const wordAfter = w => `<div class="example"><div class="row" style="gap:12px;align-items:center"><b lang="${LC.id}" style="font-size:22px">${esc(w.title)}</b><span>${meanW(w)}</span>${iconPlay(w.title, '播放單字')}</div></div>${exampleBlock(w)}`;
   if (R.mode === 'art') {
     if (item.drill) {
       const d = item.drill;
       return renderChoice(host, {
-        head, promptHTML: `<div class="sent" lang="it">${esc(d[0]).replace('___', '<span class="blank" id="blank">？</span>')}</div><div class="zhline">${esc(d[3])}</div>`,
-        options: shuffle([d[1]].concat(d[2])).map(o => ({ html: esc(o), correct: o === d[1], lang: 'it' })),
+        head, promptHTML: `<div class="sent" lang="${LC.id}">${esc(d[0]).replace('___', '<span class="blank" id="blank">？</span>')}</div><div class="zhline">${esc(d[3])}</div>`,
+        options: shuffle([d[1]].concat(d[2])).map(o => ({ html: esc(o), correct: o === d[1], lang: LC.id })),
         onAnswer: ok => { if (ok) R.right++; R.done = true; bumpDay(); const b = $('#blank'); b.textContent = d[1]; b.classList.add(ok ? 'ok' : 'ng'); }
       }, next);
     }
     const w = item, x = IT.makeArtQuestion(w.e, LOOK);
     return renderChoice(host, {
-      head, promptHTML: `<div class="sent" lang="it">${sentHTML(x.sentence, { blank: [x.before.length, x.before.length + x.answer.length], blankHTML: '<span class="blank" id="blank">？</span>' })}</div><div class="zhline">${esc(x.zh)}</div>`,
-      options: x.options.map(o => ({ html: esc(o), correct: o === x.answer, lang: 'it' })),
+      head, promptHTML: `<div class="sent" lang="${LC.id}">${sentHTML(x.sentence, { blank: [x.before.length, x.before.length + x.answer.length], blankHTML: '<span class="blank" id="blank">？</span>' })}</div><div class="zhline">${esc(x.zh)}</div>`,
+      options: x.options.map(o => ({ html: esc(o), correct: o === x.answer, lang: LC.id })),
       onAnswer: ok => { if (ok) R.right++; R.done = true; bumpDay(); const b = $('#blank'); b.textContent = x.answer; b.classList.add(ok ? 'ok' : 'ng'); },
       afterHTML: () => `<div class="hint"><span>${esc(artHint(x))}</span></div>${wordAfter(w)}`
     }, next);
@@ -3349,20 +3381,20 @@ function nextMCQ() {
   if (R.mode === 'verb') {
     const q = IT.makeVerbQuestion(w.e);
     return renderChoice(host, {
-      head, promptHTML: `<div class="mid" lang="it">${esc(q.subj)} ＋ ${esc(w.word)}</div><span class="meta">${q.tense === 'passato' ? '過去式 passato prossimo' : '現在式'}・${esc(w.zh)}</span>`,
-      options: q.options.map(o => ({ html: esc(o), correct: o === q.answer, lang: 'it' })),
+      head, promptHTML: `<div class="mid" lang="${LC.id}">${esc(q.subj)} ＋ ${esc(w.word)}</div><span class="meta">${q.tense === 'passato' ? LC.pastLabel : '現在式'}・${esc(w.zh)}</span>`,
+      options: q.options.map(o => ({ html: esc(o), correct: o === q.answer, lang: LC.id })),
       onAnswer: ok => { if (ok) R.right++; R.done = true; record(w, 'mc', ok, src); },
-      afterHTML: () => `<div class="hint"><span>正確答案：<b lang="it">${esc(q.answer)}</b></span><button class="linkbtn" data-word="${esc(w.id)}" style="align-self:flex-start">看完整變化表</button></div>`
+      afterHTML: () => `<div class="hint"><span>正確答案：<b lang="${LC.id}">${esc(q.answer)}</b></span><button class="linkbtn" data-word="${esc(w.id)}" style="align-self:flex-start">看完整變化表</button></div>`
     }, next);
   }
   const opts = shuffle([w, ...pickWordDistractors(w, R.mode)]);
   let prompt;
-  if (R.mode === 'it2zh') prompt = `<div class="word-row"><div class="big" lang="it">${esc(w.title)}</div>${iconPlay(w.title, '播放單字')}</div><span class="pos">${esc(POS_ZH[w.pos])}</span>`;
+  if (R.mode === 'it2zh') prompt = `<div class="word-row"><div class="big" lang="${LC.id}">${esc(w.title)}</div>${iconPlay(w.title, '播放單字')}</div><span class="pos">${esc(POS_ZH[w.pos])}</span>`;
   else if (R.mode === 'zh2it') prompt = `<div class="zh">${meanW(w)}</div><span class="pos">${esc(POS_ZH[w.pos])}</span>`;
   else prompt = `<button class="btn solid" data-say="${esc(w.title)}" style="min-width:160px">${ICON.play}播放發音</button><span class="meta">按下按鈕聽發音，再選出意思</span>`;
   renderChoice(host, {
     head, promptHTML: prompt,
-    options: opts.map(o => R.mode === 'zh2it' ? { html: esc(o.title), correct: o.id === w.id, lang: 'it' } : { html: meanW(o), correct: o.id === w.id }),
+    options: opts.map(o => R.mode === 'zh2it' ? { html: esc(o.title), correct: o.id === w.id, lang: LC.id } : { html: meanW(o), correct: o.id === w.id }),
     onAnswer: ok => { if (ok) R.right++; R.done = true; record(w, 'mc', ok, src); },
     afterHTML: () => wordAfter(w)
   }, next);
@@ -3395,9 +3427,9 @@ function renderCard() {
   showFlash();
 }
 function formsLine(w) {
-  if (w.pos === 'n') { const f = IT.nounForms(w.e); return f.pl ? `複數：<span lang="it">${esc(f.pl)}</span>` : (f.plOnly ? '只用複數' : ''); }
-  if (w.pos === 'adj') return `<span lang="it">${esc(IT.adjForms(w.e).join(' / '))}</span>`;
-  if (isVerbPos(w.pos)) { const c = IT.conjugate(w.word, w.pos); return `<span lang="it">${esc(c.presentFull.slice(0, 3).join('、'))}…</span>`; }
+  if (w.pos === 'n') { const f = IT.nounForms(w.e); return f.pl ? `複數：<span lang="${LC.id}">${esc(f.pl)}</span>` : (f.plOnly ? '只用複數' : ''); }
+  if (w.pos === 'adj') return `<span lang="${LC.id}">${esc(IT.adjForms(w.e).join(' / '))}</span>`;
+  if (isVerbPos(w.pos)) { const c = IT.conjugate(w.word, w.pos); return `<span lang="${LC.id}">${esc(c.presentFull.slice(0, 3).join('、'))}…</span>`; }
   return '';
 }
 function showFlash() {
@@ -3420,7 +3452,7 @@ function showFlash() {
   host.innerHTML = `<div class="card fc">
     <div class="qhead"><div class="qh-l">${posBadge(w)}<span class="meta">剩 ${deck.cards.length} · 共 ${deck.total}</span></div></div>
     ${isWrong && tags.length ? `<div class="row">${tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>` : ''}
-    <div class="word-row"><div class="word" lang="it">${esc(w.title)}</div>${iconPlay(w.title, '播放單字')}</div>
+    <div class="word-row"><div class="word" lang="${LC.id}">${esc(w.title)}</div>${iconPlay(w.title, '播放單字')}</div>
     <div class="zh">${meanW(w)}</div>
     ${fl ? `<div class="forms">${fl}</div>` : ''}
     ${exampleBlock(w)}
@@ -3487,10 +3519,10 @@ function nextFillQ(keepFocus) {
   host.innerHTML = `<div class="card" id="fillCard">
     <div class="qhead">${progressLine(R, R.total)}</div>
     <div class="row" style="margin-top:6px">${posBadge(w)}<b>${meanW(w)}</b></div>
-    <div class="sent" lang="it" style="margin-top:8px">${sentHTML(w.sent, { blank: [a0, a1], blankHTML: `<span class="blank" id="blank">${blankEmpty}</span>` })}</div>
+    <div class="sent" lang="${LC.id}" style="margin-top:8px">${sentHTML(w.sent, { blank: [a0, a1], blankHTML: `<span class="blank" id="blank">${blankEmpty}</span>` })}</div>
     <div class="hint" style="margin-top:8px"><span>${esc(w.sentZh)}</span>${hint}</div>
     <form class="answerrow" id="fillForm" style="margin-top:12px" autocomplete="off">
-      <input id="fillIn" type="text" lang="it" inputmode="text" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" placeholder="輸入義大利文" aria-label="填入答案">
+      <input id="fillIn" type="text" lang="${LC.id}" inputmode="text" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" placeholder="輸入${LC.name}" aria-label="填入答案">
       <button class="btn solid" type="submit" id="fillGo">送出</button>
     </form>
     <button class="btn quiet block" id="fillShow" style="margin-top:12px">看答案</button>
@@ -3513,11 +3545,11 @@ function nextFillQ(keepFocus) {
     const learnedNow = ok && r.s === 'learned' && r.lv === 0 && r.due === addDays(today(), 1) && src !== 'due';
     $('#fillAfter').innerHTML = `<div class="afterbox">
       ${verdict(ok, shown ? '（看了答案）' : res === 'accent' ? '，但注意重音' : '', res === 'accent')}
-      ${res === 'accent' ? `<div class="hl-warn">正確寫法：<b lang="it">${esc(ans)}</b>（你寫的是 ${esc(inp.value.trim())}）</div>` : ''}
-      ${!ok ? `<div>正確答案：<b lang="it" style="font-size:20px">${esc(ans)}</b>${inp.value && !shown ? `<br><span class="meta">你的答案：${esc(inp.value)}</span>` : ''}</div>` : ''}
+      ${res === 'accent' ? `<div class="hl-warn">正確寫法：<b lang="${LC.id}">${esc(ans)}</b>（你寫的是 ${esc(inp.value.trim())}）</div>` : ''}
+      ${!ok ? `<div>正確答案：<b lang="${LC.id}" style="font-size:20px">${esc(ans)}</b>${inp.value && !shown ? `<br><span class="meta">你的答案：${esc(inp.value)}</span>` : ''}</div>` : ''}
       ${learnedNow ? `<div class="meta">已學會，明天（${r.due.slice(5).replace('-', '/')}）會出現在到期複習。</div>` : ''}
       ${ok && src === 'due' ? `<div class="meta">下次複習：${r.due.slice(5).replace('-', '/')}</div>` : ''}
-      <div class="row" style="gap:12px;align-items:center"><b lang="it" style="font-size:20px">${esc(w.title)}</b><span>${meanW(w)}</span>${iconPlay(w.title, '播放單字')}</div>
+      <div class="row" style="gap:12px;align-items:center"><b lang="${LC.id}" style="font-size:20px">${esc(w.title)}</b><span>${meanW(w)}</span>${iconPlay(w.title, '播放單字')}</div>
       ${exampleBlock(w)}
     </div>`;
     if (!ok) revealAboveTabbar($('#fillGo'));
@@ -3558,16 +3590,16 @@ function gramIndex() {
   return GIDX;
 }
 const plain = h => h.replace(/<[^>]+>/g, '');
-const RULE_SHORT = { 'r-noun': '名詞', 'r-art': '冠詞', 'r-adj': '形容詞', 'r-are': '-are 動詞', 'r-ere': '-ere 動詞', 'r-ire': '-ire 動詞', 'r-ea': 'essere／avere', 'r-irr': '不規則動詞' };
+const RULE_SHORT = LC.ruleShort || {};
 function ruleDemo(R) {
   const find = (word, pos) => WORDS.find(w => w.word === word && (!pos || w.pos === pos || (pos === 'v' && isVerbPos(w.pos))));
-  if (R.id === 'r-noun') return `<table class="t"><thead><tr><th>單數</th><th>複數</th><th>性別</th></tr></thead><tbody>${R.demo.map(x => find(x, 'n')).filter(Boolean).map(w => { const f = IT.nounForms(w.e); return `<tr><td class="f" lang="it">${esc(f.sg)}</td><td class="f" lang="it">${esc(f.pl)}</td><td class="p">${w.e[2] === 'm' ? '陽' : '陰'}${f.plGender !== w.e[2] ? '→複數陰' : ''}</td></tr>`; }).join('')}</tbody></table>`;
+  if (R.id === 'r-noun') return `<table class="t"><thead><tr><th>單數</th><th>複數</th><th>性別</th></tr></thead><tbody>${R.demo.map(x => find(x, 'n')).filter(Boolean).map(w => { const f = IT.nounForms(w.e); return `<tr><td class="f" lang="${LC.id}">${esc(f.sg)}</td><td class="f" lang="${LC.id}">${esc(f.pl)}</td><td class="p">${w.e[2] === 'm' ? '陽' : '陰'}${f.plGender !== w.e[2] ? '→複數陰' : ''}</td></tr>`; }).join('')}</tbody></table>`;
   if (R.id === 'r-art') {
-    const extra = { psicologo: ['psicologo', 'n', 'm', 'psicologi'] };
-    return `<table class="t"><thead><tr><th>定冠詞</th><th>複數</th><th>不定冠詞</th></tr></thead><tbody>${R.demo.map(x => { const w = find(x, 'n'); return w ? w.e : extra[x]; }).filter(Boolean).map(e => { const f = IT.nounForms(e); return `<tr><td class="f" lang="it">${esc(f.sg)}</td><td class="f" lang="it">${esc(f.pl)}</td><td lang="it">${esc(f.indef + (f.indef.endsWith("'") ? '' : ' ') + e[0])}</td></tr>`; }).join('')}</tbody></table>`;
+    const extra = IT.ART_DEMO_EXTRA || { psicologo: ['psicologo', 'n', 'm', 'psicologi'] };
+    return `<table class="t"><thead><tr><th>定冠詞</th><th>複數</th><th>不定冠詞</th></tr></thead><tbody>${R.demo.map(x => { const w = find(x, 'n'); return w ? w.e : extra[x]; }).filter(Boolean).map(e => { const f = IT.nounForms(e); return `<tr><td class="f" lang="${LC.id}">${esc(f.sg)}</td><td class="f" lang="${LC.id}">${esc(f.pl)}</td><td lang="${LC.id}">${esc(f.indef + (f.indef.endsWith("'") ? '' : ' ') + e[0])}</td></tr>`; }).join('')}</tbody></table>`;
   }
-  if (R.id === 'r-adj') return `<div class="scroll-x"><table class="t"><thead><tr><th>陽單</th><th>陰單</th><th>陽複</th><th>陰複</th></tr></thead><tbody>${R.demo.map(x => find(x, 'adj')).filter(Boolean).map(w => '<tr>' + IT.adjForms(w.e).map(x => `<td class="f" lang="it">${esc(x)}</td>`).join('') + '</tr>').join('')}</tbody></table></div>`;
-  return R.demo.map(x => find(x, 'v')).filter(Boolean).map(w => `<div class="rc-row" data-vk="${esc(w.id)}"><div class="rc-h"><b lang="it">${esc(w.word)}</b><span class="meta">${esc(w.zh)}</span></div>${verbInfo(w)}
+  if (R.id === 'r-adj') return `<div class="scroll-x"><table class="t"><thead><tr><th>陽單</th><th>陰單</th><th>陽複</th><th>陰複</th></tr></thead><tbody>${R.demo.map(x => find(x, 'adj')).filter(Boolean).map(w => '<tr>' + IT.adjForms(w.e).map(x => `<td class="f" lang="${LC.id}">${esc(x)}</td>`).join('') + '</tr>').join('')}</tbody></table></div>`;
+  return R.demo.map(x => find(x, 'v')).filter(Boolean).map(w => `<div class="rc-row" data-vk="${esc(w.id)}"><div class="rc-h"><b lang="${LC.id}">${esc(w.word)}</b><span class="meta">${esc(w.zh)}</span></div>${verbInfo(w)}
     <div class="seg" role="group" aria-label="時態 ${esc(w.word)}" style="margin:8px 0"><button data-tense="pres" aria-pressed="true">現在式</button><button data-tense="pass" aria-pressed="false">過去式</button><button data-tense="imp" aria-pressed="false">命令式</button></div><div class="vt">${conjTable(w, 'pres')}</div></div>`).join('');
 }
 function renderGram() {
@@ -3580,7 +3612,7 @@ function renderGram() {
     host.innerHTML = `<button class="gr-back" id="grBack">‹ 文法列表</button>
       <div class="card"><div class="gr-head"><h2>${esc(rule.title)}</h2><span class="lv">詞性變化規則</span></div><div class="gbody scroll-x">${rule.body}</div></div>
       <div class="card"><div class="gp-title">實際變化例子</div><div class="rc-list">${ruleDemo(rule)}</div></div>
-      <div class="card"><div class="gp-title">App 裡的字（${words.length}）</div><p class="meta" style="margin:4px 0 10px">點一下看完整的變化表。</p><div class="rc-words">${words.map(w => `<button class="rc-w" data-word="${esc(w.id)}" lang="it">${esc(w.title)}</button>`).join('')}</div></div>`;
+      <div class="card"><div class="gp-title">App 裡的字（${words.length}）</div><p class="meta" style="margin:4px 0 10px">點一下看完整的變化表。</p><div class="rc-words">${words.map(w => `<button class="rc-w" data-word="${esc(w.id)}" lang="${LC.id}">${esc(w.title)}</button>`).join('')}</div></div>`;
     $('#grBack', host).onclick = back;
     $$('[data-vk]', host).forEach(box => $$('[data-tense]', box).forEach(b => b.onclick = () => { $$('[data-tense]', box).forEach(x => x.setAttribute('aria-pressed', String(x === b))); $('.vt', box).innerHTML = conjTable(WMAP[box.dataset.vk], b.dataset.tense); }));
     return;
@@ -3605,7 +3637,7 @@ function renderGram() {
   host.innerHTML = `<button class="gr-back" id="grBack">‹ 文法列表</button>
     <div class="card"><div class="gr-head"><h2>${esc(p.title)}</h2><span class="lv">${esc(p.tag)}</span></div><div class="gbody scroll-x">${p.body}</div></div>
     <div class="card"><div class="gp-title" style="margin-bottom:8px">App 裡用到的例句（${exs.length}）</div><p class="meta" style="margin:0 0 6px">黃色是這個文法點，點任何一個字可以查意思。</p>
-      ${exs.length ? `<div class="gr-exs">${exs.slice(0, gramShow).map(x => `<div class="gr-ex"><div class="ex-row"><div class="sent" lang="it">${sentHTML(x.s, { ranges: x.r })}</div>${iconPlay(x.s, '播放例句')}</div><div class="zhline">${esc(x.zh)}</div>${x.w ? `<div class="from">出自單字：<span lang="it">${esc(x.w.title)}</span>（${esc(meanPlain(x.w))}）</div>` : ''}</div>`).join('')}</div>${exs.length > gramShow ? `<button class="btn quiet gr-more" id="grMore">再顯示 ${Math.min(8, exs.length - gramShow)} 句（共 ${exs.length} 句）</button>` : ''}` : '<p class="meta">目前的例句裡還沒有用到這個文法。</p>'}
+      ${exs.length ? `<div class="gr-exs">${exs.slice(0, gramShow).map(x => `<div class="gr-ex"><div class="ex-row"><div class="sent" lang="${LC.id}">${sentHTML(x.s, { ranges: x.r })}</div>${iconPlay(x.s, '播放例句')}</div><div class="zhline">${esc(x.zh)}</div>${x.w ? `<div class="from">出自單字：<span lang="${LC.id}">${esc(x.w.title)}</span>（${esc(meanPlain(x.w))}）</div>` : ''}</div>`).join('')}</div>${exs.length > gramShow ? `<button class="btn quiet gr-more" id="grMore">再顯示 ${Math.min(8, exs.length - gramShow)} 句（共 ${exs.length} 句）</button>` : ''}` : '<p class="meta">目前的例句裡還沒有用到這個文法。</p>'}
     </div>`;
   $('#grBack', host).onclick = back;
   const m = $('#grMore', host); if (m) m.onclick = () => { gramShow += 8; renderGram(); };
@@ -3643,7 +3675,7 @@ function renderLib() {
     <div class="stats">
       <div class="stat"><b>${pct}%</b><span>已學會</span></div><div class="stat"><b>${c.due}</b><span>今天到期</span></div><div class="stat"><b>${c.queued}</b><span>待考</span></div><div class="stat"><b>${c.mcW}</b><span>單選錯題</span></div><div class="stat"><b>${c.fillW}</b><span>填空錯題</span></div>
     </div>
-    <div class="search"><input id="q" type="search" placeholder="搜尋：義大利文、中文或英文" aria-label="搜尋單字" autocomplete="off" autocapitalize="off" spellcheck="false" value="${esc(UI.libQ || '')}"></div>
+    <div class="search"><input id="q" type="search" placeholder="搜尋：${LC.name}、中文或英文" aria-label="搜尋單字" autocomplete="off" autocapitalize="off" spellcheck="false" value="${esc(UI.libQ || '')}"></div>
     <div class="results" id="results"></div>
     ${ents.length ? `<div class="entry">${ents.map(x => entryBtn(...x)).join('')}</div>` : '<p class="meta" style="margin:0">目前沒有要複習的題目。練習時答錯的字、到期的字會出現在這裡。</p>'}
     <details class="lst" id="listBox"><summary>清單（待考、已學會、錯題）</summary>
@@ -3652,7 +3684,7 @@ function renderLib() {
     </details>
     <details class="lst"${Cloud.mode === 'google' && !Cloud.user ? ' open' : ''}><summary>設定<span class="n sync${Cloud.ref ? ' on' : ''}" id="syncState"><i></i><span>${esc(Cloud.chip())}</span></span></summary>
       <div class="setgrp">
-        <section><h4>義大利文發音</h4><div id="voiceBox"></div></section>
+        <section><h4>${LC.name}發音</h4><div id="voiceBox"></div></section>
         <section><h4>音效</h4>
           <label class="label" for="sfxSel">按鈕和答題音效</label>
           <select id="sfxSel">${[['on', '開'], ['low', '小聲'], ['off', '關']].map(([k, l]) => `<option value="${k}"${SET.sfx === k ? ' selected' : ''}>${l}</option>`).join('')}</select>
@@ -3676,12 +3708,12 @@ function renderLib() {
           <div class="meta" id="syncLong">${esc(Cloud.label())}</div>
           <div id="authBox"></div>
           <div class="row"><button class="btn quiet" id="exp">匯出進度</button><button class="btn quiet" id="imp">匯入進度</button></div>
-          <div class="meta">日文和義大利文的進度存在同一個帳號裡；備份碼也是同一串，兩邊都能匯入。</div>
+          <div class="meta">各語言的進度存在同一個帳號裡；備份碼也是同一串，每個語言頁都能匯入。</div>
           <div id="bk"></div>
         </section>
         <section><h4>重設</h4>
-          <button class="btn quiet" id="resetIt" style="min-height:40px">清除義大利文的學習紀錄</button>
-          <div class="meta">只清義大利文，日文的進度不會動。</div>
+          <button class="btn quiet" id="resetIt" style="min-height:40px">清除${LC.name}的學習紀錄</button>
+          <div class="meta">只清${LC.name}，其他語言的進度不會動。</div>
         </section>
       </div>
     </details>`;
@@ -3707,20 +3739,20 @@ function renderLib() {
   $('#sfxSel').onchange = e => { SET.sfx = e.target.value; saveSet(); if (SET.sfx !== 'off') Sfx.ok(); };
   $('#meanSel').onchange = e => { SET.mean = e.target.value; saveSet(); mcRound = null; toast({ zh: '單字意思：中文', en: '單字意思：English', both: '單字意思：中文＋English' }[SET.mean]); };
   $('#resetIt').onclick = () => {
-    const el = Sheet.open('清除義大利文紀錄', '<p style="margin:0">確定要清除義大利文的所有學習紀錄嗎？這個動作不能復原，可以先「匯出進度」備份。日文的進度不會動。</p><div class="btnrow"><button class="btn quiet" id="rsNo">取消</button><button class="btn solid" id="rsYes">清除</button></div>');
+    const el = Sheet.open(`清除${LC.name}紀錄`, `<p style="margin:0">確定要清除${LC.name}的所有學習紀錄嗎？這個動作不能復原，可以先「匯出進度」備份。其他語言的進度不會動。</p><div class="btnrow"><button class="btn quiet" id="rsNo">取消</button><button class="btn solid" id="rsYes">清除</button></div>`);
     $('#rsNo', el).onclick = () => Sheet.close();
     $('#rsYes', el).onclick = () => {
       reloadShared();
       const now = Date.now();
       // 留下空白紀錄（帶時間），同步時其他裝置也會一起清掉
-      for (const id in S.items) if (id.startsWith('it:')) S.items[id] = Object.assign(blankRec(), { t: now });
-      saveLocal(); Cloud.schedule(); Sheet.close(); deck = null; mcRound = null; fillRound = null; renderLib(); toast('已清除義大利文的紀錄');
+      for (const id in S.items) if (id.startsWith(LP)) S.items[id] = Object.assign(blankRec(), { t: now });
+      saveLocal(); Cloud.schedule(); Sheet.close(); deck = null; mcRound = null; fillRound = null; renderLib(); toast(`已清除${LC.name}的紀錄`);
     };
   };
   $('#exp').onclick = async () => {
     reloadShared();
     const txt = await zipCode(packState(S, today()));
-    $('#bk').innerHTML = `<textarea id="bkText" readonly aria-label="備份碼" style="min-height:72px">${esc(txt)}</textarea><div class="row" style="margin-top:8px"><button class="btn solid" id="copyBk">複製</button><span class="meta">共 ${txt.length} 字，包含日文和義大利文。</span></div>`;
+    $('#bk').innerHTML = `<textarea id="bkText" readonly aria-label="備份碼" style="min-height:72px">${esc(txt)}</textarea><div class="row" style="margin-top:8px"><button class="btn solid" id="copyBk">複製</button><span class="meta">共 ${txt.length} 字，包含所有語言。</span></div>`;
     $('#copyBk').onclick = () => {
       const ta = $('#bkText');
       const fallback = () => { ta.focus(); ta.select(); toast('已選取，請按複製'); };
@@ -3728,7 +3760,7 @@ function renderLib() {
     };
   };
   $('#imp').onclick = () => {
-    $('#bk').innerHTML = '<textarea id="impText" placeholder="貼上備份碼（N5 開頭）" aria-label="貼上備份碼"></textarea><div class="row" style="margin-top:8px"><button class="btn solid" id="doImp">合併匯入</button><span class="meta">這裡只匯入義大利文；日文請在日文頁匯入同一串碼。</span></div><div id="impMsg" class="meta"></div>';
+    $('#bk').innerHTML = `<textarea id="impText" placeholder="貼上備份碼（N5 開頭）" aria-label="貼上備份碼"></textarea><div class="row" style="margin-top:8px"><button class="btn solid" id="doImp">合併匯入</button><span class="meta">這裡只匯入${LC.name}；其他語言請在各自的頁面匯入同一串碼。</span></div><div id="impMsg" class="meta"></div>`;
     $('#doImp').onclick = async () => {
       try {
         const raw = $('#impText').value.replace(/\s+/g, '');
@@ -3739,7 +3771,7 @@ function renderLib() {
         reloadShared();
         S = mergeState(S, { items: clean, days: d.days || {} });
         saveLocal(); Cloud.schedule(); renderGoal(); renderLib();
-        toast(`已匯入 ${Object.keys(clean).length} 筆義大利文紀錄`);
+        toast(`已匯入 ${Object.keys(clean).length} 筆${LC.name}紀錄`);
       } catch (e) { $('#impMsg').textContent = '無法讀取：請貼上完整的備份碼（以 N5 開頭）。'; }
     };
   };
@@ -3754,7 +3786,7 @@ function fillList(d) {
   box.innerHTML = arr.map(w => {
     const r = getRec(w.id);
     const dd = key === 'learned' ? `<span class="d">${r.due ? r.due.slice(5).replace('-', '/') : ''} · 第${(r.lv || 0) + 1}級</span>` : '';
-    return `<div class="lrow"><span class="w" lang="it" data-word="${esc(w.id)}" style="cursor:pointer;font-family:var(--font-ui)">${esc(w.title)}</span><span class="z">${meanW(w)}</span>${dd}<button data-id="${esc(w.id)}">${act}</button></div>`;
+    return `<div class="lrow"><span class="w" lang="${LC.id}" data-word="${esc(w.id)}" style="cursor:pointer;font-family:var(--font-ui)">${esc(w.title)}</span><span class="z">${meanW(w)}</span>${dd}<button data-id="${esc(w.id)}">${act}</button></div>`;
   }).join('');
   $$('button[data-id]', box).forEach(b => b.onclick = () => {
     const id = b.dataset.id, r = getRec(id);
@@ -3778,9 +3810,9 @@ function doSearch(qs) {
     const r = getRec(w.id);
     const canQ = r.s === 'new' || r.s === 'excluded';
     return `<div class="res">
-      <div class="hd"><span class="w" lang="it" style="font-family:var(--font-ui);font-weight:700">${esc(w.title)}</span><span>${meanW(w)}</span>${posBadge(w)}</div>
+      <div class="hd"><span class="w" lang="${LC.id}" style="font-family:var(--font-ui);font-weight:700">${esc(w.title)}</span><span>${meanW(w)}</span>${posBadge(w)}</div>
       <div class="row"><span class="st ${r.s}">${STATUS_TXT[r.s] || '未學'}</span><span class="meta">作答 ${r.n || 0} 次</span></div>
-      <div class="sent sm" lang="it">${sentHTML(w.sent)}</div>
+      <div class="sent sm" lang="${LC.id}">${sentHTML(w.sent)}</div>
       <div class="meta" style="color:var(--fg)">${esc(w.sentZh)}</div>
       <div class="row">${playBtn(w.title, '單字')}${playBtn(w.sent, '例句')}${canQ ? `<button class="btn" data-q="${esc(w.id)}" style="min-height:44px">列入考題</button>` : ''}</div>
     </div>`;
@@ -3794,17 +3826,17 @@ function renderVoiceBox() {
   const best = Voice.best();
   const opts = Voice.list.slice().sort((a, b) => Voice.score(b) - Voice.score(a));
   box.innerHTML = `<div style="display:flex;flex-direction:column;gap:12px">
-    <label class="label" for="vsel">義大利文語音（這台裝置）</label>
-    ${opts.length ? `<select id="vsel">${opts.map(v => `<option value="${esc(v.voiceURI)}"${best && v.voiceURI === best.voiceURI ? ' selected' : ''}>${esc(v.name)}${Voice.GOOD.test(v.name) ? '（較自然）' : ''}</option>`).join('')}</select>` : '<div class="meta">還沒有讀到義大利文語音，系統會用預設聲音。</div>'}
+    <label class="label" for="vsel">${LC.name}語音（這台裝置）</label>
+    ${opts.length ? `<select id="vsel">${opts.map(v => `<option value="${esc(v.voiceURI)}"${best && v.voiceURI === best.voiceURI ? ' selected' : ''}>${esc(v.name)}${Voice.GOOD.test(v.name) ? '（較自然）' : ''}</option>`).join('')}</select>` : `<div class="meta">還沒有讀到${LC.name}語音，系統會用預設聲音。</div>`}
     <div class="range"><label class="label" for="vrate">速度</label><input id="vrate" type="range" min="0.6" max="1.2" step="0.1" value="${SET.rate}"><span class="meta" id="vrateV">${Number(SET.rate).toFixed(1)} 倍</span></div>
     <div class="row"><button class="play" id="vtest">${ICON.play}試聽</button></div>
-    ${!opts.length ? '<div class="warn">這台裝置沒有義大利文語音。iPhone／Mac：到「設定 → 輔助使用 → 朗讀內容 → 聲音 → 義大利文」下載語音。Android：到「文字轉語音」設定下載義大利文。</div>' : ''}
+    ${!opts.length ? `<div class="warn">${LC.noVoiceHelp}</div>` : ''}
     <div class="meta">語音只存在這台裝置；速度和日文共用。</div>
   </div>`;
   const sel = $('#vsel'); if (sel) sel.onchange = () => { ISET.voice = sel.value; saveISet(); };
   const rate = $('#vrate');
   rate.oninput = () => { SET.rate = Number(rate.value); $('#vrateV').textContent = SET.rate.toFixed(1) + ' 倍'; saveSet(); };
-  $('#vtest').onclick = () => Voice.speak('Ciao! Come stai? Io sto bene, grazie.');
+  $('#vtest').onclick = () => Voice.speak(LC.ttsSample);
 }
 
 // ================= 帳號同步（和日文頁同一份資料） =================
@@ -3911,7 +3943,7 @@ function renderAuthBox() {
   const top = $('#authTop');
   if (top) {
     if (Cloud.mode === 'google' && !Cloud.user) {
-      top.innerHTML = `<div class="authcard"><div><b>用 Google 帳號存進度</b><div class="meta">日文和義大利文的進度會一起存到雲端。</div></div><button class="btn solid gbtn-signin" id="gInTop">${GOOGLE_G}登入</button></div>`;
+      top.innerHTML = `<div class="authcard"><div><b>用 Google 帳號存進度</b><div class="meta">每個語言的進度會一起存到雲端。</div></div><button class="btn solid gbtn-signin" id="gInTop">${GOOGLE_G}登入</button></div>`;
       $('#gInTop', top).onclick = () => Cloud.signIn();
     } else top.innerHTML = '';
   }
