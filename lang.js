@@ -71,7 +71,8 @@
     setTimeout(() => { back.hidden = true; el.hidden = true; }, 180);
   }
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && el && !el.hidden && el.querySelector('.pk-x')) { e.stopPropagation(); close(); } }, true);
-  const go = id => { if (id === CUR) return close(); location.href = urlOf(id); };
+  // 用 replace 換頁：不留下上一個語言的紀錄，按手機返回鍵不會跳回去
+  const go = id => { if (id === CUR) return close(); location.replace(urlOf(id)); };
   const row = (l, extra = '', attrs = '', plain) => { const on = !plain && l.id === CUR; return `<button class="pk-opt${on ? ' on' : ''}" ${attrs}><span class="lg-g" aria-hidden="true">${esc(l.glyph)}</span><span class="pk-n">${esc(l.name)}${l.sub ? ` <small>${esc(l.sub)}</small>` : ''}</span>${extra}<span class="pk-ck" aria-hidden="true">${on ? OK : ''}</span></button>`; };
 
   function openPicker() {
@@ -169,5 +170,23 @@
     if (c.lock && !c.active.includes(CUR)) setTimeout(() => askSwap(CUR, true), 300);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+  // 鍵盤收起來（例如按手機返回鍵）但輸入框還留著焦點時，底部分頁會一直藏著：偵測畫面高度恢復，就把分頁叫回來
+  if (window.visualViewport) {
+    const vv = window.visualViewport;
+    let full = vv.height, timer = 0;
+    const back = () => {
+      const b = document.body;
+      if (!b || !b.classList.contains('typing') || vv.height < full * 0.85) return;
+      const a = document.activeElement;
+      if (a && /^(INPUT|TEXTAREA)$/.test(a.tagName)) a.blur();
+      b.classList.remove('typing');
+    };
+    vv.addEventListener('resize', () => {
+      if (vv.height > full) full = vv.height;
+      clearTimeout(timer);
+      if (vv.height >= full * 0.85) timer = setTimeout(back, 400);
+    });
+    addEventListener('orientationchange', () => { full = 0; setTimeout(() => { full = vv.height; }, 600); });
+  }
   window.AppLangs = { open: openPicker, current: CUR, list: LANGS };
 })();
