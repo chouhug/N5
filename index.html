@@ -2665,7 +2665,9 @@ const D = {
 '已經會了': 'I know this', '列入考題': 'Add to quiz', '下一張': 'Next card', '變化形・詞性': 'Forms & part of speech', '看它的變化形': 'See its forms',
 // ---- 填空・聽寫 ----
 '填空模式': 'Fill-in mode', '句子填空': 'Sentence', '聽寫': 'Dictation', '聽寫錯題': 'Dictation mistakes',
-'漢字、平假名或拼音': 'Kanji, hiragana or romaji', '填入答案': 'Type your answer', '提示：第一個假名是': 'Hint: the first kana is',
+'漢字、平假名或拼音': 'Kanji, hiragana or romaji', '填入答案': 'Type your answer', '提示：第一個假名是': 'Hint: the first kana is', '提示': 'Hint', '收起提示': 'Hide hint',
+'填空的提示（第一個假名、假名數）': 'Fill-in hint (first kana, length)', '按「提示」才顯示': 'Only when I tap Hint', '一開始就顯示': 'Show right away',
+'填空提示：一開始就顯示': 'Fill-in hint: shown right away', '填空提示：按了才顯示': 'Fill-in hint: tap to show',
 '寫下聽到的字': 'Write what you hear', '平假名、拼音或漢字': 'Hiragana, romaji or kanji', '慢速': 'Slow', '再聽一次': 'Listen again', '看意思': 'Show meaning',
 // ---- 單字庫 ----
 '搜尋單字': 'Search words', '搜尋：日文、假名、拼音或中文': 'Search: Japanese, kana, romaji or English',
@@ -4961,14 +4963,14 @@ function nextFillQ(keepFocus) {
     ${romajiLine((preRom + ' ____ ' + postRom).trim())}
     <div class="hint" style="margin-top:8px">
       <span>${esc(w.sentZh)}</span>
-      ${len > 1 ? `<span class="meta">提示：第一個假名是 <b style="color:var(--fg)">${esc(w.ansR[0])}</b>，共 ${len} 個假名</span>` : ''}
+      ${len > 1 ? `<span class="meta" id="fillHint"${SET.fillHint === 'show' ? '' : ' hidden'}>提示：第一個假名是 <b style="color:var(--fg)">${esc(w.ansR[0])}</b>，共 ${len} 個假名</span>` : ''}
     </div>
     <form class="answerrow" id="fillForm" style="margin-top:12px" autocomplete="off">
       <input id="fillIn" type="text" inputmode="text" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" placeholder="漢字、平假名或拼音" aria-label="填入答案">
       <button class="btn solid" type="submit" id="fillGo">送出</button>
     </form>
     <div class="preview" id="fillPrev"></div>
-    <button class="btn quiet block" id="fillShow" style="margin-top:4px">看答案</button>
+    <div${len > 1 ? ' class="btnrow"' : ''} style="margin-top:4px">${len > 1 ? `<button class="btn quiet" id="fillHintBtn" aria-pressed="${SET.fillHint === 'show'}">${SET.fillHint === 'show' ? '收起提示' : '提示'}</button>` : ''}<button class="btn quiet${len > 1 ? '' : ' block'}" id="fillShow">看答案</button></div>
     <div id="fillAfter"></div>
   </div>`;
   const inp = $('#fillIn'), blank = $('#blank'), prev = $('#fillPrev');
@@ -4980,6 +4982,11 @@ function nextFillQ(keepFocus) {
     prev.textContent = v && conv !== v ? `→ ${conv}` : '';
   };
   inp.addEventListener('input', live);
+  const hb = $('#fillHintBtn');
+  if (hb) hb.onclick = () => {
+    const h = $('#fillHint'), on = h.hidden;
+    h.hidden = !on; hb.textContent = on ? '收起提示' : '提示'; hb.setAttribute('aria-pressed', String(on));
+  };
   const finish = (ok, shown) => {
     answered = true;
     R.done = true;
@@ -4990,7 +4997,7 @@ function nextFillQ(keepFocus) {
     blank.classList.add(ok ? 'ok' : 'ng');
     inp.readOnly = true;
     $('#fillGo').textContent = '下一題';
-    $('#fillShow').hidden = true;
+    $('#fillShow').parentNode.hidden = true;
     const r = getRec(w.id);
     const learnedNow = ok && r.s === 'learned' && r.lv === 0 && r.due === addDays(today(), 1) && src !== 'due';
     $('#fillAfter').innerHTML = `<div class="afterbox">
@@ -5178,6 +5185,8 @@ function renderLib() {
           <select id="roundSel">${[10, 15, 20, 30, 50, 'all'].map(n => `<option value="${n}"${String(SET.round) === String(n) || (n === 20 && !SET.round) ? ' selected' : ''}>${n === 'all' ? '全部' : n + ' 題'}</option>`).join('')}</select>
           <label class="label" for="recentSet">「最近學過」的範圍</label>
           <select id="recentSet">${RECENT_OPTS.map(([k, l]) => `<option value="${k}"${SET.recent === k ? ' selected' : ''}>${l}</option>`).join('')}</select>
+          <label class="label" for="hintSel">填空的提示（第一個假名、假名數）</label>
+          <select id="hintSel"><option value="tap"${SET.fillHint !== 'show' ? ' selected' : ''}>按「提示」才顯示</option><option value="show"${SET.fillHint === 'show' ? ' selected' : ''}>一開始就顯示</option></select>
           <div class="meta">每輪題數會套用到五十音、單選、字卡和填空。「最近學過」一輪會出完範圍內的全部字；錯題複習固定每輪隨機 10 題。</div>
         </section>
         <section><h4>介面語言 Language</h4>
@@ -5220,6 +5229,7 @@ function renderLib() {
   renderVoiceBox();
   renderAuthBox();
   $('#roundSel').onchange = e => { SET.round = e.target.value === 'all' ? 'all' : Number(e.target.value); saveSet(); mcRound = null; fillRound = null; deck = null; kanaRound = null; toast(SET.round === 'all' ? '每輪：全部' : `每輪 ${SET.round} 題`); };
+  $('#hintSel').onchange = e => { SET.fillHint = e.target.value; saveSet(); fillRound = null; toast(SET.fillHint === 'show' ? '填空提示：一開始就顯示' : '填空提示：按了才顯示'); };
   $('#recentSet').onchange = e => { SET.recent = e.target.value; saveSet(); mcRound = null; fillRound = null; toast(`最近學過：${recentLabel()}`); renderLib(); };
   $('#vibSel').onchange = e => { SET.vib = e.target.value; saveSet(); buzz(true); };
   $('#vibTest').onclick = testBuzz;
