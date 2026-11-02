@@ -614,7 +614,7 @@ body.hide-furi #gloss rt,body.hide-furi .furibtn rt{visibility:visible}
 .tour-lang{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .tour-art{display:block;width:100%;height:auto;max-height:110px}
 
-/* 語言頁（義大利文、西班牙文…）：沿用日文 App 的樣式（建置時從 ../index.html 抽出），這裡只補語言頁需要的部分 */
+/* 語言頁（義大利文、西班牙文、德文、俄文…）：沿用日文 App 的樣式（建置時從 ../index.html 抽出），這裡只補語言頁需要的部分 */
 :root{--font-ja:var(--font-ui);--font-kana:var(--font-ui)}
 [lang="it"],[lang="es"],[lang="de"],[lang="ru"],[lang="en"]{font-family:var(--font-ui)}
 .brand b{font-family:var(--font-ui);font-weight:800}
@@ -630,9 +630,12 @@ mark{display:inline;line-height:inherit;border-radius:4px;padding:0 .08em}
 .opt .t{overflow-wrap:anywhere}
 .fc .word{font-family:var(--font-ui);font-weight:700;line-height:1.2;overflow-wrap:anywhere}
 .fc .word .art{color:var(--muted);font-weight:500}
+.fc .word.long,.prompt .big.long{font-size:clamp(26px,8vw,36px)}
+.fc .word.xlong,.prompt .big.xlong{font-size:clamp(22px,6.6vw,30px)}
 .fc .forms{text-align:center;color:var(--muted);font-size:15px}
 .pos.m{color:var(--pri);border-color:var(--pri-mid)}
 .pos.f{color:var(--ng);border-color:color-mix(in srgb,var(--ng) 45%,var(--line))}
+.pos.n{color:var(--ok-deep,var(--ok));border-color:color-mix(in srgb,var(--ok) 45%,var(--line))}
 .st.wr{border-color:var(--ng);color:var(--ng)}
 .blank{min-width:3em}
 
@@ -663,6 +666,8 @@ table.t th,table.t td{border-bottom:1px solid var(--line);padding:8px 6px;text-a
 table.t th{font-size:13px;color:var(--muted);font-weight:600}
 table.t td.p{color:var(--muted);width:28%;font-size:14px}
 table.t td.f{font-weight:600}
+/* 俄文的變化形不要在字中間斷行（нового），讓欄位自己變寬 */
+table.t td.f[lang="ru"]{overflow-wrap:normal}
 table.t td.a{width:44px;text-align:right}
 table.t .iplay{width:36px;height:36px;margin:0}
 
@@ -690,6 +695,16 @@ table.t .iplay{width:36px;height:36px;margin:0}
 .tk-ex .grow{flex:1;min-width:0}
 .an .tk-more{margin-top:10px;width:100%}
 
+/* 名詞上方的性別小字（上方「名」按鈕開關，像日文頁的假名） */
+ruby.gr{ruby-position:over}
+rt.gt{font-family:var(--font-ui);font-size:.5em;font-weight:700;line-height:1;letter-spacing:0;user-select:none;-webkit-user-select:none}
+rt.g-m{color:var(--pri)}
+rt.g-f{color:var(--ng)}
+rt.g-n{color:var(--ok-deep,var(--ok))}
+rt.g-pl{color:var(--muted)}
+body.hide-gen rt.gt{visibility:hidden}
+body.hide-gen .sent{line-height:1.75}
+
 :root{--pat:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 900' preserveAspectRatio='xMidYMax slice'%3E%3Ccircle cx='330' cy='150' r='46' fill='%23f7e6cc'/%3E%3Crect x='40' y='120' width='90' height='12' rx='6' fill='%23e6ebf3'/%3E%3Crect x='70' y='140' width='60' height='12' rx='6' fill='%23e6ebf3'/%3E%3Crect x='250' y='250' width='110' height='12' rx='6' fill='%23e6ebf3'/%3E%3Crect x='290' y='270' width='70' height='12' rx='6' fill='%23e6ebf3'/%3E%3Cpath d='M80 210 q6 -6 12 0 q6 -6 12 0' fill='none' stroke='%23cdd5e2' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M110 232 q6 -6 12 0 q6 -6 12 0' fill='none' stroke='%23cdd5e2' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M-10 640 C 60 585 130 585 200 610 C 260 630 320 580 430 600 L430 910 L-10 910Z' fill='%23e6ebf3'/%3E%3Cg fill='%23dde4ef'%3E%3Crect x='238' y='548' width='9' height='44'/%3E%3Cpath d='M236 548 l6.5 -10 l6.5 10z'/%3E%3Crect x='252' y='572' width='18' height='22'/%3E%3Crect x='272' y='566' width='14' height='28'/%3E%3Crect x='288' y='576' width='20' height='18'/%3E%3Crect x='218' y='578' width='16' height='16'/%3E%3Cpath d='M200 594 a16 16 0 0 1 32 0z'/%3E%3C/g%3E%3Cg fill='%23d3dbe8'%3E%3Cpath d='M251 572 l10 -7 l10 7z'/%3E%3Cpath d='M271 566 l8 -6 l8 6z'/%3E%3Cpath d='M287 576 l11 -6 l11 6z'/%3E%3Cpath d='M217 578 l9 -6 l9 6z'/%3E%3C/g%3E%3Cpath d='M-10 720 C 70 670 150 690 220 705 C 290 720 350 670 430 685 L430 910 L-10 910Z' fill='%23d8e0ec'/%3E%3Cpath d='M40 706 q8 -35.2 8 -64 q0 28.8 8 64z' fill='%23c3cede'/%3E%3Cpath d='M62 708 q6.5 -25.3 6.5 -46 q0 20.7 6.5 46z' fill='%23c3cede'/%3E%3Cpath d='M338 690 q8 -38.5 8 -70 q0 31.5 8 70z' fill='%23c3cede'/%3E%3Cpath d='M360 694 q6.5 -27.500000000000004 6.5 -50 q0 22.5 6.5 50z' fill='%23c3cede'/%3E%3Cpath d='M-10 800 C 60 760 150 770 230 785 C 320 802 370 760 430 768 L430 910 L-10 910Z' fill='%23cfd8e6'/%3E%3Cpath d='M286 790 q9 -44 9 -80 q0 36 9 80z' fill='%23c3cede'/%3E%3Cpath d='M310 792 q7.5 -31.900000000000002 7.5 -58 q0 26.1 7.5 58z' fill='%23c3cede'/%3E%3Cpath d='M330 794 q6 -22 6 -40 q0 18 6 40z' fill='%23c3cede'/%3E%3Cpath d='M150 900 C 175 870, 230 860, 222 835 S 255 800, 300 790 L 308 795 C 270 806, 240 820, 245 840 S 200 875, 190 900 Z' fill='%23eef3fa'/%3E%3C/svg%3E")}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--pat:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 900' preserveAspectRatio='xMidYMax slice'%3E%3Ccircle cx='330' cy='150' r='46' fill='%23252d3a'/%3E%3Crect x='40' y='120' width='90' height='12' rx='6' fill='%23161c26'/%3E%3Crect x='70' y='140' width='60' height='12' rx='6' fill='%23161c26'/%3E%3Crect x='250' y='250' width='110' height='12' rx='6' fill='%23161c26'/%3E%3Crect x='290' y='270' width='70' height='12' rx='6' fill='%23161c26'/%3E%3Cpath d='M80 210 q6 -6 12 0 q6 -6 12 0' fill='none' stroke='%232a3342' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M110 232 q6 -6 12 0 q6 -6 12 0' fill='none' stroke='%232a3342' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M-10 640 C 60 585 130 585 200 610 C 260 630 320 580 430 600 L430 910 L-10 910Z' fill='%23141a23'/%3E%3Cg fill='%231a212c'%3E%3Crect x='238' y='548' width='9' height='44'/%3E%3Cpath d='M236 548 l6.5 -10 l6.5 10z'/%3E%3Crect x='252' y='572' width='18' height='22'/%3E%3Crect x='272' y='566' width='14' height='28'/%3E%3Crect x='288' y='576' width='20' height='18'/%3E%3Crect x='218' y='578' width='16' height='16'/%3E%3Cpath d='M200 594 a16 16 0 0 1 32 0z'/%3E%3C/g%3E%3Cg fill='%23202836'%3E%3Cpath d='M251 572 l10 -7 l10 7z'/%3E%3Cpath d='M271 566 l8 -6 l8 6z'/%3E%3Cpath d='M287 576 l11 -6 l11 6z'/%3E%3Cpath d='M217 578 l9 -6 l9 6z'/%3E%3C/g%3E%3Cpath d='M-10 720 C 70 670 150 690 220 705 C 290 720 350 670 430 685 L430 910 L-10 910Z' fill='%2318202b'/%3E%3Cpath d='M40 706 q8 -35.2 8 -64 q0 28.8 8 64z' fill='%23111720'/%3E%3Cpath d='M62 708 q6.5 -25.3 6.5 -46 q0 20.7 6.5 46z' fill='%23111720'/%3E%3Cpath d='M338 690 q8 -38.5 8 -70 q0 31.5 8 70z' fill='%23111720'/%3E%3Cpath d='M360 694 q6.5 -27.500000000000004 6.5 -50 q0 22.5 6.5 50z' fill='%23111720'/%3E%3Cpath d='M-10 800 C 60 760 150 770 230 785 C 320 802 370 760 430 768 L430 910 L-10 910Z' fill='%231c2531'/%3E%3Cpath d='M286 790 q9 -44 9 -80 q0 36 9 80z' fill='%23111720'/%3E%3Cpath d='M310 792 q7.5 -31.900000000000002 7.5 -58 q0 26.1 7.5 58z' fill='%23111720'/%3E%3Cpath d='M330 794 q6 -22 6 -40 q0 18 6 40z' fill='%23111720'/%3E%3Cpath d='M150 900 C 175 870, 230 860, 222 835 S 255 800, 300 790 L 308 795 C 270 806, 240 820, 245 840 S 200 875, 190 900 Z' fill='%2310151d'/%3E%3C/svg%3E")}}
 :root[data-theme="dark"]{--pat:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 900' preserveAspectRatio='xMidYMax slice'%3E%3Ccircle cx='330' cy='150' r='46' fill='%23252d3a'/%3E%3Crect x='40' y='120' width='90' height='12' rx='6' fill='%23161c26'/%3E%3Crect x='70' y='140' width='60' height='12' rx='6' fill='%23161c26'/%3E%3Crect x='250' y='250' width='110' height='12' rx='6' fill='%23161c26'/%3E%3Crect x='290' y='270' width='70' height='12' rx='6' fill='%23161c26'/%3E%3Cpath d='M80 210 q6 -6 12 0 q6 -6 12 0' fill='none' stroke='%232a3342' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M110 232 q6 -6 12 0 q6 -6 12 0' fill='none' stroke='%232a3342' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M-10 640 C 60 585 130 585 200 610 C 260 630 320 580 430 600 L430 910 L-10 910Z' fill='%23141a23'/%3E%3Cg fill='%231a212c'%3E%3Crect x='238' y='548' width='9' height='44'/%3E%3Cpath d='M236 548 l6.5 -10 l6.5 10z'/%3E%3Crect x='252' y='572' width='18' height='22'/%3E%3Crect x='272' y='566' width='14' height='28'/%3E%3Crect x='288' y='576' width='20' height='18'/%3E%3Crect x='218' y='578' width='16' height='16'/%3E%3Cpath d='M200 594 a16 16 0 0 1 32 0z'/%3E%3C/g%3E%3Cg fill='%23202836'%3E%3Cpath d='M251 572 l10 -7 l10 7z'/%3E%3Cpath d='M271 566 l8 -6 l8 6z'/%3E%3Cpath d='M287 576 l11 -6 l11 6z'/%3E%3Cpath d='M217 578 l9 -6 l9 6z'/%3E%3C/g%3E%3Cpath d='M-10 720 C 70 670 150 690 220 705 C 290 720 350 670 430 685 L430 910 L-10 910Z' fill='%2318202b'/%3E%3Cpath d='M40 706 q8 -35.2 8 -64 q0 28.8 8 64z' fill='%23111720'/%3E%3Cpath d='M62 708 q6.5 -25.3 6.5 -46 q0 20.7 6.5 46z' fill='%23111720'/%3E%3Cpath d='M338 690 q8 -38.5 8 -70 q0 31.5 8 70z' fill='%23111720'/%3E%3Cpath d='M360 694 q6.5 -27.500000000000004 6.5 -50 q0 22.5 6.5 50z' fill='%23111720'/%3E%3Cpath d='M-10 800 C 60 760 150 770 230 785 C 320 802 370 760 430 768 L430 910 L-10 910Z' fill='%231c2531'/%3E%3Cpath d='M286 790 q9 -44 9 -80 q0 36 9 80z' fill='%23111720'/%3E%3Cpath d='M310 792 q7.5 -31.900000000000002 7.5 -58 q0 26.1 7.5 58z' fill='%23111720'/%3E%3Cpath d='M330 794 q6 -22 6 -40 q0 18 6 40z' fill='%23111720'/%3E%3Cpath d='M150 900 C 175 870, 230 860, 222 835 S 255 800, 300 790 L 308 795 C 270 806, 240 820, 245 840 S 200 875, 190 900 Z' fill='%2310151d'/%3E%3C/svg%3E")}
@@ -698,6 +713,7 @@ table.t .iplay{width:36px;height:36px;margin:0}
 <header class="top"><div class="wrap">
   <div class="brand"><b>à</b><span class="full">義大利文 </span>A1</div>
   <div class="goal" aria-live="polite"><span id="goalText">今日 0/20 題</span><div class="bar"><i id="goalBar"></i></div></div>
+  <button class="iconbtn furibtn" id="genBtn" aria-pressed="true" aria-label="名詞上的性別標示" title="名詞上的性別：開"></button>
   <button class="iconbtn" id="themeBtn" aria-label="外觀"></button>
 </div></header>
 
@@ -2533,7 +2549,7 @@ window.LANGCFG = {
 })(typeof window !== 'undefined' ? window : globalThis);
 
 ;
-/* 語言頁（義大利文、西班牙文…）：放在日文 N5 App 裡
+/* 語言頁（義大利文、西班牙文、德文、俄文…）：放在日文 N5 App 裡
    語言專屬的文字和設定放在 window.LANGCFG，資料和變化引擎放在 window.LX
    - 介面、音效、下拉選單、間隔複習規則都跟日文頁一樣
    - 進度存在同一份 n5:progress（id 以語言代碼開頭，例如 it:、es:），所以 Google 同步、每日目標直接共用
@@ -2543,6 +2559,9 @@ window.LANGCFG = {
 const IT = window.LX || window.IT;
 const LC = window.LANGCFG;
 const LP = LC.id + ':';
+// 名詞性別的名稱（德文多一個中性），語言包沒給就用陽／陰
+const GEN = IT.GENDER || { m: ['陽性', '陽'], f: ['陰性', '陰'] };
+const genOf = g => GEN[g] || GEN.f;
 
 // ================= 基本工具 =================
 const $ = (s, r = document) => r.querySelector(s);
@@ -2899,7 +2918,30 @@ function renderGoal() {
   $('#goalText').textContent = `今日 ${n}/${GOAL} 題${n >= GOAL ? ' ✓' : ''}`;
   $('#goalBar').style.width = Math.min(100, n / GOAL * 100) + '%';
 }
-// 句子：每個字都能點；ranges 是要標黃的範圍；blank 是挖空的位置
+// 名詞上方的性別小字（像日文的假名，可以在上方按鈕開關）
+// 只在這個字一定是名詞、而且性別只有一種時才標；例句裡同形的其他詞性（德文 Sie、俄文 дома）不標
+const GCACHE = new Map();
+function genOfToken(form) {
+  const k = IT.norm(form).toLowerCase();
+  if (GCACHE.has(k)) return GCACHE.get(k);
+  let g = null;
+  const inf = (LOOK.get(k) || []).filter(x => !/的一部分/.test(x.desc || ''));
+  if (inf.length && inf.every(x => x.idx >= 0 && IT.W[x.idx][1] === 'n')) {
+    const gs = new Set(inf.map(x => IT.W[x.idx][2]));
+    if (gs.size === 1) { const one = [...gs][0]; if (GEN[one]) g = one; }
+  }
+  if (g && LC.id === 'de' && !/^[A-ZÄÖÜ]/.test(form)) g = null; // 德文名詞一定大寫
+  GCACHE.set(k, g);
+  return g;
+}
+const genOn = () => SET.gender !== false;
+function applyGen() {
+  document.body.classList.toggle('hide-gen', !genOn());
+  const b = $('#genBtn'); if (!b) return;
+  b.setAttribute('aria-pressed', String(genOn()));
+  b.title = '名詞上的性別：' + (genOn() ? '開' : '關');
+}
+// 句子：每個字都能點；ranges 是要標黃的範圍；blank 是挖空的位置；noGen 不標性別（考性別、格的題目）
 function sentHTML(s, o = {}) {
   const ranges = o.ranges || [];
   const inR = i => ranges.some(r => i >= r[0] && i < r[1]);
@@ -2909,7 +2951,9 @@ function sentHTML(s, o = {}) {
     if (o.blank && start === o.blank[0]) { out += o.blankHTML; continue; }
     if (o.blank && start > o.blank[0] && start < o.blank[1]) continue;
     if (!t.w) { out += esc(t.t); continue; }
-    const tk = `<span class="tk" role="button" tabindex="0" data-w="${esc(t.t)}">${esc(t.t)}</span>`;
+    let tk = `<span class="tk" role="button" tabindex="0" data-w="${esc(t.t)}">${esc(t.t)}</span>`;
+    const g = o.noGen ? null : genOfToken(t.t);
+    if (g) tk = `<ruby class="gr">${tk}<rt class="gt g-${g}" aria-hidden="true">${esc(GEN[g][1])}</rt></ruby>`;
     out += inR(start) ? `<mark>${tk}</mark>` : tk;
   }
   return out;
@@ -2917,7 +2961,9 @@ function sentHTML(s, o = {}) {
 function exampleBlock(w) {
   return `<div class="example"><div class="ex-row"><div class="sent" lang="${LC.id}">${sentHTML(w.sent)}</div>${iconPlay(w.sent, '播放例句')}</div><div class="zhline">${esc(w.sentZh)}</div></div>`;
 }
-const posBadge = w => `<button class="posbtn" data-word="${esc(w.id)}" aria-label="看「${esc(w.word)}」的詞性和變化">${esc(POS_ZH[w.pos])}${w.pos === 'n' ? (w.e[2] === 'm' ? '・陽' : '・陰') : ''}<span aria-hidden="true">›</span></button>`;
+// 很長的字（здравствуйте、Entschuldigung）縮小字級，避免在字中間斷行
+const lenCls = t => { const n = String(t).replace(/[\u0300-\u036f]/g, '').length; return n > 14 ? ' xlong' : n > 10 ? ' long' : ''; };
+const posBadge = w => `<button class="posbtn" data-word="${esc(w.id)}" aria-label="看「${esc(w.word)}」的詞性和變化">${esc(POS_ZH[w.pos])}${w.pos === 'n' ? '・' + genOf(w.e[2])[1] : ''}<span aria-hidden="true">›</span></button>`;
 
 // ================= 拉起式面板（點字、單字詳細、字母） =================
 const Sheet = {
@@ -2977,9 +3023,9 @@ function conjTable(w, which) {
   const P = LC.persons;
   let rows;
   if (which === 'pres') rows = c.presentFull.map((f, i) => [P[i], f, LC.sayPerson(i) + ' ' + f]);
-  else if (which === 'pass') rows = c.passato.map((f, i) => [P[i], f, LC.sayPerson(i) + ' ' + f.split('/')[0]]);
+  else if (which === 'pass') { const PP = LC.pastPersons || P, SP = LC.sayPast || LC.sayPerson; rows = c.passato.map((f, i) => [PP[i], f, SP(i) + ' ' + f.split('/')[0]]); }
   else rows = c.imperative ? c.imperative.map((f, i) => [LC.impPersons[i], f, f.split('/')[0]]).filter(r => r[1]) : [];
-  if (!rows.length) return '<p class="meta">這個動詞沒有常用的命令式。</p>';
+  if (!rows.length) return `<p class="meta">${which === 'pass' ? '這個動詞通常不用完成式。' : '這個動詞沒有常用的命令式。'}</p>`;
   return `<table class="t"><tbody>${rows.map(([p, f, say]) => `<tr><td class="p">${esc(p)}</td><td class="f" lang="${LC.id}">${esc(f)}</td><td class="a">${iconPlay(say, '播放 ' + f)}</td></tr>`).join('')}</tbody></table>`;
 }
 function verbInfo(w) {
@@ -2987,8 +3033,20 @@ function verbInfo(w) {
   const tags = LC.verbTags(c);
   return `<div class="row">${tags.map(t => `<span class="pos">${esc(t)}</span>`).join('')}</div>${c.note ? `<div class="meta">${esc(c.note)}</div>` : ''}`;
 }
+// 語言包自己提供的變化表（德文：名詞的格、形容詞比較級與詞尾）
+function tableHTML(t, play) {
+  const head = t.headPl || t.head;
+  const cells = r => r.slice(1).map(x => `<td class="f" lang="${LC.id}">${esc(x)}</td>`).join('');
+  const say = r => r.slice(1).filter(Boolean)[0] || '';
+  let h = `<div class="scroll-x" style="flex-shrink:0"><table class="t">${head ? `<thead><tr>${head.map(x => `<th>${esc(x)}</th>`).join('')}${play ? '<th></th>' : ''}</tr></thead>` : ''}<tbody>${t.rows.map(r => `<tr><td class="p">${esc(r[0])}</td>${cells(r)}${play ? `<td class="a">${say(r) ? iconPlay(say(r), '播放 ' + say(r)) : ''}</td>` : ''}</tr>`).join('')}</tbody></table></div>`;
+  if (t.more) h += tableHTML(t.more, false);
+  if (t.note) h += `<div class="meta">${esc(t.note)}</div>`;
+  return h;
+}
 function formsHTML(w) {
   const e = w.e;
+  // 語言包的變化表：義、西沒有；德文給名詞、形容詞；俄文也給代名詞、限定詞（沒有就回傳 null，照下面的做法）
+  if (IT.formsTable && !isVerbPos(w.pos)) { const t = IT.formsTable(e); if (t) return tableHTML(t, true); }
   if (w.pos === 'n') {
     const f = IT.nounForms(e);
     let h = `<table class="t"><tbody><tr><td class="p">${f.plOnly ? '複數（只用複數）' : '單數'}</td><td class="f" lang="${LC.id}">${esc(f.sg)}</td><td class="a">${iconPlay(f.sg, '播放')}</td></tr>`;
@@ -3004,7 +3062,7 @@ function formsHTML(w) {
       (e[3].split('/').length > 3 ? `<div class="meta">放在名詞前面的形：${esc(e[3].split('/').slice(3).join('、'))}</div>` : '');
   }
   if (isVerbPos(w.pos)) {
-    return verbInfo(w) + `<div class="seg" role="group" aria-label="動詞時態"><button data-tense="pres" aria-pressed="true">現在式</button><button data-tense="pass" aria-pressed="false">過去式</button><button data-tense="imp" aria-pressed="false">命令式</button></div><div id="conj">${conjTable(w, 'pres')}</div>`;
+    return verbInfo(w) + `<div class="seg" role="group" aria-label="動詞時態"><button data-tense="pres" aria-pressed="true">${esc(IT.conjugate(w.word, w.pos).presTab || '現在式')}</button><button data-tense="pass" aria-pressed="false">過去式</button><button data-tense="imp" aria-pressed="false">命令式</button></div><div id="conj">${conjTable(w, 'pres')}</div>`;
   }
   if (e[3] && e[3] !== '-') return `<div>其他形：<span lang="${LC.id}">${esc(e[3].split('/').join('、'))}</span></div>`;
   return '';
@@ -3020,7 +3078,7 @@ function openWord(id) {
   const btns = r.s === 'new' || r.s === 'excluded'
     ? `<div class="btnrow"><button class="btn known" data-wa="known">${ICON.ok}已經會了</button><button class="btn solid" data-wa="queue">列入考題</button></div>`
     : `<button class="btn quiet block" data-wa="reset">移回未學</button>`;
-  const body = `<div class="rowx"><div class="grow"><div class="w1" lang="${LC.id}">${esc(w.title)}</div><div class="row" style="margin-top:6px"><span class="pos">${esc(POS_ZH[w.pos])}</span>${w.pos === 'n' ? `<span class="pos ${w.e[2]}">${w.e[2] === 'm' ? '陽性' : '陰性'}</span>` : ''}${tags.join('')}</div></div>${iconPlay(w.title, '播放單字')}</div>
+  const body = `<div class="rowx"><div class="grow"><div class="w1" lang="${LC.id}">${esc(w.title)}</div><div class="row" style="margin-top:6px"><span class="pos">${esc(POS_ZH[w.pos])}</span>${w.pos === 'n' ? `<span class="pos ${w.e[2]}">${genOf(w.e[2])[0]}</span>` : ''}${tags.join('')}</div></div>${iconPlay(w.title, '播放單字')}</div>
     <p class="mean-big">${esc(w.zh)}</p><div class="meta" style="margin-top:-8px">${esc(w.en)}</div>
     ${formsHTML(w)}
     <div class="gp-title">例句</div>
@@ -3246,6 +3304,14 @@ function showTab(t) {
 }
 $$('.tabbar button').forEach(b => b.onclick = () => showTab(b.dataset.tab));
 $('#themeBtn').onclick = () => { SET.theme = SET.theme === 'dark' ? 'light' : 'dark'; saveSet(); applyTheme(); };
+{
+  const gb = $('#genBtn');
+  if (gb) {
+    gb.innerHTML = `<ruby>名<rt>${['m', 'f', 'n'].filter(k => GEN[k]).map(k => GEN[k][1]).join('')}</rt></ruby>`;
+    gb.onclick = () => { SET.gender = !genOn(); saveSet(); applyGen(); toast(genOn() ? '名詞上方標出性別' : '已隱藏性別，點單字可以看詞性'); };
+  }
+  applyGen();
+}
 
 // ================= 發音 =================
 let pronRound = null;
@@ -3348,6 +3414,7 @@ function renderMC() {
   nextMCQ();
 }
 function artHint(x) {
+  if (x.info) return x.info;
   if (x.kind === 'artprep') { const a = IT.ART_PREPS[x.answer]; return `${x.answer} ＝ ${a.prep} ＋ ${a.art}（${IT.ART_INFO[a.art]}）`; }
   if (x.kind === 'art') return `${x.answer}：${IT.ART_INFO[x.answer] || ''}`;
   return `${x.answer}：${(IT.INDEF_INFO || { un: '陽性', uno: '陽性（s+子音、z 前）', una: '陰性', "un'": '陰性（母音前）' })[x.answer] || ''}`;
@@ -3371,7 +3438,7 @@ function nextMCQ() {
     }
     const w = item, x = IT.makeArtQuestion(w.e, LOOK);
     return renderChoice(host, {
-      head, promptHTML: `<div class="sent" lang="${LC.id}">${sentHTML(x.sentence, { blank: [x.before.length, x.before.length + x.answer.length], blankHTML: '<span class="blank" id="blank">？</span>' })}</div><div class="zhline">${esc(x.zh)}</div>`,
+      head, promptHTML: `<div class="sent" lang="${LC.id}">${sentHTML(x.sentence, { blank: [x.before.length, x.before.length + x.answer.length], blankHTML: '<span class="blank" id="blank">？</span>', noGen: true })}</div><div class="zhline">${esc(x.zh)}</div>`,
       options: x.options.map(o => ({ html: esc(o), correct: o === x.answer, lang: LC.id })),
       onAnswer: ok => { if (ok) R.right++; R.done = true; bumpDay(); const b = $('#blank'); b.textContent = x.answer; b.classList.add(ok ? 'ok' : 'ng'); },
       afterHTML: () => `<div class="hint"><span>${esc(artHint(x))}</span></div>${wordAfter(w)}`
@@ -3381,7 +3448,7 @@ function nextMCQ() {
   if (R.mode === 'verb') {
     const q = IT.makeVerbQuestion(w.e);
     return renderChoice(host, {
-      head, promptHTML: `<div class="mid" lang="${LC.id}">${esc(q.subj)} ＋ ${esc(w.word)}</div><span class="meta">${q.tense === 'passato' ? LC.pastLabel : '現在式'}・${esc(w.zh)}</span>`,
+      head, promptHTML: `<div class="mid" lang="${LC.id}">${esc(q.subj)} ＋ ${esc(w.word)}</div><span class="meta">${esc(q.label || (q.tense === 'passato' ? LC.pastLabel : '現在式'))}・${esc(w.zh)}</span>`,
       options: q.options.map(o => ({ html: esc(o), correct: o === q.answer, lang: LC.id })),
       onAnswer: ok => { if (ok) R.right++; R.done = true; record(w, 'mc', ok, src); },
       afterHTML: () => `<div class="hint"><span>正確答案：<b lang="${LC.id}">${esc(q.answer)}</b></span><button class="linkbtn" data-word="${esc(w.id)}" style="align-self:flex-start">看完整變化表</button></div>`
@@ -3389,7 +3456,7 @@ function nextMCQ() {
   }
   const opts = shuffle([w, ...pickWordDistractors(w, R.mode)]);
   let prompt;
-  if (R.mode === 'it2zh') prompt = `<div class="word-row"><div class="big" lang="${LC.id}">${esc(w.title)}</div>${iconPlay(w.title, '播放單字')}</div><span class="pos">${esc(POS_ZH[w.pos])}</span>`;
+  if (R.mode === 'it2zh') prompt = `<div class="word-row"><div class="big${lenCls(w.title)}" lang="${LC.id}">${esc(w.title)}</div>${iconPlay(w.title, '播放單字')}</div><span class="pos">${esc(POS_ZH[w.pos])}</span>`;
   else if (R.mode === 'zh2it') prompt = `<div class="zh">${meanW(w)}</div><span class="pos">${esc(POS_ZH[w.pos])}</span>`;
   else prompt = `<button class="btn solid" data-say="${esc(w.title)}" style="min-width:160px">${ICON.play}播放發音</button><span class="meta">按下按鈕聽發音，再選出意思</span>`;
   renderChoice(host, {
@@ -3452,7 +3519,7 @@ function showFlash() {
   host.innerHTML = `<div class="card fc">
     <div class="qhead"><div class="qh-l">${posBadge(w)}<span class="meta">剩 ${deck.cards.length} · 共 ${deck.total}</span></div></div>
     ${isWrong && tags.length ? `<div class="row">${tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>` : ''}
-    <div class="word-row"><div class="word" lang="${LC.id}">${esc(w.title)}</div>${iconPlay(w.title, '播放單字')}</div>
+    <div class="word-row"><div class="word${lenCls(w.title)}" lang="${LC.id}">${esc(w.title)}</div>${iconPlay(w.title, '播放單字')}</div>
     <div class="zh">${meanW(w)}</div>
     ${fl ? `<div class="forms">${fl}</div>` : ''}
     ${exampleBlock(w)}
@@ -3505,7 +3572,7 @@ function answerSpan(w) {
   }
   return [0, 0];
 }
-const letterCount = s => s.replace(/[^A-Za-zÀ-ÿ]/g, '').length;
+const letterCount = s => s.replace(/[^\p{L}]/gu, '').length;
 function nextFillQ(keepFocus) {
   const R = fillRound, host = $('#fq'); if (!host) return;
   if (R.idx >= R.queue.length) { document.body.classList.remove('typing'); return roundDone(host, R, () => { fillRound = null; renderFill(); }); }
@@ -3515,7 +3582,8 @@ function nextFillQ(keepFocus) {
   const ans = w.sent.slice(a0, a1);
   const n = letterCount(ans);
   const blankEmpty = '＿'.repeat(Math.max(2, Math.min(Math.ceil(ans.length / 2), 6)));
-  const hint = n > 1 ? `<span class="meta">提示：第一個字母是 <b style="color:var(--fg)">${esc(ans[0])}</b>，共 ${n} 個字母${/ /.test(ans) ? `（${ans.split(' ').length} 個字）` : ''}</span>` : '';
+  const showHint = SET.fillHint === 'show';
+  const hint = n > 1 ? `<span class="meta" id="fillHint"${showHint ? '' : ' hidden'}>提示：第一個字母是 <b style="color:var(--fg)">${esc(ans[0])}</b>，共 ${n} 個字母${/ /.test(ans) ? `（${ans.split(' ').length} 個字）` : ''}</span>` : '';
   host.innerHTML = `<div class="card" id="fillCard">
     <div class="qhead">${progressLine(R, R.total)}</div>
     <div class="row" style="margin-top:6px">${posBadge(w)}<b>${meanW(w)}</b></div>
@@ -3525,12 +3593,18 @@ function nextFillQ(keepFocus) {
       <input id="fillIn" type="text" lang="${LC.id}" inputmode="text" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" placeholder="輸入${LC.name}" aria-label="填入答案">
       <button class="btn solid" type="submit" id="fillGo">送出</button>
     </form>
-    <button class="btn quiet block" id="fillShow" style="margin-top:12px">看答案</button>
+    <div class="btnrow" style="margin-top:12px">${n > 1 ? `<button class="btn quiet" id="fillHintBtn" aria-pressed="${showHint}">${showHint ? '收起提示' : '提示'}</button>` : ''}<button class="btn quiet" id="fillShow">看答案</button></div>
     <div id="fillAfter"></div>
   </div>`;
   const inp = $('#fillIn'), blank = $('#blank');
   let answered = false;
   inp.addEventListener('input', () => { blank.textContent = inp.value || blankEmpty; });
+  const hb = $('#fillHintBtn');
+  if (hb) hb.onclick = () => {
+    const h = $('#fillHint'); const on = h.hidden;
+    h.hidden = !on; hb.textContent = on ? '收起提示' : '提示'; hb.setAttribute('aria-pressed', String(on));
+    Sfx.tick && Sfx.tick();
+  };
   const finish = (res, shown) => {
     answered = true; R.done = true;
     const ok = res !== 'wrong';
@@ -3540,11 +3614,11 @@ function nextFillQ(keepFocus) {
     blank.textContent = ans; blank.classList.add(ok ? 'ok' : 'ng');
     inp.readOnly = true;
     $('#fillGo').textContent = '下一題';
-    $('#fillShow').hidden = true;
+    $('#fillShow').hidden = true; if (hb) hb.hidden = true; const fh = $('#fillHint'); if (fh) fh.hidden = true;
     const r = getRec(w.id);
     const learnedNow = ok && r.s === 'learned' && r.lv === 0 && r.due === addDays(today(), 1) && src !== 'due';
     $('#fillAfter').innerHTML = `<div class="afterbox">
-      ${verdict(ok, shown ? '（看了答案）' : res === 'accent' ? '，但注意重音' : '', res === 'accent')}
+      ${verdict(ok, shown ? '（看了答案）' : res === 'accent' ? (LC.accentNote || '，但注意重音') : '', res === 'accent')}
       ${res === 'accent' ? `<div class="hl-warn">正確寫法：<b lang="${LC.id}">${esc(ans)}</b>（你寫的是 ${esc(inp.value.trim())}）</div>` : ''}
       ${!ok ? `<div>正確答案：<b lang="${LC.id}" style="font-size:20px">${esc(ans)}</b>${inp.value && !shown ? `<br><span class="meta">你的答案：${esc(inp.value)}</span>` : ''}</div>` : ''}
       ${learnedNow ? `<div class="meta">已學會，明天（${r.due.slice(5).replace('-', '/')}）會出現在到期複習。</div>` : ''}
@@ -3560,7 +3634,7 @@ function nextFillQ(keepFocus) {
     e.preventDefault();
     if (answered) return next();
     if (!inp.value.trim()) { inp.focus(); return; }
-    finish(IT.checkAnswer(inp.value, ans), false);
+    finish(IT.checkAnswer(inp.value, ans, w), false);
   });
   $('#fillGo').addEventListener('mousedown', e => e.preventDefault());
   $('#fillShow').onclick = () => { if (!answered) finish('wrong', true); };
@@ -3590,17 +3664,23 @@ function gramIndex() {
   return GIDX;
 }
 const plain = h => h.replace(/<[^>]+>/g, '');
+// 文法列表的預覽：跳過表格，取說明文字；整段都是表格時，把格子用空白分開
+const gramPreview = h => { const t = plain(h.replace(/<table[\s\S]*?<\/table>/g, ' ')).trim(); return (t || plain(h.replace(/<\/t[dh]>/g, ' '))).replace(/\s+/g, ' ').trim().slice(0, 60); };
 const RULE_SHORT = LC.ruleShort || {};
 function ruleDemo(R) {
   const find = (word, pos) => WORDS.find(w => w.word === word && (!pos || w.pos === pos || (pos === 'v' && isVerbPos(w.pos))));
-  if (R.id === 'r-noun') return `<table class="t"><thead><tr><th>單數</th><th>複數</th><th>性別</th></tr></thead><tbody>${R.demo.map(x => find(x, 'n')).filter(Boolean).map(w => { const f = IT.nounForms(w.e); return `<tr><td class="f" lang="${LC.id}">${esc(f.sg)}</td><td class="f" lang="${LC.id}">${esc(f.pl)}</td><td class="p">${w.e[2] === 'm' ? '陽' : '陰'}${f.plGender !== w.e[2] ? '→複數陰' : ''}</td></tr>`; }).join('')}</tbody></table>`;
+  if (IT.demoTable) {
+    const t = IT.demoTable(R.id, R.demo.map(x => find(x, 'n') || find(x, 'adj')).filter(Boolean).map(w => w.e));
+    if (t) return `<div class="scroll-x" style="flex-shrink:0"><table class="t"><thead><tr>${t.head.map(x => `<th>${esc(x)}</th>`).join('')}</tr></thead><tbody>${t.rows.map(r => '<tr>' + r.map(c => c.f ? `<td class="f" lang="${LC.id}">${esc(c.t)}</td>` : `<td class="p">${esc(c.t)}</td>`).join('') + '</tr>').join('')}</tbody></table></div>`;
+  }
+  if (R.id === 'r-noun') return `<table class="t"><thead><tr><th>單數</th><th>複數</th><th>性別</th></tr></thead><tbody>${R.demo.map(x => find(x, 'n')).filter(Boolean).map(w => { const f = IT.nounForms(w.e); return `<tr><td class="f" lang="${LC.id}">${esc(f.sg)}</td><td class="f" lang="${LC.id}">${esc(f.pl)}</td><td class="p">${genOf(w.e[2])[1]}${f.plGender !== w.e[2] ? '→複數陰' : ''}</td></tr>`; }).join('')}</tbody></table>`;
   if (R.id === 'r-art') {
     const extra = IT.ART_DEMO_EXTRA || { psicologo: ['psicologo', 'n', 'm', 'psicologi'] };
     return `<table class="t"><thead><tr><th>定冠詞</th><th>複數</th><th>不定冠詞</th></tr></thead><tbody>${R.demo.map(x => { const w = find(x, 'n'); return w ? w.e : extra[x]; }).filter(Boolean).map(e => { const f = IT.nounForms(e); return `<tr><td class="f" lang="${LC.id}">${esc(f.sg)}</td><td class="f" lang="${LC.id}">${esc(f.pl)}</td><td lang="${LC.id}">${esc(f.indef + (f.indef.endsWith("'") ? '' : ' ') + e[0])}</td></tr>`; }).join('')}</tbody></table>`;
   }
   if (R.id === 'r-adj') return `<div class="scroll-x"><table class="t"><thead><tr><th>陽單</th><th>陰單</th><th>陽複</th><th>陰複</th></tr></thead><tbody>${R.demo.map(x => find(x, 'adj')).filter(Boolean).map(w => '<tr>' + IT.adjForms(w.e).map(x => `<td class="f" lang="${LC.id}">${esc(x)}</td>`).join('') + '</tr>').join('')}</tbody></table></div>`;
   return R.demo.map(x => find(x, 'v')).filter(Boolean).map(w => `<div class="rc-row" data-vk="${esc(w.id)}"><div class="rc-h"><b lang="${LC.id}">${esc(w.word)}</b><span class="meta">${esc(w.zh)}</span></div>${verbInfo(w)}
-    <div class="seg" role="group" aria-label="時態 ${esc(w.word)}" style="margin:8px 0"><button data-tense="pres" aria-pressed="true">現在式</button><button data-tense="pass" aria-pressed="false">過去式</button><button data-tense="imp" aria-pressed="false">命令式</button></div><div class="vt">${conjTable(w, 'pres')}</div></div>`).join('');
+    <div class="seg" role="group" aria-label="時態 ${esc(w.word)}" style="margin:8px 0"><button data-tense="pres" aria-pressed="true">${esc(IT.conjugate(w.word, w.pos).presTab || '現在式')}</button><button data-tense="pass" aria-pressed="false">過去式</button><button data-tense="imp" aria-pressed="false">命令式</button></div><div class="vt">${conjTable(w, 'pres')}</div></div>`).join('');
 }
 function renderGram() {
   const host = $('#tab-gram');
@@ -3625,9 +3705,9 @@ function renderGram() {
     const rhit = IT.RULES.filter(r => !q || (r.title + plain(r.body)).toLowerCase().includes(q));
     const tags = []; IT.GRAMMAR.forEach(g => { if (!tags.includes(g.tag)) tags.push(g.tag); });
     const groups = tags.map(t => [t, IT.GRAMMAR.filter(g => g.tag === t && hit(g))]).filter(x => x[1].length);
-    host.innerHTML = `<input class="gr-search" id="grQ" type="search" placeholder="搜尋文法：冠詞、piace、過去式…" value="${esc(UI.gramQ || '')}" aria-label="搜尋文法">
+    host.innerHTML = `<input class="gr-search" id="grQ" type="search" placeholder="${esc(LC.gramPh || '搜尋文法：冠詞、piace、過去式…')}" value="${esc(UI.gramQ || '')}" aria-label="搜尋文法">
       ${rhit.length ? `<div class="gr-group"><h3>詞性變化規則</h3><div class="rc-grid">${rhit.map(r => `<button class="gr-row rc-tile" data-gram="${r.id}"><b>${esc(RULE_SHORT[r.id] || r.title)}</b><span class="gd">${WORDS.filter(w => r.filter(w.e)).length} 個字</span></button>`).join('')}</div></div>` : ''}
-      ${groups.map(([h, ps]) => `<div class="gr-group"><h3>${esc(h)}</h3>${ps.map(g => `<button class="gr-row" data-gram="${g.id}"><b>${esc(g.title)}</b><span class="gn"><span>${(idx[g.id] || []).length}</span>›</span><span class="gd">${esc(plain(g.body).slice(0, 60))}</span></button>`).join('')}</div>`).join('')}
+      ${groups.map(([h, ps]) => `<div class="gr-group"><h3>${esc(h)}</h3>${ps.map(g => `<button class="gr-row" data-gram="${g.id}"><b>${esc(g.title)}</b><span class="gn"><span>${(idx[g.id] || []).length}</span>›</span><span class="gd">${esc(gramPreview(g.body))}</span></button>`).join('')}</div>`).join('')}
       ${!rhit.length && !groups.length ? '<p class="meta">找不到符合的文法。</p>' : ''}`;
     const inp = $('#grQ', host);
     inp.oninput = () => { UI.gramQ = inp.value; const pos = inp.selectionStart; renderGram(); const i = $('#grQ'); i.focus(); try { i.setSelectionRange(pos, pos); } catch (e) {} };
@@ -3701,6 +3781,8 @@ function renderLib() {
           <select id="roundSel">${[10, 15, 20, 30, 50, 'all'].map(n => `<option value="${n}"${String(SET.round) === String(n) ? ' selected' : ''}>${n === 'all' ? '全部' : n + ' 題'}</option>`).join('')}</select>
           <label class="label" for="recentSet">「最近學過」的範圍</label>
           <select id="recentSet">${RECENT_OPTS.map(([k, l]) => `<option value="${k}"${SET.recent === k ? ' selected' : ''}>${l}</option>`).join('')}</select>
+          <label class="label" for="hintSel">填空的提示（第一個字母、字母數）</label>
+          <select id="hintSel"><option value="tap"${SET.fillHint !== 'show' ? ' selected' : ''}>按「提示」才顯示</option><option value="show"${SET.fillHint === 'show' ? ' selected' : ''}>一開始就顯示</option></select>
           <div class="meta">每輪題數會套用到發音練習、單選、字卡和填空。「最近學過」一輪會出完範圍內的全部字；錯題複習固定每輪隨機 10 題。</div>
         </section>
         <section><h4>介面語言 Language</h4>
@@ -3746,6 +3828,7 @@ function renderLib() {
   $('#vibSel').onchange = e => { SET.vib = e.target.value; saveSet(); buzz(true); };
   $('#vibTest').onclick = testBuzz;
   $('#sfxSel').onchange = e => { SET.sfx = e.target.value; saveSet(); if (SET.sfx !== 'off') Sfx.ok(); };
+  $('#hintSel').onchange = e => { SET.fillHint = e.target.value; saveSet(); fillRound = null; toast(SET.fillHint === 'show' ? '填空提示：一開始就顯示' : '填空提示：按了才顯示'); };
   $('#langSel').onchange = e => { SET.lang = e.target.value; saveSet(); toast(SET.lang === 'en' ? '日語頁會換成英文介面' : '介面語言：中文'); };
   $('#meanSel').onchange = e => { SET.mean = e.target.value; saveSet(); mcRound = null; toast({ zh: '單字意思：中文', en: '單字意思：English', both: '單字意思：中文＋English' }[SET.mean]); };
   $('#resetIt').onclick = () => {
@@ -3975,7 +4058,7 @@ function refreshPassive(force) {
 }
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { reloadShared(); renderGoal(); Cloud.schedule(500); } });
 // 同一台裝置在別的分頁改了進度（例如日文頁）
-window.addEventListener('storage', e => { if (e.key === 'n5:progress') { reloadShared(); renderGoal(); } if (e.key === 'n5:settings') { Object.assign(SET, store.get('n5:settings', {})); applyTheme(); } });
+window.addEventListener('storage', e => { if (e.key === 'n5:progress') { reloadShared(); renderGoal(); } if (e.key === 'n5:settings') { Object.assign(SET, store.get('n5:settings', {})); applyTheme(); applyGen(); } });
 
 // ================= 啟動 =================
 applyTheme();
