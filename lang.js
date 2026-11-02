@@ -73,7 +73,29 @@
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && el && !el.hidden && el.querySelector('.pk-x')) { e.stopPropagation(); close(); } }, true);
   // 用 replace 換頁：不留下上一個語言的紀錄，按手機返回鍵不會跳回去
   const go = id => { if (id === CUR) return close(); location.replace(urlOf(id)); };
-  const row = (l, extra = '', attrs = '', plain) => { const on = !plain && l.id === CUR; return `<button class="pk-opt${on ? ' on' : ''}" ${attrs}><span class="lg-g" aria-hidden="true">${esc(l.glyph)}</span><span class="pk-n">${esc(l.name)}${l.sub ? ` <small>${esc(l.sub)}</small>` : ''}</span>${extra}<span class="pk-ck" aria-hidden="true">${on ? OK : ''}</span></button>`; };
+  // 學習進度：每個語言頁用 AppLangs.stats() 登記怎麼算（已學會／全部），離開頁面時存進 langs:stats
+  // 目前這頁即時算；其他語言用上次打開時存的數字
+  let statFn = null;
+  function saveStat() {
+    if (!statFn) return;
+    try { const v = statFn(); if (!v || !v.t) return; const all = store.get('langs:stats', {}); all[CUR] = { l: v.l, t: v.t, at: Date.now() }; store.set('langs:stats', all); } catch (e) {}
+  }
+  addEventListener('pagehide', saveStat);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') saveStat(); });
+  function progressOf(id) {
+    if (id === CUR) saveStat();
+    const v = store.get('langs:stats', {})[id];
+    if (!v || !v.t) return null;
+    const p = v.l / v.t * 100;
+    return { p: Math.min(100, p), txt: v.l > 0 && p < 1 ? '<1%' : Math.round(p) + '%', l: v.l, t: v.t };
+  }
+  const bar = l => {
+    if (!l.ready) return '';
+    const g = progressOf(l.id);
+    if (!g) return '<span class="lg-pg-t">還沒開始</span>';
+    return `<span class="lg-pg" role="progressbar" aria-label="${esc(l.name)}已學會 ${g.txt}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(g.p)}"><i style="width:${g.p.toFixed(1)}%"></i></span><span class="lg-pg-t">已學會 ${g.txt}・${g.l}／${g.t} 字</span>`;
+  };
+  const row = (l, extra = '', attrs = '', plain) => { const on = !plain && l.id === CUR; return `<button class="pk-opt${on ? ' on' : ''}" ${attrs}><span class="lg-g" aria-hidden="true">${esc(l.glyph)}</span><span class="pk-n lg-n"><span>${esc(l.name)}${l.sub ? ` <small>${esc(l.sub)}</small>` : ''}</span>${bar(l)}</span>${extra}<span class="pk-ck" aria-hidden="true">${on ? OK : ''}</span></button>`; };
 
   function openPicker() {
     const c = cfg();
@@ -147,6 +169,14 @@
       .pk-opt.on .lg-g{background:rgba(255,255,255,.2);color:var(--fill-ink)}
       .pk-opt small{font-weight:500;opacity:.75;margin-left:2px}
       .pk-opt[disabled]{opacity:.55;box-shadow:none;cursor:default}
+      .lg-list .pk-opt{height:auto;min-height:56px;padding-top:14px!important;padding-bottom:14px!important}
+      .lg-n{display:flex;flex-direction:column;align-items:stretch;gap:5px;flex:1;min-width:0;line-height:1.25}
+      .lg-pg{display:block;height:6px;border-radius:3px;background:var(--line);overflow:hidden;max-width:180px}
+      .lg-pg i{display:block;height:100%;border-radius:3px;background:var(--pri);min-width:0}
+      .lg-pg-t{font-size:12px;font-weight:500;color:var(--muted)}
+      .pk-opt.on .lg-pg{background:rgba(255,255,255,.28)}
+      .pk-opt.on .lg-pg i{background:var(--fill-ink)}
+      .pk-opt.on .lg-pg-t{color:var(--fill-ink);opacity:.85}
       .lg-set{margin-top:10px;border-top:1px solid var(--line);padding-top:6px;display:flex;flex-direction:column}
       .lg-line{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 2px}
       .lg-line + .lg-line{border-top:1px solid var(--line)}
@@ -188,5 +218,5 @@
     });
     addEventListener('orientationchange', () => { full = 0; setTimeout(() => { full = vv.height; }, 600); });
   }
-  window.AppLangs = { open: openPicker, current: CUR, list: LANGS };
+  window.AppLangs = { open: openPicker, current: CUR, list: LANGS, stats(fn) { statFn = fn; saveStat(); } };
 })();

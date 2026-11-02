@@ -5165,6 +5165,8 @@ function libCounts() {
   }
   return c;
 }
+// 切換語言選單裡的進度條（lang.js）
+if (window.AppLangs && AppLangs.stats) AppLangs.stats(() => { const c = libCounts(); return { l: c.learned, t: Math.max(1, c.total - c.excluded) }; });
 const STATUS_TXT = { new: '未學', queued: '待考', learned: '已學會', excluded: '已排除' };
 function renderLib() {
   Quiz.active = null;

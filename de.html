@@ -3933,6 +3933,8 @@ function libCounts() {
   }
   return c;
 }
+// 切換語言選單裡的進度條（lang.js）
+if (window.AppLangs && AppLangs.stats) AppLangs.stats(() => { const c = libCounts(); return { l: c.learned, t: Math.max(1, c.total - c.excluded) }; });
 const entryBtn = (tab, src, title, n) => `<button data-go="${tab}:${src}"${n ? '' : ' class="zero"'}><span>${title}</span><b>${n}</b></button>`;
 function renderLib() {
   Quiz.active = null;
