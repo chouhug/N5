@@ -2965,23 +2965,28 @@ function touch(id, patch) {
   putRec(id, r);
 }
 // 和日文頁相同的作答規則：填空答對才算學會；到期複習答對才延長間隔
+// 間隔加一點隨機（7 天以上 ±15%），同一天學的字之後才不會全部擠在同一天到期
+const spread = n => n < 7 ? n : Math.max(1, n + Math.round((Math.random() * 0.3 - 0.15) * n));
 function applyAnswer(rec, mode, correct, source, today, now) {
   rec = JSON.parse(JSON.stringify(rec || blankRec()));
   rec.w = rec.w || {};
   rec.n = (rec.n || 0) + 1;
   rec.t = now;
+  // w：1＝錯題（現在還不會）、2＝以前錯過（錯題複習會輪流抽）
+  // 答錯 → 錯題；在任何地方答對一次 → 離開錯題，留在錯題複習；錯題複習答錯 → 回到錯題
   const w = rec.w[mode] || 0;
-  if (source === 'wrong') rec.w[mode] = correct ? 2 : 1;
-  else if (source === 'review') rec.w[mode] = correct ? 0 : 1;
-  else if (!correct) rec.w[mode] = 1;
-  else rec.w[mode] = w;
+  if (!correct) rec.w[mode] = 1;
+  else if (w === 1) rec.w[mode] = 2;
   if (!rec.w[mode]) delete rec.w[mode];
+  if (source === 'review') { rec.rv = rec.rv || {}; rec.rv[mode] = now; }   // 上次在錯題複習出現的時間，用來輪流抽
+  if (source === 'due') rec.dd = today;                                    // 今天做過到期複習（算每日上限）
   const learn = () => { rec.s = 'learned'; rec.lv = 0; rec.due = addDays(today, SRS[0]); };
-  const reset = () => { rec.lv = 0; rec.due = addDays(today, SRS[0]); };
+  // 學會的字答錯：降兩級（不是直接打回第一級），避免複習量一下子爆掉
+  const reset = () => { rec.lv = Math.max(0, (rec.lv || 0) - 2); rec.due = addDays(today, SRS[rec.lv]); };
   if (mode === 'fill') {
     if (correct) {
       if (rec.s === 'learned') {
-        if (source === 'due' && rec.due && rec.due <= today) { rec.lv = Math.min((rec.lv || 0) + 1, SRS.length - 1); rec.due = addDays(today, SRS[rec.lv]); }
+        if (source === 'due' && rec.due && rec.due <= today) { rec.lv = Math.min((rec.lv || 0) + 1, SRS.length - 1); rec.due = addDays(today, spread(SRS[rec.lv])); }
       } else if (rec.s !== 'excluded') learn();
     } else if (rec.s === 'learned') reset();
   }
@@ -3015,7 +3020,10 @@ function mergeState(a, b) {
 }
 function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 function pickRound(items, mode, size, randomOnly) {
-  if (randomOnly) return shuffle(items).slice(0, size);
+  if (randomOnly) {
+    const last = it => (((getRec(it.id) || {}).rv) || {})[mode] || 0;
+    return shuffle(shuffle(items).sort((a, b) => last(a) - last(b)).slice(0, size));
+  }
   const scored = items.map(it => { const r = getRec(it.id); return { it, wrong: (r.w && r.w[mode]) ? 0 : 1, n: r.n || 0, rnd: Math.random() }; });
   scored.sort((a, b) => a.wrong - b.wrong || a.n - b.n || a.rnd - b.rnd);
   return shuffle(scored.slice(0, size).map(x => x.it));
@@ -3410,7 +3418,7 @@ function openWord(id) {
   $$('[data-wa]', el).forEach(b => b.onclick = () => {
     const a = b.dataset.wa;
     if (a === 'queue') { touch(id, { s: 'queued' }); toast('已列入考題'); }
-    if (a === 'known') { touch(id, { s: 'learned', lv: 1, due: addDays(today(), SRS[1]) }); toast(`已標記為學會，${SRS[1]} 天後會再考一次`); }
+    if (a === 'known') { const gap = SRS[1] + Math.floor(Math.random() * 8); touch(id, { s: 'learned', lv: 1, due: addDays(today(), gap) }); toast(`已標記為學會，${gap} 天後會再考一次`); }
     if (a === 'reset') { touch(id, { s: 'new', lv: 0, due: '', w: {} }); toast('已移回未學'); }
     Sheet.close(); deck = null; refreshPassive(true);
   });
@@ -3495,6 +3503,17 @@ new MutationObserver(() => {
 const POS_FILTERS = [['all', '全部'], ['n', '名詞'], ['v', '動詞'], ['adj', '形容詞'], ['o', '其他']];
 const posOK = w => UI.pos === 'all' || w.pg === UI.pos;
 const wrongOf = (id, m) => (getRec(id).w || {})[m] || 0;
+// 今天要做的到期複習：到期越久、等級越低的先出；每天最多 SET.dueCap 個（做過的也算在內）
+const DUE_CAPS = [10, 20, 30, 50, 'all'];
+const dueCap = () => SET.dueCap === 'all' ? Infinity : (Number(SET.dueCap) || 30);
+function dueAll() { const t = today(); return WORDS.filter(w => { const r = getRec(w.id); return r.s === 'learned' && r.due && r.due <= t; }); }
+function dueToday() {
+  const t = today();
+  const done = WORDS.filter(w => getRec(w.id).dd === t).length;
+  const left = Math.max(0, dueCap() - done);
+  const list = dueAll().sort((a, b) => { const x = getRec(a.id), y = getRec(b.id); return x.due < y.due ? -1 : x.due > y.due ? 1 : (x.lv || 0) - (y.lv || 0); });
+  return new Set(list.slice(0, left).map(w => w.id));
+}
 function wordPool(src) {
   const t = today();
   const f = {
@@ -3503,7 +3522,7 @@ function wordPool(src) {
     queued: w => getRec(w.id).s === 'queued',
     learned: w => getRec(w.id).s === 'learned',
     recent: (() => { let set; return w => (set || (set = recentIds())).has(w.id); })(),
-    due: w => { const r = getRec(w.id); return r.s === 'learned' && r.due && r.due <= t; },
+    due: (() => { let set; return w => (set || (set = dueToday())).has(w.id); })(),
     mcWrong: w => wrongOf(w.id, 'mc') === 1,
     mcReview: w => wrongOf(w.id, 'mc') === 2,
     fillWrong: w => wrongOf(w.id, 'fill') === 1,
@@ -3850,7 +3869,7 @@ function showFlash() {
     const a = b.dataset.a;
     deck.cards.shift();
     if (a === 'queue') { touch(w.id, { s: 'queued' }); toast('已列入考題'); }
-    if (a === 'known') { touch(w.id, { s: 'learned', lv: 1, due: addDays(today(), SRS[1]) }); toast(`已標記為學會，${SRS[1]} 天後會再考一次`); }
+    if (a === 'known') { const gap = SRS[1] + Math.floor(Math.random() * 8); touch(w.id, { s: 'learned', lv: 1, due: addDays(today(), gap) }); toast(`已標記為學會，${gap} 天後會再考一次`); }
     showFlash();
     if (a !== 'next') updateCardCounts();
   });
@@ -4071,10 +4090,10 @@ document.addEventListener('click', e => {
 let libList = 'queued';
 function libCounts() {
   const t = today(), rset = recentIds();
-  const c = { total: WORDS.length, learned: 0, queued: 0, excluded: 0, due: 0, mcW: 0, mcR: 0, fillW: 0, fillR: 0, recent: 0 };
+  const c = { total: WORDS.length, learned: 0, queued: 0, excluded: 0, due: 0, dueAll: 0, mcW: 0, mcR: 0, fillW: 0, fillR: 0, recent: 0 };
   for (const w of WORDS) {
     const r = getRec(w.id);
-    if (r.s === 'learned') { c.learned++; if (r.due && r.due <= t) c.due++; }
+    if (r.s === 'learned') { c.learned++; if (r.due && r.due <= t) c.dueAll++; }
     if (r.s === 'queued') c.queued++;
     if (r.s === 'excluded') c.excluded++;
     if (rset.has(w.id)) c.recent++;
@@ -4082,6 +4101,7 @@ function libCounts() {
     if (ww.mc === 1) c.mcW++; if (ww.mc === 2) c.mcR++;
     if (ww.fill === 1) c.fillW++; if (ww.fill === 2) c.fillR++;
   }
+  c.due = dueToday().size;
   return c;
 }
 // 切換語言選單裡的進度條（lang.js）
@@ -4125,7 +4145,10 @@ function renderLib() {
           <select id="recentSet">${RECENT_OPTS.map(([k, l]) => `<option value="${k}"${SET.recent === k ? ' selected' : ''}>${l}</option>`).join('')}</select>
           <label class="label" for="hintSel">填空的提示（第一個字母、字母數）</label>
           <select id="hintSel"><option value="tap"${SET.fillHint !== 'show' ? ' selected' : ''}>按「提示」才顯示</option><option value="show"${SET.fillHint === 'show' ? ' selected' : ''}>一開始就顯示</option></select>
-          <div class="meta">每輪題數會套用到發音練習、單選、字卡和填空。「最近學過」一輪會出完範圍內的全部字；錯題複習固定每輪隨機 10 題。</div>
+          <div class="meta">每輪題數會套用到發音練習、單選、字卡和填空。「最近學過」一輪會出完範圍內的全部字；錯題複習每輪 10 題，從以前錯過的字輪流抽，抽過的要等其他字都出過才會再出現。</div>
+          <label class="label" for="dueCapSel">每天到期複習最多幾個字</label>
+          <select id="dueCapSel">${DUE_CAPS.map(n => `<option value="${n}"${String(SET.dueCap || 30) === String(n) ? ' selected' : ''}>${n === 'all' ? '不限' : n + ' 個'}</option>`).join('')}</select>
+          <div class="meta">到期的字很多時，先出到期最久的；今天沒做到的明天接著做。答錯一次只降兩級，不會整個重來。</div>
         </section>
         <section><h4>介面語言 Language</h4>
           <label class="label" for="langSel">介面語言</label>
@@ -4170,6 +4193,7 @@ function renderLib() {
   $('#vibSel').onchange = e => { SET.vib = e.target.value; saveSet(); buzz(true); };
   $('#vibTest').onclick = testBuzz;
   $('#sfxSel').onchange = e => { SET.sfx = e.target.value; saveSet(); if (SET.sfx !== 'off') Sfx.ok(); };
+  $('#dueCapSel').onchange = e => { SET.dueCap = e.target.value === 'all' ? 'all' : Number(e.target.value); saveSet(); fillRound = null; toast(SET.dueCap === 'all' ? '到期複習：不限' : `到期複習：每天最多 ${SET.dueCap} 個`); };
   $('#hintSel').onchange = e => { SET.fillHint = e.target.value; saveSet(); fillRound = null; toast(SET.fillHint === 'show' ? '填空提示：一開始就顯示' : '填空提示：按了才顯示'); };
   $('#langSel').onchange = e => { SET.lang = e.target.value; saveSet(); toast(SET.lang === 'en' ? '日語頁會換成英文介面' : '介面語言：中文'); };
   $('#meanSel').onchange = e => { SET.mean = e.target.value; saveSet(); mcRound = null; toast({ zh: '單字意思：中文', en: '單字意思：English', both: '單字意思：中文＋English' }[SET.mean]); };
