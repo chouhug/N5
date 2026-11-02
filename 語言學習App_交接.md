@@ -5,8 +5,8 @@
 ## 專案是什麼
 
 - 原本是日語 N5 學習 PWA（GitHub：`chouhug/N5`，用 GitHub Pages 發布），現在擴充成多語言學習 App，名稱「語言學習」。
-- 已完成的語言：**日語 N5**（index.html）、**義大利文 A1**（it.html）、**西班牙文 A1**（es.html）、**德文 A1**（de.html）、**俄文 A1**（ru.html）。
-- 準備中（選單裡顯示但還不能點）：英文。
+- 已完成的語言：**日語 N5**（index.html）、**義大利文 A1**（it.html）、**西班牙文 A1**（es.html）、**德文 A1**（de.html）、**俄文 A1**（ru.html）、**英文 B2**（en.html）。
+- 選單裡的語言全部都能用了。
 - 介面是繁體中文，外觀、音效、震動、每輪題數、單字意思、介面語言這些設定，各語言共用。
 
 ## 上傳方式（重要）
@@ -20,9 +20,9 @@
 | 檔案 | 說明 |
 |---|---|
 | index.html | 日語 N5 頁（使用者原本的檔案，約 523KB），開頭有 `<script src="lang.js" data-lang="ja">` |
-| it.html / es.html / de.html / ru.html | 由 build.js 產生的義大利文、西班牙文、德文、俄文頁 |
+| it.html / es.html / de.html / ru.html / en.html | 由 build.js 產生的義大利文、西班牙文、德文、俄文、英文頁 |
 | lang.js | 所有頁共用：語言選單、語言鎖定（最多幾個語言＋自己寫的理由）、記住上次的語言並自動跳轉、換頁用 location.replace（返回鍵不會跳回上個語言）、鍵盤收起時恢復底部分頁、`html{touch-action:manipulation}`（防止連點放大） |
-| sw.js | 離線快取。自己網站的檔案「網路優先、3 秒逾時用快取」；字體和 Firebase 程式庫「快取優先」。目前 `CACHE = 'n5-v59'`（CORE 已加入 de.html、ru.html） |
+| sw.js | 離線快取。自己網站的檔案「網路優先、3 秒逾時用快取」；字體和 Firebase 程式庫「快取優先」。目前 `CACHE = 'n5-v60'`（CORE 已加入 de.html、ru.html、en.html） |
 | manifest.json | 名稱「語言學習」 |
 | icon-192.png、icon-512.png、apple-touch-icon.png | 藍底＋白色對話框「A」＋黃色對話框「文」 |
 
@@ -30,20 +30,21 @@
 
 ```
 n5src/
-  build.js            產生語言頁：node build.js <輸出資料夾> it es de ru
+  build.js            產生語言頁：node build.js <輸出資料夾> it es de ru en
   lang-template.html  語言頁的 HTML 樣板
   lang-app.js         語言頁的共用程式（約 1450 行），用 window.LANGCFG（設定）和 window.LX（各語言引擎與資料）
   lang-style.css      語言頁額外的樣式
   it/  義大利文：config、engine、data1–5、grammar、quiz、test
   es/  西班牙文：config、engine、data1–5、grammar、quiz、test
   de/  德文：config、engine、data1–5、grammar、quiz、test
+  en/  英文：config、engine、data1–5、basic（例句用到的基本字，只供點字查詢）、grammar、quiz、test
   ru/  俄文：config、engine、data1–5、grammar、quiz、test，另有 stress.js（把單字的大寫母音換成重音符號）
 n5work/               目前網站上的所有檔案（含 index.html）
 ```
 
 - build.js 會從 `n5work/index.html` 抽出日語頁的 CSS 和 Firebase 設定，所以語言頁外觀和日語頁一致。
-- 每個語言有自己的背景插畫（義大利：絲柏、托斯卡尼小鎮；西班牙：風車、橄欖樹；德國：阿爾卑斯雪山、城堡、桁架屋、冷杉；俄羅斯：洋蔥頂教堂、白樺樹、木屋）。
-- 測試：`node n5src/it/test.js`（20047 項）、`node n5src/es/test.js`（19928 項）、`node n5src/de/test.js`（30411 項）、`node n5src/ru/test.js`（31339 項），目前全部通過。
+- 每個語言有自己的背景插畫（義大利：絲柏、托斯卡尼小鎮；西班牙：風車、橄欖樹；德國：阿爾卑斯雪山、城堡、桁架屋、冷杉；俄羅斯：洋蔥頂教堂、白樺樹、木屋；英文：鐘樓、拱橋、雙層巴士）。
+- 測試：`node n5src/it/test.js`（20047 項）、`node n5src/es/test.js`（19928 項）、`node n5src/de/test.js`（30411 項）、`node n5src/ru/test.js`（31342 項）、`node n5src/en/test.js`（19067 項），目前全部通過。
 - 單字格式：`[單字, 詞性, 性別, 複數或變化, 中文, 英文, 例句, 例句中文, 填空答案]`。
 - 德文的差異：
   - 名詞性別 m／f／n／pl（只有複數，如 Eltern），名詞一律大寫。弱變化名詞（Herr → Herrn）列在 engine.js 的 `WEAK`。
@@ -58,6 +59,15 @@ n5work/               目前網站上的所有檔案（含 index.html）
   - 形容詞自動處理硬、軟、г к х 後、ж ш щ ч 後和重音在詞尾（-ой）；`cmp=` 或 `nocmp` 必寫；`pred;short=` 是只有短尾形的字（рад、должен、занят）。代名詞、мой、этот、весь、один、третий 等的變格表在 engine.js 的 PRON、DET。
   - 「單選」的第五種題型叫「格與性別」：從例句挖一個名詞選正確的格（介係詞能決定的格不會出成干擾選項），或用 мой／моя／моё 考名詞性別；範圍裡挖不出來時改出 PREP_DRILLS（介係詞與格）。
   - 字母分五組：長得像英文、假朋友、新的子音、其他母音、符號。
+- 英文的差異（B2，給已經 B1 的人）：
+  - 沒有名詞性別（`LX.GENDER = {}`）：App 不顯示性別、拿掉上方「名」按鈕。單字第 3 欄一律 `-`。
+  - 詞性 n、v、v-ph（片語動詞）、adj、adv、conj、prep、pron、expr（片語、搭配）。片語動詞用第一個字變化（give up → gave up），`sep` 表示可以拆開。
+  - 第 6 欄是英英解釋：單字意思選 English 就會顯示。
+  - 動詞規格 `past=`、`pp=`、`dbl`；常見不規則動詞在 engine.js 的 `IRR`（也給基本字用）。名詞 `pl=`、`unc`（不可數）；形容詞 `cmp=`、`more`、`dbl`、`nocmp`。單字頁的動詞變化用表格（`LX.VERB_TABLE`）：原形、第三人稱單數、過去式、過去分詞、-ing。
+  - 以美式拼法為主；填空寫英式拼法（colour、realise、cancelled）也算對。例句可以有縮寫（don't），斷詞把縮寫和連字號的字當一個字。
+  - basic.js 是例句裡用到、但不在 B2 單字表裡的基本字（the、go、weather…），只供點字查詢，不出題。測試會檢查例句裡每個字都查得到。
+  - 單選第五種題型「介係詞與搭配」只出人工挑選的練習句（`LX.DRILLS_ONLY`），不看題目來源。動詞題問過去式、過去分詞、第三人稱單數或 -ing，干擾選項有規則化的錯誤（stealed）。
+  - 發音頁的「字母」改成 32 個音標（`LANGCFG.letterAsIs`、`letterTitle`、`letterNameLabel`），規則是重音、弱讀、-ed／-s 的唸法、連音等。
 - lang-app.js 新增的掛勾（語言包有提供才用，義、西不受影響）：`LX.GENDER`、`LX.formsTable`（單字頁變化表）、`LX.demoTable`（規則頁示範表）、冠詞題的 `info`、`checkAnswer` 第三個參數、`LANGCFG.accentNote`。
 - 俄文加的掛勾（同樣不影響其他語言）：`LANGCFG.pastPersons`／`sayPast`（過去式表的人稱）、`conjugate().presTab`（完成體的分頁顯示「將來式」）、動詞題的 `label`、`LANGCFG.gramPh`（文法搜尋框提示）、formsTable 也用在代名詞等非動詞、填空提示的字母數支援所有文字（\p{L}）、很長的字（超過 10、14 個字母）字卡字級縮小。（it、es、de 三頁已用新版 lang-app.js 重建。）
 
@@ -75,6 +85,7 @@ n5work/               目前網站上的所有檔案（含 index.html）
 
 ## 最近做過的改動
 
+- **英文 B2 語言包**：652 個字（名詞 184、動詞 159、片語動詞 63、形容詞 130、副詞與連接詞 85、片語 29）、39 個 B2 文法點（時態、假設語氣、被動、使役、間接引述、關係子句、情態動詞推測、動名詞與不定詞、比較、連接詞…）、6 頁變化規則、58 題介係詞與搭配練習、32 個音標。
 - **錯題與到期複習改版**（所有語言，含日文）：錯題答對一次就消掉；錯題複習改成從以前錯過的字輪流抽、不重複；到期複習每天有上限、最久沒複習的先出；答錯只降兩級；「已經會了」分散到期日。規則細節見「資料與同步」。
 - **填空填了同義字**（義、西、德、俄）：答案錯，但填的是另一個意思相同的單字（或它的變化形，用 `sameMeaning` 比中文或英文意思）時，不算錯，顯示「○○ 是「…」，意思很接近，但這題要的是另一個字」並打開提示，再給一次機會；第二次就照常判斷。程式在 lang-app.js 的 `synonymOf`。俄文打招呼的意思也寫清楚了（здравствуйте 正式、привет 朋友之間、добрый день 白天）。
 - **切換語言選單的進度條**：每個語言顯示「已學會 x%・已學會／全部 字」（全部不含已排除的字，跟單字庫的 % 一樣）。每一頁用 `AppLangs.stats(fn)` 登記算法（index.html 和 lang-app.js 都在 libCounts 後面），lang.js 在離開頁面、切到背景、打開選單時存到 localStorage `langs:stats`；目前這頁即時算，其他語言顯示上次打開時的數字，沒打開過的顯示「還沒開始」。
@@ -95,6 +106,7 @@ n5work/               目前網站上的所有檔案（含 index.html）
 4. 義、西、德填空加特殊字母按鈕（à è é ñ ¿ ¡ ä ö ü ß）。
 5. 選單裡「準備中」的語言可以先藏起來（使用者看到會不舒服）。
 6. 義、西頁的英文介面、使用導覽。
+   英文可以再加：更多 B2 單字（目標 800 以上）、片語動詞的專門練習、寫作常用句型。
 7. 俄文可以再加：數字的變格（двух、пяти）、形容詞短尾形、更多動詞（運動動詞加前綴：прийти 以外的 выйти、войти）。
 8. 德文可以再加：屬格、形容詞受格／與格詞尾的專門練習題。
 

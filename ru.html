@@ -2885,7 +2885,9 @@ const LC = window.LANGCFG;
 const LP = LC.id + ':';
 // 名詞性別的名稱（德文多一個中性），語言包沒給就用陽／陰
 const GEN = IT.GENDER || { m: ['陽性', '陽'], f: ['陰性', '陰'] };
-const genOf = g => GEN[g] || GEN.f;
+const genOf = g => GEN[g] || GEN.f || ['', ''];
+// 英文這類沒有名詞性別的語言：LX.GENDER 給空物件，就不顯示性別
+const hasGen = g => !!GEN[g];
 
 // ================= 基本工具 =================
 const $ = (s, r = document) => r.querySelector(s);
@@ -3295,7 +3297,7 @@ function exampleBlock(w) {
 }
 // 很長的字（здравствуйте、Entschuldigung）縮小字級，避免在字中間斷行
 const lenCls = t => { const n = String(t).replace(/[\u0300-\u036f]/g, '').length; return n > 14 ? ' xlong' : n > 10 ? ' long' : ''; };
-const posBadge = w => `<button class="posbtn" data-word="${esc(w.id)}" aria-label="看「${esc(w.word)}」的詞性和變化">${esc(POS_ZH[w.pos])}${w.pos === 'n' ? '・' + genOf(w.e[2])[1] : ''}<span aria-hidden="true">›</span></button>`;
+const posBadge = w => `<button class="posbtn" data-word="${esc(w.id)}" aria-label="看「${esc(w.word)}」的詞性和變化">${esc(POS_ZH[w.pos])}${w.pos === 'n' && hasGen(w.e[2]) ? '・' + genOf(w.e[2])[1] : ''}<span aria-hidden="true">›</span></button>`;
 
 // ================= 拉起式面板（點字、單字詳細、字母） =================
 const Sheet = {
@@ -3378,7 +3380,7 @@ function tableHTML(t, play) {
 function formsHTML(w) {
   const e = w.e;
   // 語言包的變化表：義、西沒有；德文給名詞、形容詞；俄文也給代名詞、限定詞（沒有就回傳 null，照下面的做法）
-  if (IT.formsTable && !isVerbPos(w.pos)) { const t = IT.formsTable(e); if (t) return tableHTML(t, true); }
+  if (IT.formsTable && (!isVerbPos(w.pos) || IT.VERB_TABLE)) { const t = IT.formsTable(e); if (t) return (isVerbPos(w.pos) ? verbInfo(w) : '') + tableHTML(t, true); }
   if (w.pos === 'n') {
     const f = IT.nounForms(e);
     let h = `<table class="t"><tbody><tr><td class="p">${f.plOnly ? '複數（只用複數）' : '單數'}</td><td class="f" lang="${LC.id}">${esc(f.sg)}</td><td class="a">${iconPlay(f.sg, '播放')}</td></tr>`;
@@ -3410,7 +3412,7 @@ function openWord(id) {
   const btns = r.s === 'new' || r.s === 'excluded'
     ? `<div class="btnrow"><button class="btn known" data-wa="known">${ICON.ok}已經會了</button><button class="btn solid" data-wa="queue">列入考題</button></div>`
     : `<button class="btn quiet block" data-wa="reset">移回未學</button>`;
-  const body = `<div class="rowx"><div class="grow"><div class="w1" lang="${LC.id}">${esc(w.title)}</div><div class="row" style="margin-top:6px"><span class="pos">${esc(POS_ZH[w.pos])}</span>${w.pos === 'n' ? `<span class="pos ${w.e[2]}">${genOf(w.e[2])[0]}</span>` : ''}${tags.join('')}</div></div>${iconPlay(w.title, '播放單字')}</div>
+  const body = `<div class="rowx"><div class="grow"><div class="w1" lang="${LC.id}">${esc(w.title)}</div><div class="row" style="margin-top:6px"><span class="pos">${esc(POS_ZH[w.pos])}</span>${w.pos === 'n' && hasGen(w.e[2]) ? `<span class="pos ${w.e[2]}">${genOf(w.e[2])[0]}</span>` : ''}${tags.join('')}</div></div>${iconPlay(w.title, '播放單字')}</div>
     <p class="mean-big">${esc(w.zh)}</p><div class="meta" style="margin-top:-8px">${esc(w.en)}</div>
     ${formsHTML(w)}
     <div class="gp-title">例句</div>
@@ -3649,7 +3651,8 @@ $$('.tabbar button').forEach(b => b.onclick = () => showTab(b.dataset.tab));
 $('#themeBtn').onclick = () => { SET.theme = SET.theme === 'dark' ? 'light' : 'dark'; saveSet(); applyTheme(); };
 {
   const gb = $('#genBtn');
-  if (gb) {
+  if (gb && !Object.keys(GEN).length) gb.remove();
+  else if (gb) {
     gb.innerHTML = `<ruby>名<rt>${['m', 'f', 'n'].filter(k => GEN[k]).map(k => GEN[k][1]).join('')}</rt></ruby>`;
     gb.onclick = () => { SET.gender = !genOn(); saveSet(); applyGen(); toast(genOn() ? '名詞上方標出性別' : '已隱藏性別，點單字可以看詞性'); };
   }
@@ -3664,7 +3667,7 @@ function renderPron() {
   const seg = `<div class="seg" role="group" aria-label="發音分頁">${[['abc', '字母'], ['rules', '規則'], ['practice', '練習']].map(([k, l]) => `<button data-psec="${k}" aria-pressed="${UI.pronSec === k}">${l}</button>`).join('')}</div>`;
   let body = '';
   if (UI.pronSec === 'abc') {
-    const cell = (a, i, fo) => `<button class="kc${fo ? ' fo' : ''}" data-letter="${i}" aria-label="${a[0]}，字母名稱 ${esc(a[1])}"><span class="kk">${a[0].length > 1 ? a[0].toLowerCase() : a[0] + a[0].toLowerCase()}</span><span class="rr" lang="${LC.id}">${esc(a[1])}</span></button>`;
+    const cell = (a, i, fo) => `<button class="kc${fo ? ' fo' : ''}" data-letter="${i}" aria-label="${esc(a[0])}，${LC.letterNameLabel || '字母名稱'} ${esc(a[1])}"><span class="kk">${LC.letterAsIs ? esc(a[0]) : a[0].length > 1 ? a[0].toLowerCase() : a[0] + a[0].toLowerCase()}</span><span class="rr" lang="${LC.id}">${esc(a[1])}</span></button>`;
     body = `<div class="card ksec">${LC.letterGroups.map((g, k) => `<h3${k ? '' : ' style="margin-top:0"'}>${esc(g.title)}</h3><div class="ktable c5">${IT.ALPHABET.slice(g.from, g.to).map((a, i) => cell(a, g.from + i, g.fo)).join('')}</div>`).join('')}
       <p class="meta" style="margin:12px 0 0">${LC.letterNote}</p></div>`;
   } else if (UI.pronSec === 'rules') {
@@ -3685,7 +3688,7 @@ function renderPron() {
 function openLetter(i) {
   const a = IT.ALPHABET[i];
   const w = WORDS.find(x => x.word === a[4]);
-  Sheet.open(`字母 ${a[0]}`, `<div class="rowx"><div class="grow"><div class="w1">${a[0]} ${a[0].toLowerCase()}</div><div class="meta">字母名稱：<span lang="${LC.id}">${esc(a[1])}</span></div></div>${iconPlay(a[1], '播放字母名稱')}</div>
+  Sheet.open(`${LC.letterTitle || '字母'} ${esc(a[0])}`, `<div class="rowx"><div class="grow"><div class="w1">${LC.letterAsIs ? esc(a[0]) : a[0] + ' ' + a[0].toLowerCase()}</div><div class="meta">${LC.letterNameLabel || '字母名稱'}：<span lang="${LC.id}">${esc(a[1])}</span></div></div>${iconPlay(a[1], '播放' + (LC.letterNameLabel || '字母名稱'))}</div>
     <p class="mean-big">${esc(a[2])}</p><p style="margin:0">${esc(a[3])}</p>
     <div class="gp-title">例字</div>
     <div class="an"><div class="grow"><b lang="${LC.id}" style="font-size:22px">${esc(w ? w.title : a[4])}</b>${w ? `<div class="meta">${meanW(w)}</div>` : ''}</div>${iconPlay(w ? w.title : a[4], '播放例字')}${w ? `<button class="btn quiet" data-word="${esc(w.id)}">詳細</button>` : ''}</div>`, a[0]);
@@ -3740,8 +3743,8 @@ function renderMC() {
   if (!valid || mcRound.idx >= mcRound.queue.length) {
     if (valid && mcRound.queue.length && mcRound.idx >= mcRound.queue.length) return roundDone($('#mcq'), mcRound, () => { mcRound = null; renderMC(); });
     const pool = mcPool(UI.mcSrc);
-    if (!pool.length) {
-      if (UI.mcMode === 'art' && srcPool(UI.mcSrc).length) {
+    if (!pool.length || (UI.mcMode === 'art' && IT.DRILLS_ONLY)) {
+      if (UI.mcMode === 'art' && (srcPool(UI.mcSrc).length || IT.DRILLS_ONLY)) {
         // 範圍裡的例句挖不出冠詞時，改出固定的介係詞練習句
         const queue = shuffle(IT.PREP_DRILLS).slice(0, Math.min(10, roundSize())).map(d => ({ drill: d }));
         mcRound = { mode: 'art', queue, idx: 0, total: IT.PREP_DRILLS.length, src: UI.mcSrc, pos: UI.pos, right: 0 };
@@ -3837,6 +3840,7 @@ function renderCard() {
   showFlash();
 }
 function formsLine(w) {
+  if (IT.formsLine) { const h = IT.formsLine(w.e); if (h != null) return h ? `<span lang="${LC.id}">${esc(h)}</span>` : ''; }
   if (w.pos === 'n') { const f = IT.nounForms(w.e); return f.pl ? `複數：<span lang="${LC.id}">${esc(f.pl)}</span>` : (f.plOnly ? '只用複數' : ''); }
   if (w.pos === 'adj') return `<span lang="${LC.id}">${esc(IT.adjForms(w.e).join(' / '))}</span>`;
   if (isVerbPos(w.pos)) { const c = IT.conjugate(w.word, w.pos); return `<span lang="${LC.id}">${esc(c.presentFull.slice(0, 3).join('、'))}…</span>`; }
@@ -4038,7 +4042,7 @@ const RULE_SHORT = LC.ruleShort || {};
 function ruleDemo(R) {
   const find = (word, pos) => WORDS.find(w => w.word === word && (!pos || w.pos === pos || (pos === 'v' && isVerbPos(w.pos))));
   if (IT.demoTable) {
-    const t = IT.demoTable(R.id, R.demo.map(x => find(x, 'n') || find(x, 'adj')).filter(Boolean).map(w => w.e));
+    const t = IT.demoTable(R.id, R.demo.map(x => find(x, 'n') || find(x, 'adj') || (IT.VERB_TABLE ? find(x) : null)).filter(Boolean).map(w => w.e));
     if (t) return `<div class="scroll-x" style="flex-shrink:0"><table class="t"><thead><tr>${t.head.map(x => `<th>${esc(x)}</th>`).join('')}</tr></thead><tbody>${t.rows.map(r => '<tr>' + r.map(c => c.f ? `<td class="f" lang="${LC.id}">${esc(c.t)}</td>` : `<td class="p">${esc(c.t)}</td>`).join('') + '</tr>').join('')}</tbody></table></div>`;
   }
   if (R.id === 'r-noun') return `<table class="t"><thead><tr><th>單數</th><th>複數</th><th>性別</th></tr></thead><tbody>${R.demo.map(x => find(x, 'n')).filter(Boolean).map(w => { const f = IT.nounForms(w.e); return `<tr><td class="f" lang="${LC.id}">${esc(f.sg)}</td><td class="f" lang="${LC.id}">${esc(f.pl)}</td><td class="p">${genOf(w.e[2])[1]}${f.plGender !== w.e[2] ? '→複數陰' : ''}</td></tr>`; }).join('')}</tbody></table>`;
