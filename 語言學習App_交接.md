@@ -22,7 +22,7 @@
 | index.html | 日語 N5 頁（使用者原本的檔案，約 523KB），開頭有 `<script src="lang.js" data-lang="ja">` |
 | it.html / es.html / de.html / ru.html | 由 build.js 產生的義大利文、西班牙文、德文、俄文頁 |
 | lang.js | 所有頁共用：語言選單、語言鎖定（最多幾個語言＋自己寫的理由）、記住上次的語言並自動跳轉、換頁用 location.replace（返回鍵不會跳回上個語言）、鍵盤收起時恢復底部分頁、`html{touch-action:manipulation}`（防止連點放大） |
-| sw.js | 離線快取。自己網站的檔案「網路優先、3 秒逾時用快取」；字體和 Firebase 程式庫「快取優先」。目前 `CACHE = 'n5-v56'`（CORE 已加入 de.html、ru.html） |
+| sw.js | 離線快取。自己網站的檔案「網路優先、3 秒逾時用快取」；字體和 Firebase 程式庫「快取優先」。目前 `CACHE = 'n5-v57'`（CORE 已加入 de.html、ru.html） |
 | manifest.json | 名稱「語言學習」 |
 | icon-192.png、icon-512.png、apple-touch-icon.png | 藍底＋白色對話框「A」＋黃色對話框「文」 |
 
