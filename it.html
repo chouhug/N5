@@ -3597,7 +3597,7 @@ function nextFillQ(keepFocus) {
     <div id="fillAfter"></div>
   </div>`;
   const inp = $('#fillIn'), blank = $('#blank');
-  let answered = false;
+  let answered = false, triedSyn = false;
   inp.addEventListener('input', () => { blank.textContent = inp.value || blankEmpty; });
   const hb = $('#fillHintBtn');
   if (hb) hb.onclick = () => {
@@ -3634,7 +3634,17 @@ function nextFillQ(keepFocus) {
     e.preventDefault();
     if (answered) return next();
     if (!inp.value.trim()) { inp.focus(); return; }
-    finish(IT.checkAnswer(inp.value, ans, w), false);
+    const res = IT.checkAnswer(inp.value, ans, w);
+    // 填了意思相同的另一個字（例如「您好」填了 привет）：不算錯，提示再試一次
+    const syn = res === 'wrong' ? synonymOf(inp.value, w) : null;
+    if (syn && !triedSyn) {
+      triedSyn = true;
+      $('#fillAfter').innerHTML = `<div class="hl-warn"><b lang="${LC.id}">${esc(syn.title)}</b> 是「${esc(meanPlain(syn))}」，意思很接近，但這題要的是另一個字，再想想看。</div>`;
+      const h = $('#fillHint'); if (h) h.hidden = false; if (hb) hb.hidden = true;
+      inp.select(); Sfx.tick && Sfx.tick();
+      return;
+    }
+    finish(res, false);
   });
   $('#fillGo').addEventListener('mousedown', e => e.preventDefault());
   $('#fillShow').onclick = () => { if (!answered) finish('wrong', true); };
@@ -3642,6 +3652,15 @@ function nextFillQ(keepFocus) {
   inp.addEventListener('blur', () => setTimeout(() => { const a = document.activeElement; if (!a || a.id !== 'fillIn') document.body.classList.remove('typing'); }, 250));
   if (keepFocus && window.matchMedia('(pointer:fine)').matches) inp.focus({ preventScroll: true });
   else if (keepFocus && document.body.classList.contains('typing')) { inp.focus({ preventScroll: true }); scrollFillTop(); }
+}
+// 填的字是不是另一個意思相同的單字（看原形和它的變化形）
+function synonymOf(input, w) {
+  const k = IT.norm(String(input).trim()).toLowerCase().replace(/[?!.,]$/, '');
+  if (!k) return null;
+  const cands = [];
+  WORDS.forEach(x => { if (x.id !== w.id && IT.checkAnswer(input, IT.plain ? IT.plain(x.word) : x.word, x) !== 'wrong') cands.push(x); });
+  (LOOK.get(k) || []).forEach(x => { if (x.idx >= 0) { const o = WMAP[idOfEntry(IT.W[x.idx])]; if (o && o.id !== w.id) cands.push(o); } });
+  return cands.find(o => sameMeaning(o.zh, w.zh) || sameMeaning(o.en, w.en)) || null;
 }
 function scrollFillTop() {
   const card = $('#fillCard');

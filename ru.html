@@ -1438,11 +1438,11 @@ window.LANGCFG = {
     ['сто', 'num', '-', '-', '一百', 'hundred', 'Сто рублей — это немного.', '一百盧布不算多。', 'Сто'],
     ['тре́тий', 'num', '-', '-', '第三', 'third', 'Сегодня третье мая.', '今天是五月三日。', 'третье'],
     // ---- 常用語 ----
-    ['здра́вствуйте', 'expr', '-', '-', '您好；你們好', 'hello (polite)', 'Здравствуйте, меня зовут Анна.', '您好，我叫安娜。', 'Здравствуйте'],
-    ['приве́т', 'expr', '-', '-', '嗨', 'hi', 'Привет! Как дела?', '嗨！你好嗎？', 'Привет'],
+    ['здра́вствуйте', 'expr', '-', '-', '您好（正式；也對很多人說）', 'hello (polite)', 'Здравствуйте, меня зовут Анна.', '您好，我叫安娜。', 'Здравствуйте'],
+    ['приве́т', 'expr', '-', '-', '嗨（朋友之間）', 'hi; hello', 'Привет! Как дела?', '嗨！你好嗎？', 'Привет'],
     ['как дела́', 'expr', '-', '-', '你好嗎（近況如何）', 'how are you', 'Привет, Маша! Как дела?', '嗨，瑪莎！最近好嗎？', 'Как дела'],
     ['до́брое у́тро', 'expr', '-', '-', '早安', 'good morning', 'Доброе утро, мама!', '早安，媽媽！', 'Доброе утро'],
-    ['до́брый день', 'expr', '-', '-', '午安；您好', 'good afternoon', 'Добрый день! Чем могу помочь?', '您好！有什麼可以幫您的嗎？', 'Добрый день'],
+    ['до́брый день', 'expr', '-', '-', '午安（白天見面時說）', 'good afternoon; hello', 'Добрый день! Чем могу помочь?', '您好！有什麼可以幫您的嗎？', 'Добрый день'],
     ['до́брый ве́чер', 'expr', '-', '-', '晚上好', 'good evening', 'Добрый вечер, дорогие друзья!', '晚上好，親愛的朋友們！', 'Добрый вечер'],
     ['споко́йной но́чи', 'expr', '-', '-', '晚安（睡前）', 'good night', 'Спокойной ночи, дети!', '晚安，孩子們！', 'Спокойной ночи'],
     ['до свида́ния', 'expr', '-', '-', '再見', 'goodbye', 'До свидания, до завтра!', '再見，明天見！', 'До свидания'],
@@ -3918,7 +3918,7 @@ function nextFillQ(keepFocus) {
     <div id="fillAfter"></div>
   </div>`;
   const inp = $('#fillIn'), blank = $('#blank');
-  let answered = false;
+  let answered = false, triedSyn = false;
   inp.addEventListener('input', () => { blank.textContent = inp.value || blankEmpty; });
   const hb = $('#fillHintBtn');
   if (hb) hb.onclick = () => {
@@ -3955,7 +3955,17 @@ function nextFillQ(keepFocus) {
     e.preventDefault();
     if (answered) return next();
     if (!inp.value.trim()) { inp.focus(); return; }
-    finish(IT.checkAnswer(inp.value, ans, w), false);
+    const res = IT.checkAnswer(inp.value, ans, w);
+    // 填了意思相同的另一個字（例如「您好」填了 привет）：不算錯，提示再試一次
+    const syn = res === 'wrong' ? synonymOf(inp.value, w) : null;
+    if (syn && !triedSyn) {
+      triedSyn = true;
+      $('#fillAfter').innerHTML = `<div class="hl-warn"><b lang="${LC.id}">${esc(syn.title)}</b> 是「${esc(meanPlain(syn))}」，意思很接近，但這題要的是另一個字，再想想看。</div>`;
+      const h = $('#fillHint'); if (h) h.hidden = false; if (hb) hb.hidden = true;
+      inp.select(); Sfx.tick && Sfx.tick();
+      return;
+    }
+    finish(res, false);
   });
   $('#fillGo').addEventListener('mousedown', e => e.preventDefault());
   $('#fillShow').onclick = () => { if (!answered) finish('wrong', true); };
@@ -3963,6 +3973,15 @@ function nextFillQ(keepFocus) {
   inp.addEventListener('blur', () => setTimeout(() => { const a = document.activeElement; if (!a || a.id !== 'fillIn') document.body.classList.remove('typing'); }, 250));
   if (keepFocus && window.matchMedia('(pointer:fine)').matches) inp.focus({ preventScroll: true });
   else if (keepFocus && document.body.classList.contains('typing')) { inp.focus({ preventScroll: true }); scrollFillTop(); }
+}
+// 填的字是不是另一個意思相同的單字（看原形和它的變化形）
+function synonymOf(input, w) {
+  const k = IT.norm(String(input).trim()).toLowerCase().replace(/[?!.,]$/, '');
+  if (!k) return null;
+  const cands = [];
+  WORDS.forEach(x => { if (x.id !== w.id && IT.checkAnswer(input, IT.plain ? IT.plain(x.word) : x.word, x) !== 'wrong') cands.push(x); });
+  (LOOK.get(k) || []).forEach(x => { if (x.idx >= 0) { const o = WMAP[idOfEntry(IT.W[x.idx])]; if (o && o.id !== w.id) cands.push(o); } });
+  return cands.find(o => sameMeaning(o.zh, w.zh) || sameMeaning(o.en, w.en)) || null;
 }
 function scrollFillTop() {
   const card = $('#fillCard');
