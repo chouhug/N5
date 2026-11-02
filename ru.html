@@ -772,7 +772,10 @@ window.LANGCFG = {
 
   /* ---------- 小工具 ---------- */
   const ACC = '́';
-  const plain = s => String(s).replace(/́/g, '');
+  // 去掉重音：手機鍵盤長按打出來的可能是拉丁字母 á、é、ó（U+00E1 等），也可能是母音＋U+0301，
+  // 兩種都換回俄文字母；й、ё 本身保留
+  const LAT = { a: 'а', e: 'е', o: 'о', y: 'у', i: 'и', A: 'А', E: 'Е', O: 'О', Y: 'У', I: 'И' };
+  const plain = s => String(s).normalize('NFD').replace(/([aeoyiAEOYI])[\u0300\u0301]/g, (m, c) => LAT[c]).replace(/[\u0300\u0301]/g, '').normalize('NFC');
   const fold = s => plain(s).toLowerCase().replace(/ё/g, 'е');
   const norm = s => plain(String(s).replace(/[’‘]/g, "'")).replace(/ё/g, 'е').replace(/Ё/g, 'Е');
   // 搜尋用：去掉重音、ё 當 е
@@ -1174,7 +1177,11 @@ window.LANGCFG = {
   RU.buildLookup = buildLookup;
 
   // 答案比對：不分大小寫，不管重音符號；ё 寫成 е 也算對（俄文平常就這樣寫）
+  // 跟俄文字母長得一樣的拉丁字母（a e o p c x y k m t…），比對答案時當成俄文
+  const HOMO = { a: 'а', e: 'е', o: 'о', p: 'р', c: 'с', x: 'х', y: 'у', k: 'к', m: 'м', t: 'т', b: 'в', h: 'н' };
+  const deLat = s => s.replace(/[aeopcxykmtbh]/gi, ch => { const r = HOMO[ch.toLowerCase()]; return ch === ch.toLowerCase() ? r : r.toUpperCase(); });
   function checkAnswer(input, answer) {
+    input = deLat(plain(input));
     const a = String(input).trim().replace(/\s+/g, ' ').replace(/[?!.,]$/g, '');
     if (!a) return 'wrong';
     return fold(a) === fold(answer) ? 'ok' : 'wrong';
@@ -2363,7 +2370,7 @@ window.LANGCFG = {
       body: '<p>俄文有一條拼字規則，名詞、形容詞、動詞都會用到：</p><ul><li>г、к、х、ж、ш、щ、ч 後面<b>不寫 ы，寫 и</b>：<i>книги、уроки、врачи、русский</i>。</li><li>ж、ш、щ、ч、ц 後面不寫 я、ю，寫 а、у：<i>учу、слышат</i>。</li><li>ж、ш、щ、ч、ц 後面沒重音的 о 寫成 е：<i>с мужем、хорошее、улицей</i>（比較：<i>с отцом、большое</i>）。</li></ul>' },
     { id: 'animate', tag: '名詞', title: '有生命名詞的受格', m: { tok: 'animAcc' },
       body: '<p>表示<b>人或動物</b>的名詞叫「有生命名詞」。它們的受格在兩種情況下跟<b>屬格一樣</b>：</p><ul><li>陽性單數：<i>Я вижу брата.</i>（看到哥哥）——比較：<i>Я вижу стол.</i>（看到桌子）</li><li>所有複數：<i>Я люблю собак.</i>、<i>Я жду друзей.</i>——比較：<i>Я люблю цветы.</i></li></ul><p>陰性單數（-а、-я）不受影響，照樣變 -у、-ю：<i>Я люблю маму.</i></p>',
-      ex: [['Я вижу брата.', '我看到哥哥了。'], ['Я жду друзей.', '我在等朋友們。'], ['Я люблю собак.', '我喜歡狗。']] },
+      ex: [['Я вижу брата.', '我看到哥哥了。'], ['Я жду друзей.', '我在等朋友們。'], ['Я люблю собак.', '我喜歡狗。'], ['Мы встречаем гостей в аэропорту.', '我們去機場接客人。'], ['Ты знаешь этого человека?', '你認識這個人嗎？'], ['Я давно не видел отца.', '我很久沒見到父親了。']] },
     // ---- 格 ----
     { id: 'cases', tag: '格', title: '六個格是什麼', m: { tok: 'caseAll' },
       body: '<p>俄文名詞在句子裡扮演的角色不同，<b>字尾就會變</b>，這叫「格」。總共六個：</p>' +
@@ -3934,6 +3941,8 @@ function gramIndex() {
   return GIDX;
 }
 const plain = h => h.replace(/<[^>]+>/g, '');
+// 文法列表的預覽：跳過表格，取說明文字；整段都是表格時，把格子用空白分開
+const gramPreview = h => { const t = plain(h.replace(/<table[\s\S]*?<\/table>/g, ' ')).trim(); return (t || plain(h.replace(/<\/t[dh]>/g, ' '))).replace(/\s+/g, ' ').trim().slice(0, 60); };
 const RULE_SHORT = LC.ruleShort || {};
 function ruleDemo(R) {
   const find = (word, pos) => WORDS.find(w => w.word === word && (!pos || w.pos === pos || (pos === 'v' && isVerbPos(w.pos))));
@@ -3975,7 +3984,7 @@ function renderGram() {
     const groups = tags.map(t => [t, IT.GRAMMAR.filter(g => g.tag === t && hit(g))]).filter(x => x[1].length);
     host.innerHTML = `<input class="gr-search" id="grQ" type="search" placeholder="${esc(LC.gramPh || '搜尋文法：冠詞、piace、過去式…')}" value="${esc(UI.gramQ || '')}" aria-label="搜尋文法">
       ${rhit.length ? `<div class="gr-group"><h3>詞性變化規則</h3><div class="rc-grid">${rhit.map(r => `<button class="gr-row rc-tile" data-gram="${r.id}"><b>${esc(RULE_SHORT[r.id] || r.title)}</b><span class="gd">${WORDS.filter(w => r.filter(w.e)).length} 個字</span></button>`).join('')}</div></div>` : ''}
-      ${groups.map(([h, ps]) => `<div class="gr-group"><h3>${esc(h)}</h3>${ps.map(g => `<button class="gr-row" data-gram="${g.id}"><b>${esc(g.title)}</b><span class="gn"><span>${(idx[g.id] || []).length}</span>›</span><span class="gd">${esc(plain(g.body).slice(0, 60))}</span></button>`).join('')}</div>`).join('')}
+      ${groups.map(([h, ps]) => `<div class="gr-group"><h3>${esc(h)}</h3>${ps.map(g => `<button class="gr-row" data-gram="${g.id}"><b>${esc(g.title)}</b><span class="gn"><span>${(idx[g.id] || []).length}</span>›</span><span class="gd">${esc(gramPreview(g.body))}</span></button>`).join('')}</div>`).join('')}
       ${!rhit.length && !groups.length ? '<p class="meta">找不到符合的文法。</p>' : ''}`;
     const inp = $('#grQ', host);
     inp.oninput = () => { UI.gramQ = inp.value; const pos = inp.selectionStart; renderGram(); const i = $('#grQ'); i.focus(); try { i.setSelectionRange(pos, pos); } catch (e) {} };
