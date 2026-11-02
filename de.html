@@ -3827,7 +3827,7 @@ function nextFillQ(keepFocus) {
     const learnedNow = ok && r.s === 'learned' && r.lv === 0 && r.due === addDays(today(), 1) && src !== 'due';
     $('#fillAfter').innerHTML = `<div class="afterbox">
       ${verdict(ok, shown ? '（看了答案）' : res === 'accent' ? (LC.accentNote || '，但注意重音') : '', res === 'accent')}
-      ${res === 'accent' ? `<div class="hl-warn">正確寫法：<b lang="${LC.id}">${esc(ans)}</b>（你寫的是 ${esc(inp.value.trim())}）</div>` : ''}
+      ${res === 'accent' ? `<div class="hl-warn">正確寫法：<b lang="${LC.id}">${markDiff(ans, inp.value.trim())}</b>（你寫的是 ${esc(inp.value.trim())}）</div>` : ''}
       ${!ok ? `<div>正確答案：<b lang="${LC.id}" style="font-size:20px">${esc(ans)}</b>${inp.value && !shown ? `<br><span class="meta">你的答案：${esc(inp.value)}</span>` : ''}</div>` : ''}
       ${learnedNow ? `<div class="meta">已學會，明天（${r.due.slice(5).replace('-', '/')}）會出現在到期複習。</div>` : ''}
       ${ok && src === 'due' ? `<div class="meta">下次複習：${r.due.slice(5).replace('-', '/')}</div>` : ''}
@@ -3869,6 +3869,12 @@ function synonymOf(input, w) {
   WORDS.forEach(x => { if (x.id !== w.id && IT.checkAnswer(input, IT.plain ? IT.plain(x.word) : x.word, x) !== 'wrong') cands.push(x); });
   (LOOK.get(k) || []).forEach(x => { if (x.idx >= 0) { const o = WMAP[idOfEntry(IT.W[x.idx])]; if (o && o.id !== w.id) cands.push(o); } });
   return cands.find(o => sameMeaning(o.zh, w.zh) || sameMeaning(o.en, w.en)) || null;
+}
+// 拼寫提醒：把和你寫的不一樣的字母畫底線（長度一樣才逐字比）
+function markDiff(ans, mine) {
+  const A = [...ans], B = [...(IT.plain ? IT.plain(mine) : mine)];
+  if (A.length !== B.length) return esc(ans);
+  return A.map((c, i) => c.toLowerCase() !== B[i].toLowerCase() ? `<u style="text-decoration-thickness:2px;text-underline-offset:4px">${esc(c)}</u>` : esc(c)).join('');
 }
 function scrollFillTop() {
   const card = $('#fillCard');
