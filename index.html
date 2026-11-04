@@ -166,6 +166,10 @@ select{min-height:44px;border-radius:10px;border:1px solid var(--line);backgroun
 .example{border-top:1px dashed var(--line);margin-top:6px;padding-top:16px;display:flex;flex-direction:column;gap:10px}
 .sent{font-family:var(--font-ja);font-size:21px;line-height:2.15}
 .sent rt{font-size:.5em}
+.conj-ask{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:6px;font-size:20px;color:var(--pri)}
+.conj-ask b{background:var(--pri-soft);border-radius:10px;padding:4px 12px}
+.conj-arrow{font-size:22px}
+.conj-why{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px}
 .zhline{color:var(--fg)}
 .afterbox{display:flex;flex-direction:column;gap:14px;margin-top:16px}
 
@@ -2737,7 +2741,8 @@ const D = {
 '按下按鈕聽發音，再選出假名': 'Tap the button to hear it, then pick the kana', '（日語固有詞幾乎不用）': '(almost never used in native words)',
 '（片假名的ヲ幾乎不用）': '(katakana ヲ is almost never used)', '（片假名的ヅ幾乎不用）': '(katakana ヅ is almost never used)', '（外來語很少用到）': '(rare even in loanwords)',
 // ---- 單選 ----
-'看日文選中文': 'Japanese → meaning', '看中文選日文': 'Meaning → Japanese', '聽發音選中文': 'Listen → meaning',
+'看日文選中文': 'Japanese → meaning', '詞性變化': 'Conjugation', '動詞＋形容詞': 'Verbs + adjectives', '一類動詞': 'Group 1 verbs', '二類動詞': 'Group 2 verbs', '三類動詞': 'Group 3 verbs', '長得像二類的一類': 'Group 1 that look like group 2', '形容詞': 'Adjectives',
+'ます形（禮貌）': 'ます form (polite)', '否定（ません／禮貌）': 'Negative (ません, polite)', '過去（禮貌）': 'Past (polite)', '過去否定（禮貌）': 'Past negative (polite)', 'ない形（普通體否定）': 'ない form (plain negative)', 'た形（普通體過去）': 'た form (plain past)', '〜たい（想要）': '〜たい (want to)', '副詞（…地）': 'Adverb (…ly)', '看中文選日文': 'Meaning → Japanese', '聽發音選中文': 'Listen → meaning',
 '日→中': 'JP → meaning', '中→日': 'Meaning → JP', '聽→中': 'Listen → meaning', '漢字讀音': 'Kanji reading', '助詞填空': 'Particles',
 '按下按鈕聽發音，再選出意思': 'Tap the button to hear it, then pick the meaning', '選出正確的讀音': 'Pick the correct reading',
 // ---- 字卡 ----
@@ -2843,7 +2848,7 @@ const D = {
 '歡迎使用日語 N5': 'Welcome to Japanese N5', '從五十音開始，一路學到 N5 的單字和文法。先選介面語言，接下來用 30 秒認識每個分頁。': 'Start with kana and work up to N5 vocabulary and grammar. Pick a language first, then take 30 seconds to meet each tab.',
 '平假名、片假名的表，點一個字可以聽發音、看例字；切到「練習」做認字測驗。': 'Hiragana and katakana charts. Tap a kana to hear it and see an example word; switch to “Practice” to quiz yourself.',
 '字卡：挑要學的字': 'Cards: pick words to learn', '新字一張一張看：已經會的按「已經會了」，想練的按「列入考題」，之後單選和填空就會出這些字。': 'Go through new words one by one: tap “I know this” for words you know and “Add to quiz” for ones to practice. Choice and Fill-in will then quiz you on them.',
-'日→中、中→日、聽發音、漢字讀音、助詞填空，左上角可以換題型和題目來源。': 'Japanese → meaning, meaning → Japanese, listening, kanji readings and particles. Change the question type and source at the top left.',
+'日→中、中→日、聽發音、漢字讀音、助詞填空、詞性變化，左上角可以換題型和題目來源。': 'Japanese → meaning, meaning → Japanese, listening, kanji readings, particles and conjugation. Change the question type and source at the top left.',
 '填空・聽寫': 'Fill-in & dictation', '看例句打出空格裡的字，答對才算「已學會」，之後照時間排到期複習。切到「聽寫」可以練聽力。': 'Type the missing word in a sentence. Getting it right marks the word as learned, and it comes back for review on a schedule. Switch to “Dictation” to train your ear.',
 '每個文法點都有說明和例句，也有動詞、形容詞的變化規則。': 'Every grammar point has an explanation and examples, plus conjugation rules for verbs and adjectives.',
 '單字庫・設定': 'Words & settings', '看進度、搜尋單字、進入錯題和到期複習。下面的「設定」可以調音效、用 Google 登入同步進度、換介面語言。': 'See your progress, search words, and jump into mistakes and due reviews. “Settings” below has sounds, Google sign-in for syncing, and the language switch.',
@@ -2987,6 +2992,7 @@ R(/^(N5(?:～N\d)?) 已經會了$/, (m, a) => 'I know ' + a.replace('～', '–'
 R(/^已隱藏 (N\d) 以下的文法$/, 'Hiding grammar at $1 and below');
 R(/^App 裡的(.+)（(\d+)）$/, (m, a, n) => `${t(a)} in the app (${n})`);
 R(/^變化規則（例：(.+)）$/, 'Conjugation rules (e.g. $1)');
+R(/^看「(.+)」的完整變化表$/, 'All forms of “$1”');
 R(/^例句（(\d+)）$/, 'Examples ($1)');
 R(/^再顯示 (\d+) 句（共 (\d+) 句）$/, 'Show $1 more ($2 total)');
 R(/^已匯入 (\d+) 筆紀錄$/, 'Imported $1 records');
@@ -4061,7 +4067,7 @@ let S = store.get('n5:progress', null);
 if (!S || typeof S !== 'object' || !S.items) S = { items: {}, days: {} };
 S.days = S.days || {};
 const SET = Object.assign({ vib: 'on', sfx: 'on', round: 20, recent: 'd1', mean: 'zh', lang: 'zh', furi: true, knownLv: '', romaji: false, theme: 'system', voice: '', rate: 0.9 }, store.get('n5:settings', {}));
-const UI = Object.assign({ fillMode: 'fill', dictSrc: 'learn', gramOpen: false, kanaSec: 'seion', tab: 'kana', script: 'h', kanaView: 'table', kanaMode: 'k2r', kanaRange: 'all', mcMode: 'jp2zh', mcSrc: 'learn', fillSrc: 'learn', cardSrc: 'new', pos: 'all' }, store.get('n5:ui', {}));
+const UI = Object.assign({ fillMode: 'fill', dictSrc: 'learn', gramOpen: false, kanaSec: 'seion', tab: 'kana', script: 'h', kanaView: 'table', kanaMode: 'k2r', kanaRange: 'all', mcMode: 'jp2zh', conjSet: 'all', mcSrc: 'learn', fillSrc: 'learn', cardSrc: 'new', pos: 'all' }, store.get('n5:ui', {}));
 const saveSet = () => store.set('n5:settings', SET);
 const saveUI = () => store.set('n5:ui', UI);
 const saveLocal = () => store.set('n5:progress', S);
@@ -4824,21 +4830,27 @@ function renderMC() {
   const host = $('#tab-mc');
   const counts = Object.fromEntries(MC_SRCS.map(([k]) => [k, srcPool(k).length]));
   host.innerHTML = `
-    <div class="ctl">${pillSelect('mcMode', '題型', MC_MODE_OPTS, UI.mcMode)}${UI.mcMode === 'part' ? '' : `${pillSelect('mcSrc', '題目來源', MC_SRCS.map(([k, l]) => [k, `${l} ${counts[k]}`]), UI.mcSrc)}${UI.mcSrc === 'recent' ? recentCtl().html : posChips()}`}</div>
+    <div class="ctl">${pillSelect('mcMode', '題型', MC_MODE_OPTS, UI.mcMode)}${UI.mcMode === 'conj' ? pillSelect('conjSet', '範圍', CONJ_SETS.map(([k, l]) => [k, `${l} ${conjWords(k).length}`]), UI.conjSet) : UI.mcMode === 'part' ? '' : `${pillSelect('mcSrc', '題目來源', MC_SRCS.map(([k, l]) => [k, `${l} ${counts[k]}`]), UI.mcSrc)}${UI.mcSrc === 'recent' ? recentCtl().html : posChips()}`}</div>
     <div id="mcq"></div>`;
   $('#mcMode', host).onchange = e => { UI.mcMode = e.target.value; saveUI(); renderMC(); };
+  const csEl = $('#conjSet', host); if (csEl) csEl.onchange = e => { UI.conjSet = e.target.value; saveUI(); mcRound = null; renderMC(); };
   const srcEl = $('#mcSrc', host); if (srcEl) srcEl.onchange = e => { UI.mcSrc = e.target.value; saveUI(); mcRound = null; renderMC(); };
   recentCtl(renderMC).bind(host);
   bindPos(host, () => { mcRound = null; renderMC(); });
   if (mcRound && mcRound.done) { mcRound.idx++; mcRound.done = false; }
   const kind = mcKind(UI.mcMode);
-  const valid = mcRound && mcRound.kind === kind && (kind === 'part' || (mcRound.src === UI.mcSrc && (UI.mcSrc === 'recent' || mcRound.pos === UI.pos)));
+  const valid = mcRound && mcRound.kind === kind && (kind === 'part' || (kind === 'conj' && mcRound.set === UI.conjSet) || (kind !== 'conj' && mcRound.src === UI.mcSrc && (UI.mcSrc === 'recent' || mcRound.pos === UI.pos)));
   if (!valid || mcRound.idx >= mcRound.queue.length) {
     if (valid && mcRound.queue.length && mcRound.idx >= mcRound.queue.length) return roundDone($('#mcq'), mcRound, () => { mcRound = null; renderMC(); });
     if (kind === 'part') {
       const items = particleItems();
       mcRound = { kind, queue: shuffle(items).slice(0, roundSize()), idx: 0, total: items.length, right: 0 };
       return nextPartQ();
+    }
+    if (kind === 'conj') {
+      const ws = conjWords(UI.conjSet);
+      mcRound = { kind, set: UI.conjSet, queue: shuffle(ws).slice(0, roundSize()).map(conjItem).filter(Boolean), idx: 0, total: ws.length, right: 0 };
+      return nextConjQ();
     }
     let pool = srcPool(UI.mcSrc);
     if (kind === 'read') pool = pool.filter(w => hasKanji(w.word));
@@ -4851,6 +4863,7 @@ function renderMC() {
     mcRound = { kind, queue, idx: 0, total: pool.length, src: UI.mcSrc, pos: UI.pos, right: 0 };
   }
   if (mcRound.kind === 'part') return nextPartQ();
+  if (mcRound.kind === 'conj') return nextConjQ();
   nextMCQ();
 }
 function emptyWords(host, src) {
@@ -4896,8 +4909,8 @@ function nextMCQ() {
 
 
 // ================= 漢字讀音、助詞填空 =================
-const MC_MODE_OPTS = [['jp2zh', '日→中'], ['zh2jp', '中→日'], ['listen', '聽→中'], ['read', '漢字讀音'], ['part', '助詞填空']];
-const mcKind = m => m === 'part' ? 'part' : m === 'read' ? 'read' : 'word';
+const MC_MODE_OPTS = [['jp2zh', '日→中'], ['zh2jp', '中→日'], ['listen', '聽→中'], ['read', '漢字讀音'], ['part', '助詞填空'], ['conj', '詞性變化']];
+const mcKind = m => m === 'part' ? 'part' : m === 'conj' ? 'conj' : m === 'read' ? 'read' : 'word';
 function nextReadQ(R, w) {
   const host = $('#mcq');
   const src = { mcWrong: 'wrong', mcReview: 'review' }[R.src] || (R.src === 'learned' ? 'learned' : 'learn');
@@ -4943,6 +4956,142 @@ function nextPartQ() {
     afterHTML: () => `<div class="example"><div class="ex-row"><div class="sent" lang="ja">${rubyHTML(w.segs, { toks: toksOf(w), hl: [t.s0, t.s1] })}</div>${iconPlay(w.sent, '播放例句')}</div><div class="zhline">${esc(w.sentZh)}</div>
       ${gp ? `<div class="gp-item" style="margin-top:10px"><div class="gp-h"><b>${esc(gp.t)}</b></div><div>${esc(gp.d)}</div><button class="gp-more" data-gram="${gp.id}">看更多例句 ›</button></div>` : ''}</div>`
   }, () => { R.idx++; R.done = false; nextPartQ(); });
+}
+
+// ================= 詞性變化 =================
+// 看原形和要變的形，選出正確的變化。錯誤選項照常見的錯法做：分錯動詞類別、て形音便用錯、い／な形容詞弄混
+const CONJ_SETS = [['all', '動詞＋形容詞'], ['verb', '動詞'], ['v1', '一類動詞'], ['v2', '二類動詞'], ['v3', '三類動詞'], ['tricky', '長得像二類的一類'], ['adj', '形容詞']];
+const CONJ_ASK = {
+  動詞: ['ます形', '否定', '過去', '過去否定', 'て形', 'ない形', 'た形', '〜たい'],
+  い形容詞: ['過去', '否定', '過去否定', 'て形', '副詞'],
+  な形容詞: ['過去', '否定', '過去否定']
+};
+const CONJ_Q = {
+  'ます形': 'ます形（禮貌）', '否定': '否定（ません／禮貌）', '過去': '過去（禮貌）', '過去否定': '過去否定（禮貌）',
+  'て形': 'て形', 'ない形': 'ない形（普通體否定）', 'た形': 'た形（普通體過去）', '〜たい': '〜たい（想要）', '副詞': '副詞（…地）'
+};
+const CONJ_CACHE = {};
+function conjWords(set) {
+  if (CONJ_CACHE[set]) return CONJ_CACHE[set];
+  const ok = w => {
+    if (w.kind !== 'w' || !CONJ_ASK[w.pg]) return false;
+    if (set === 'verb') return w.pg === '動詞';
+    if (set === 'v1') return w.pos === '動詞(一類)';
+    if (set === 'v2') return w.pos === '動詞(二類)';
+    if (set === 'v3') return w.pos === '動詞(三類)';
+    if (set === 'tricky') return w.pos === '動詞(一類)' && LOOKS_ICHIDAN(w);
+    if (set === 'adj') return w.pg !== '動詞';
+    return true;
+  };
+  // 同一個字寫法只出一次
+  const seen = new Set();
+  return CONJ_CACHE[set] = WORDS.filter(w => ok(w) && !seen.has(w.word) && seen.add(w.word) && conjRows(w).length);
+}
+const conjRows = w => conjugate(w).filter(r => (CONJ_ASK[w.pg] || []).includes(r.label));
+const isKuru = w => w.word === '来る' || w.reading === 'くる' && w.pos === '動詞(三類)';
+function conjItem(w) {
+  const rows = conjRows(w);
+  if (!rows.length) return null;
+  // 動詞多出て形、ない形（最容易錯）
+  const weighted = rows.flatMap(r => /^(て形|ない形|た形)$/.test(r.label) ? [r, r] : [r]);
+  return { w, row: weighted[Math.floor(Math.random() * weighted.length)] };
+}
+// 常見的錯誤寫法：回傳 [表層, 讀音]
+function conjWrong(w, label) {
+  const out = [];
+  const add = (s, r) => { if (s && r) out.push([s, r]); };
+  const from = alt => { const x = conjugate(alt).find(r => r.label === label); if (x) add(x.s, x.r); };
+  const sb = w.word.slice(0, -1), rb = w.reading.slice(0, -1);
+  if (w.pg === '動詞') {
+    if (isKuru(w)) {
+      const K = { 'ます形': ['こます', 'くります'], '否定': ['こません', 'くりません'], '過去': ['こました', 'くりました'], '過去否定': ['こませんでした', 'くりませんでした'],
+        'て形': ['こて', 'くって'], 'ない形': ['きない', 'くらない'], 'た形': ['こた', 'くった'], '〜たい': ['こたい', 'くりたい'] };
+      (K[label] || []).forEach(k => add(k, k));
+    } else if (w.pos === '動詞(三類)') {
+      const sb2 = w.word.slice(0, -2), rb2 = w.reading.slice(0, -2);
+      const S = { 'ます形': ['すます', 'さます'], '否定': ['すません', 'さません'], '過去': ['すました'], '過去否定': ['すませんでした'],
+        'て形': ['すって', 'せて'], 'ない形': ['さない', 'すない'], 'た形': ['すった', 'せた'], '〜たい': ['すたい', 'さたい'] };
+      (S[label] || []).forEach(k => add(sb2 + k, rb2 + k));
+    } else {
+      // 分錯類別：一類當成二類、二類當成一類
+      from(Object.assign({}, w, { pos: w.pos === '動詞(一類)' ? '動詞(二類)' : '動詞(一類)' }));
+      if (w.pos === '動詞(一類)' && /^(て形|た形)$/.test(label)) {
+        // て形音便用錯
+        const ta = label === 'た形';
+        for (const e of ['って', 'んで', 'いて', 'いで', 'して']) { const x = ta ? e.replace(/て$/, 'た').replace(/で$/, 'だ') : e; add(sb + x, rb + x); }
+        if (w.word === '行く' || w.reading === 'いく') add(sb + (ta ? 'いた' : 'いて'), rb + (ta ? 'いた' : 'いて'));
+      }
+      if (w.pos === '動詞(一類)' && label === 'ない形') {
+        if (/う$/.test(w.reading)) add(sb + 'あない', rb + 'あない');
+        if (w.word === 'ある') add('あらない', 'あらない');
+        add(sb + 'ない', rb + 'ない');
+      }
+      if (w.pos === '動詞(一類)' && /^(ます形|否定|過去|過去否定|〜たい)$/.test(label)) {
+        // 字尾換錯段（換成あ段或え段）
+        const A = { う: 'わ', く: 'か', ぐ: 'が', す: 'さ', つ: 'た', ぬ: 'な', ぶ: 'ば', む: 'ま', る: 'ら' }[w.reading.slice(-1)];
+        const tail = { 'ます形': 'ます', '否定': 'ません', '過去': 'ました', '過去否定': 'ませんでした', '〜たい': 'たい' }[label];
+        if (A) add(sb + A + tail, rb + A + tail);
+      }
+    }
+  } else if (w.pg === 'い形容詞') {
+    if (w.word === 'いい') {
+      const I = { '過去': ['いかったです', 'いいでした'], '否定': ['いくないです', 'いいじゃありません'], '過去否定': ['いくなかったです', 'よくないでした'], 'て形': ['いくて', 'いいで'], '副詞': ['いく', 'いいに'] };
+      (I[label] || []).forEach(k => add(k, k));
+    } else {
+      // 當成な形容詞，或是過去否定接錯
+      const N = { '過去': ['でした'], '否定': ['じゃありません'], '過去否定': ['じゃありませんでした'], 'て形': ['で'], '副詞': ['に'] };
+      (N[label] || []).forEach(k => add(w.word + k, w.reading + k));
+      if (label === '過去否定') add(sb + 'くないでした', rb + 'くないでした');
+      if (label === '否定') add(w.word + 'くないです', w.reading + 'くないです');
+      if (label === '過去') add(sb + 'くかったです', rb + 'くかったです');
+    }
+  } else if (w.pg === 'な形容詞') {
+    // 當成い形容詞（きれい → きれくない），或多加「な」
+    if (/い$/.test(w.word)) from(Object.assign({}, w, { pg: 'い形容詞' }));
+    else { const I = { '過去': 'かったです', '否定': 'くないです', '過去否定': 'くなかったです' }[label]; if (I) add(w.word + I, w.reading + I); }
+    const X = { '過去': ['なでした', 'だでした'], '否定': ['なじゃありません', 'じゃないでした'], '過去否定': ['じゃないでした', 'なじゃありませんでした'] };
+    (X[label] || []).forEach(k => add(w.word + k, w.reading + k));
+  }
+  return out;
+}
+function conjOptions(w, row) {
+  const used = new Set([normKana(row.r)]);
+  const pick = list => shuffle(list).filter(([s, r]) => { const k = normKana(r); if (used.has(k) || s === row.s) return false; used.add(k); return true; });
+  let wrong = pick(conjWrong(w, row.label)).slice(0, 3);
+  // 不夠三個：用同一個字的其他變化形補
+  if (wrong.length < 3) wrong = wrong.concat(pick(conjugate(w).filter(r => r.label !== row.label && r.label !== '原形').map(r => [r.s, r.r])).slice(0, 3 - wrong.length));
+  return shuffle([[row.s, row.r, true], ...wrong]);
+}
+function conjFormHTML(w, s, r) {
+  if (isKuru(w)) return esc(r);
+  const segs = align(s, r);
+  return segs ? rubyHTML(segs) : esc(s);
+}
+function nextConjQ() {
+  const R = mcRound, host = $('#mcq');
+  if (!host) return;
+  if (R.idx >= R.queue.length) return roundDone(host, R, () => { mcRound = null; renderMC(); });
+  const it = R.queue[R.idx], { w, row } = it;
+  const opts = conjOptions(w, row);
+  const ti = typeInfo(w);
+  const rule = (typeof RULES !== 'undefined' ? RULES : []).find(x => x.pos === w.pos);
+  const hint = rule && rule.r[row.label];
+  renderChoice(host, {
+    head: `<div class="qhead">${progressLine(R, R.total)}</div>`,
+    promptHTML: `<div class="big" lang="ja">${wordHTML(w)}</div>${romajiLine(w.romaji)}<span class="pos">${esc(w.pos)}</span><div class="zh">${meanW(w)}</div>
+      <div class="conj-ask"><span class="conj-arrow" aria-hidden="true">→</span><b>${esc(CONJ_Q[row.label] || row.label)}</b></div>`,
+    options: opts.map(([s, r, ok]) => ({ html: `<span lang="ja">${conjFormHTML(w, s, r)}</span>`, cls: 'ja', correct: !!ok })),
+    onAnswer: ok => {
+      if (ok) R.right++; R.done = true; bumpDay();
+      // 答錯的同一題，這一輪最後再出一次
+      if (!ok && !it.again) R.queue.push(Object.assign({}, it, { again: true }));
+    },
+    afterHTML: () => `<div class="example">
+      <div class="row" style="gap:12px;align-items:center"><span class="ja" style="font-size:24px">${conjFormHTML(w, row.s, row.r)}</span><span class="meta">${esc(row.label)}</span>${iconPlay(row.r, '播放發音')}</div>
+      <div class="conj-why"><span class="pos">${esc(w.pos)}</span>${hint ? `<span>${esc(hint)}</span>` : ''}</div>
+      ${ti.extra ? `<p class="fm-note">${esc(ti.extra)}</p>` : ''}
+      <button class="btn" data-forms="${esc(w.id)}" style="margin-top:10px">看「${esc(w.word)}」的完整變化表</button></div>`
+  }, () => { R.idx++; R.done = false; nextConjQ(); });
 }
 
 // ================= 字卡 =================
@@ -5842,7 +5991,7 @@ const TOUR = [
   { t: '歡迎使用日語 N5', d: '從五十音開始，一路學到 N5 的單字和文法。先選介面語言，接下來用 30 秒認識每個分頁。', lang: true },
   { el: '[data-tab="kana"]', tab: 'kana', t: '五十音', d: '平假名、片假名的表，點一個字可以聽發音、看例字；切到「練習」做認字測驗。' },
   { el: '[data-tab="card"]', tab: 'card', t: '字卡：挑要學的字', d: '新字一張一張看：已經會的按「已經會了」，想練的按「列入考題」，之後單選和填空就會出這些字。' },
-  { el: '[data-tab="mc"]', tab: 'mc', t: '單選', d: '日→中、中→日、聽發音、漢字讀音、助詞填空，左上角可以換題型和題目來源。' },
+  { el: '[data-tab="mc"]', tab: 'mc', t: '單選', d: '日→中、中→日、聽發音、漢字讀音、助詞填空、詞性變化，左上角可以換題型和題目來源。' },
   { el: '[data-tab="fill"]', tab: 'fill', t: '填空・聽寫', d: '看例句打出空格裡的字，答對才算「已學會」，之後照時間排到期複習。切到「聽寫」可以練聽力。' },
   { el: '[data-tab="gram"]', tab: 'gram', t: '文法', d: '每個文法點都有說明和例句，也有動詞、形容詞的變化規則。' },
   { el: '[data-tab="lib"]', tab: 'lib', t: '單字庫・設定', d: '看進度、搜尋單字、進入錯題和到期複習。下面的「設定」可以調音效、用 Google 登入同步進度、換介面語言。' },
