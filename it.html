@@ -736,6 +736,39 @@ body.hide-gen .sent{line-height:1.75}
 .gx-done{text-align:center;padding:16px 0 4px}
 .gx-score{font-size:34px;font-weight:800}
 .gx-done .btnrow{justify-content:center}
+/* 文法關卡 */
+.gr-view{margin:10px 0 4px}
+.gp-top{display:flex;flex-direction:column;gap:8px}
+.gp-top .meta{margin:0}
+.gp-tt{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.gp-tt b{font-size:18px}
+.gp-tt span{color:var(--muted);font-size:14px}
+.gp-bar{height:8px;border-radius:99px;background:var(--track);overflow:hidden}
+.gp-bar i{display:block;height:100%;background:var(--ok);border-radius:99px}
+.gp-all{margin:0;font-weight:700;color:var(--ok-deep,var(--ok))}
+.gp-stage{margin:18px 0 0}
+.gp-sh{display:flex;align-items:center;gap:10px;margin:0 2px 8px}
+.gp-no{flex:none;width:32px;height:32px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;background:var(--pri);color:#fff}
+.gp-no svg{width:18px;height:18px}
+.gp-stage.done .gp-no{background:var(--ok)}
+.gp-stage.locked .gp-no{background:var(--surface2);color:var(--muted)}
+.gp-st{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.gp-st b{font-size:16px}
+.gp-st span{font-size:13px;color:var(--muted);line-height:1.45}
+.gp-cnt{flex:none;font-size:13px;font-weight:700;color:var(--muted)}
+.gp-peek>summary{cursor:pointer;margin:0 2px 8px;font-size:13px;color:var(--muted);list-style-position:inside}
+.gp-stage.locked .gp-row{opacity:.55}
+.gp-row b{display:inline-flex;align-items:center;gap:6px}
+.gp-ck{display:inline-flex;width:18px;height:18px;color:var(--ok-deep,var(--ok))}
+.gp-ck svg{width:18px;height:18px}
+.gp-row.now{box-shadow:inset 0 0 0 2px var(--pri)}
+.gp-nowt{font-size:12px;font-weight:700;color:#fff;background:var(--pri);border-radius:6px;padding:1px 6px;margin-right:4px}
+.gp-where{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 10px;margin:8px 0 0;font-size:13px;color:var(--muted)}
+.gp-where p{flex-basis:100%;margin:4px 0 0;padding:8px 10px;border-radius:8px;background:var(--surface2);color:inherit;font-size:13px;line-height:1.5}
+.gp-pass{display:inline-flex;align-items:center;gap:4px;color:var(--ok-deep,var(--ok))}
+.gp-pass svg{width:15px;height:15px}
+.gx-done .btnrow{flex-direction:column;align-items:stretch;max-width:340px;margin:0 auto}
+.gp-row .gn .gp-nowt{color:#fff;background:var(--pri)}
 
 :root{--pat:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 900' preserveAspectRatio='xMidYMax slice'%3E%3Ccircle cx='330' cy='150' r='46' fill='%23f7e6cc'/%3E%3Crect x='40' y='120' width='90' height='12' rx='6' fill='%23e6ebf3'/%3E%3Crect x='70' y='140' width='60' height='12' rx='6' fill='%23e6ebf3'/%3E%3Crect x='250' y='250' width='110' height='12' rx='6' fill='%23e6ebf3'/%3E%3Crect x='290' y='270' width='70' height='12' rx='6' fill='%23e6ebf3'/%3E%3Cpath d='M80 210 q6 -6 12 0 q6 -6 12 0' fill='none' stroke='%23cdd5e2' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M110 232 q6 -6 12 0 q6 -6 12 0' fill='none' stroke='%23cdd5e2' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M-10 640 C 60 585 130 585 200 610 C 260 630 320 580 430 600 L430 910 L-10 910Z' fill='%23e6ebf3'/%3E%3Cg fill='%23dde4ef'%3E%3Crect x='238' y='548' width='9' height='44'/%3E%3Cpath d='M236 548 l6.5 -10 l6.5 10z'/%3E%3Crect x='252' y='572' width='18' height='22'/%3E%3Crect x='272' y='566' width='14' height='28'/%3E%3Crect x='288' y='576' width='20' height='18'/%3E%3Crect x='218' y='578' width='16' height='16'/%3E%3Cpath d='M200 594 a16 16 0 0 1 32 0z'/%3E%3C/g%3E%3Cg fill='%23d3dbe8'%3E%3Cpath d='M251 572 l10 -7 l10 7z'/%3E%3Cpath d='M271 566 l8 -6 l8 6z'/%3E%3Cpath d='M287 576 l11 -6 l11 6z'/%3E%3Cpath d='M217 578 l9 -6 l9 6z'/%3E%3C/g%3E%3Cpath d='M-10 720 C 70 670 150 690 220 705 C 290 720 350 670 430 685 L430 910 L-10 910Z' fill='%23d8e0ec'/%3E%3Cpath d='M40 706 q8 -35.2 8 -64 q0 28.8 8 64z' fill='%23c3cede'/%3E%3Cpath d='M62 708 q6.5 -25.3 6.5 -46 q0 20.7 6.5 46z' fill='%23c3cede'/%3E%3Cpath d='M338 690 q8 -38.5 8 -70 q0 31.5 8 70z' fill='%23c3cede'/%3E%3Cpath d='M360 694 q6.5 -27.500000000000004 6.5 -50 q0 22.5 6.5 50z' fill='%23c3cede'/%3E%3Cpath d='M-10 800 C 60 760 150 770 230 785 C 320 802 370 760 430 768 L430 910 L-10 910Z' fill='%23cfd8e6'/%3E%3Cpath d='M286 790 q9 -44 9 -80 q0 36 9 80z' fill='%23c3cede'/%3E%3Cpath d='M310 792 q7.5 -31.900000000000002 7.5 -58 q0 26.1 7.5 58z' fill='%23c3cede'/%3E%3Cpath d='M330 794 q6 -22 6 -40 q0 18 6 40z' fill='%23c3cede'/%3E%3Cpath d='M150 900 C 175 870, 230 860, 222 835 S 255 800, 300 790 L 308 795 C 270 806, 240 820, 245 840 S 200 875, 190 900 Z' fill='%23eef3fa'/%3E%3C/svg%3E")}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--pat:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 900' preserveAspectRatio='xMidYMax slice'%3E%3Ccircle cx='330' cy='150' r='46' fill='%23252d3a'/%3E%3Crect x='40' y='120' width='90' height='12' rx='6' fill='%23161c26'/%3E%3Crect x='70' y='140' width='60' height='12' rx='6' fill='%23161c26'/%3E%3Crect x='250' y='250' width='110' height='12' rx='6' fill='%23161c26'/%3E%3Crect x='290' y='270' width='70' height='12' rx='6' fill='%23161c26'/%3E%3Cpath d='M80 210 q6 -6 12 0 q6 -6 12 0' fill='none' stroke='%232a3342' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M110 232 q6 -6 12 0 q6 -6 12 0' fill='none' stroke='%232a3342' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M-10 640 C 60 585 130 585 200 610 C 260 630 320 580 430 600 L430 910 L-10 910Z' fill='%23141a23'/%3E%3Cg fill='%231a212c'%3E%3Crect x='238' y='548' width='9' height='44'/%3E%3Cpath d='M236 548 l6.5 -10 l6.5 10z'/%3E%3Crect x='252' y='572' width='18' height='22'/%3E%3Crect x='272' y='566' width='14' height='28'/%3E%3Crect x='288' y='576' width='20' height='18'/%3E%3Crect x='218' y='578' width='16' height='16'/%3E%3Cpath d='M200 594 a16 16 0 0 1 32 0z'/%3E%3C/g%3E%3Cg fill='%23202836'%3E%3Cpath d='M251 572 l10 -7 l10 7z'/%3E%3Cpath d='M271 566 l8 -6 l8 6z'/%3E%3Cpath d='M287 576 l11 -6 l11 6z'/%3E%3Cpath d='M217 578 l9 -6 l9 6z'/%3E%3C/g%3E%3Cpath d='M-10 720 C 70 670 150 690 220 705 C 290 720 350 670 430 685 L430 910 L-10 910Z' fill='%2318202b'/%3E%3Cpath d='M40 706 q8 -35.2 8 -64 q0 28.8 8 64z' fill='%23111720'/%3E%3Cpath d='M62 708 q6.5 -25.3 6.5 -46 q0 20.7 6.5 46z' fill='%23111720'/%3E%3Cpath d='M338 690 q8 -38.5 8 -70 q0 31.5 8 70z' fill='%23111720'/%3E%3Cpath d='M360 694 q6.5 -27.500000000000004 6.5 -50 q0 22.5 6.5 50z' fill='%23111720'/%3E%3Cpath d='M-10 800 C 60 760 150 770 230 785 C 320 802 370 760 430 768 L430 910 L-10 910Z' fill='%231c2531'/%3E%3Cpath d='M286 790 q9 -44 9 -80 q0 36 9 80z' fill='%23111720'/%3E%3Cpath d='M310 792 q7.5 -31.900000000000002 7.5 -58 q0 26.1 7.5 58z' fill='%23111720'/%3E%3Cpath d='M330 794 q6 -22 6 -40 q0 18 6 40z' fill='%23111720'/%3E%3Cpath d='M150 900 C 175 870, 230 860, 222 835 S 255 800, 300 790 L 308 795 C 270 806, 240 820, 245 840 S 200 875, 190 900 Z' fill='%2310151d'/%3E%3C/svg%3E")}}
@@ -2660,7 +2693,7 @@ if (!S || typeof S !== 'object' || !S.items) S = { items: {}, days: {} };
 S.days = S.days || {};
 const SET = Object.assign({ vib: 'on', sfx: 'on', round: 20, recent: 'd1', mean: 'zh', theme: 'system', rate: 0.9 }, store.get('n5:settings', {}));
 const ISET = Object.assign({ voice: '' }, store.get(LP + 'settings', {}));
-const UI = Object.assign({ tab: 'card', pronSec: 'abc', pronMode: 'listen', mcMode: 'it2zh', mcSrc: 'learn', fillSrc: 'learn', cardSrc: 'new', pos: 'all', gramSel: '', gramQ: '' }, store.get(LP + 'ui', {}));
+const UI = Object.assign({ tab: 'card', pronSec: 'abc', pronMode: 'listen', mcMode: 'it2zh', mcSrc: 'learn', fillSrc: 'learn', cardSrc: 'new', pos: 'all', gramSel: '', gramQ: '', gramView: 'path' }, store.get(LP + 'ui', {}));
 // 每次都重新讀一次共用設定再寫回，避免蓋掉日文頁剛改的值
 const saveSet = () => { const cur = store.get('n5:settings', {}); store.set('n5:settings', Object.assign(cur, SET)); };
 const saveISet = () => store.set(LP + 'settings', ISET);
@@ -3765,6 +3798,45 @@ function ruleDemo(R) {
     <div class="seg" role="group" aria-label="時態 ${esc(w.word)}" style="margin:8px 0"><button data-tense="pres" aria-pressed="true">${esc(IT.conjugate(w.word, w.pos).presTab || '現在式')}</button><button data-tense="pass" aria-pressed="false">過去式</button><button data-tense="imp" aria-pressed="false">命令式</button></div><div class="vt">${conjTable(w, 'pres')}</div></div>`).join('');
 }
 // ================= 文法範例拆解＋練習題（IT.GX） =================
+// 關卡：IT.GX_PATH = [[關卡名, 說明, [文法id...]]...]；練習題全對＝過關，紀錄存在 items 的 LP+'gx:'+id（跟著同步）
+const ICON_LOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+const gxKey = id => LP + 'gx:' + id;
+const gxPassed = id => !!(S.items[gxKey(id)] || {}).p;
+function gxStages() {
+  let prevDone = true;
+  return (IT.GX_PATH || []).map(([title, desc, ids], i) => {
+    const done = ids.filter(gxPassed).length;
+    const st = done === ids.length ? 'done' : prevDone ? 'open' : 'locked';
+    prevDone = prevDone && done === ids.length;
+    return { i, title, desc, ids, done, st };
+  });
+}
+const gxStageOf = id => gxStages().find(x => x.ids.includes(id));
+function gxNext(after) {
+  const flat = (IT.GX_PATH || []).flatMap(x => x[2]);
+  const k = after ? flat.indexOf(after) : -1;
+  return flat.slice(k + 1).find(id => !gxPassed(id)) || flat.find(id => !gxPassed(id) && id !== after) || '';
+}
+function gxRecord(id, right, total) {
+  reloadShared();
+  const old = S.items[gxKey(id)] || {};
+  const r = { s: 'gx', b: Math.max(old.b || 0, right), n: total, t: Date.now() };
+  if (old.p || right === total) r.p = 1;
+  putRec(gxKey(id), r);
+}
+function gxPathHTML() {
+  const sts = gxStages(), GM = Object.fromEntries(IT.GRAMMAR.map(g => [g.id, g]));
+  const total = sts.reduce((a, x) => a + x.ids.length, 0), passed = sts.reduce((a, x) => a + x.done, 0);
+  const nx = gxNext(null), ng = nx && GM[nx];
+  return `<div class="card gp-top"><div class="gp-tt"><b>文法關卡</b><span>已過關 ${passed} / ${total}</span></div><div class="gp-bar"><i style="width:${(passed / total * 100).toFixed(1)}%"></i></div>
+      <p class="meta">照順序學，後面的文法會用到前面的。每個文法點看完說明和範例，練習題全對就過關；一關全部過關，下一關就會打開。</p>
+      ${ng ? `<button class="btn solid block" data-gram="${nx}">繼續學：${esc(ng.title)}</button>` : '<p class="gp-all">全部過關了！</p>'}</div>` +
+    sts.map(x => `<section class="gp-stage ${x.st}">
+      <div class="gp-sh"><span class="gp-no">${x.st === 'done' ? ICON.ok : x.st === 'locked' ? ICON_LOCK : x.i + 1}</span><div class="gp-st"><b>第 ${x.i + 1} 關・${esc(x.title)}</b><span>${esc(x.desc)}</span></div><span class="gp-cnt">${x.done}/${x.ids.length}</span></div>
+      ${x.st === 'locked' ? `<details class="gp-peek"><summary>完成上一關就會打開・先偷看這關的 ${x.ids.length} 個文法</summary>` : ''}
+      ${x.ids.map(id => `<button class="gr-row gp-row${gxPassed(id) ? ' ok' : ''}${id === nx ? ' now' : ''}" data-gram="${id}"><b>${gxPassed(id) ? `<span class="gp-ck">${ICON.ok}</span>` : ''}${esc(GM[id].title)}</b><span class="gn">${id === nx ? '<span class="gp-nowt">下一個</span>' : ''}›</span></button>`).join('')}${x.st === 'locked' ? '</details>' : ''}
+    </section>`).join('');
+}
 // 說明裡的外文字標上 lang，字型和顏色跟中文分開
 function gxNote(t) {
   const re = LC.id === 'ru' ? /[Ѐ-ӿ́]+(?:[ -‑][Ѐ-ӿ́]+)*/g : /[A-Za-zÀ-ÿ̀-ͯ'’]+(?:[ -][A-Za-zÀ-ÿ̀-ͯ'’]+)*/g;
@@ -3780,15 +3852,31 @@ function gxExamplesHTML(gx) {
     <div class="gx-plain"><b>白話</b><span>${gxNote(pl)}</span></div>
   </div>`).join('') + `<button class="btn solid block gx-go" data-gpane="q">看懂了，來練習（${gx.q.length} 題）</button>`;
 }
-function startGxQuiz(box, gx) {
+function gxWhere(id) {
+  const x = gxStageOf(id); if (!x) return '';
+  const need = x.st === 'locked' ? gxStages().find(y => y.st !== 'done') : null;
+  return `<div class="gp-where ${x.st}"><span>第 ${x.i + 1} 關・${esc(x.title)}</span>${gxPassed(id) ? `<b class="gp-pass">${ICON.ok}已過關</b>` : '<span class="gp-need">練習題全對就過關</span>'}${need ? `<p>這關還沒打開，建議先完成第 ${need.i + 1} 關「${esc(need.title)}」，內容一樣可以先看。</p>` : ''}</div>`;
+}
+function startGxQuiz(box, gx, id) {
   if (!box) return;
   const qs = shuffle(gx.q); let i = 0, right = 0;
   const next = () => {
     if (!box.isConnected) return;
     if (i >= qs.length) {
-      box.innerHTML = `<div class="gx-done"><div class="gx-score">${right} / ${qs.length}</div><p>${right === qs.length ? '全對！這個文法你會了。' : right ? '差一點，看一下範例再練一次。' : '先看範例拆解，再回來試試。'}</p><div class="btnrow"><button class="btn solid" id="gxAgain">再練一次</button><button class="btn quiet" data-gpane="ex">看範例</button></div></div>`;
-      $('#gxAgain', box).onclick = () => startGxQuiz(box, gx);
+      const all = right === qs.length;
+      let nx = '', nt = '';
+      if (id && IT.GX_PATH) {
+        const before = gxStageOf(id);
+        gxRecord(id, right, qs.length);
+        const after = gxStageOf(id);
+        if (before && after && before.st !== 'done' && after.st === 'done') toast(`第 ${after.i + 1} 關完成！${IT.GX_PATH[after.i + 1] ? `第 ${after.i + 2} 關打開了` : '全部關卡都過了'}`, true);
+        nx = gxNext(id); const ng = nx && IT.GRAMMAR.find(g => g.id === nx); nt = ng ? ng.title : '';
+      }
+      const msg = all ? (IT.GX_PATH ? '全對，過關！' : '全對！這個文法你會了。') : (IT.GX_PATH ? '要全對才算過關。' : '') + (right ? '差一點，看一下範例再練一次。' : '先看範例拆解，再回來試試。');
+      box.innerHTML = `<div class="gx-done"><div class="gx-score">${right} / ${qs.length}</div><p>${msg}</p><div class="btnrow">${all && nx ? `<button class="btn solid" data-gram="${nx}">下一個：${esc(nt)}</button><button class="btn quiet" id="gxAgain">再練一次</button>` : `<button class="btn solid" id="gxAgain">再練一次</button><button class="btn quiet" data-gpane="ex">看範例</button>`}</div></div>`;
+      $('#gxAgain', box).onclick = () => startGxQuiz(box, gx, id);
       $$('[data-gpane]', box).forEach(b => b.onclick = () => { gramPane = b.dataset.gpane; renderGram(); });
+      const wh = $('.gp-where', box.closest('.card')); if (wh) wh.outerHTML = gxWhere(id);
       return;
     }
     const [pr, ans, wr, zh, why] = qs[i++];
@@ -3827,10 +3915,14 @@ function renderGram() {
     const rhit = IT.RULES.filter(r => !q || (r.title + plain(r.body)).toLowerCase().includes(q));
     const tags = []; IT.GRAMMAR.forEach(g => { if (!tags.includes(g.tag)) tags.push(g.tag); });
     const groups = tags.map(t => [t, IT.GRAMMAR.filter(g => g.tag === t && hit(g))]).filter(x => x[1].length);
-    host.innerHTML = `<input class="gr-search" id="grQ" type="search" placeholder="${esc(LC.gramPh || '搜尋文法：冠詞、piace、過去式…')}" value="${esc(UI.gramQ || '')}" aria-label="搜尋文法">
-      ${rhit.length ? `<div class="gr-group"><h3>詞性變化規則</h3><div class="rc-grid">${rhit.map(r => `<button class="gr-row rc-tile" data-gram="${r.id}"><b>${esc(RULE_SHORT[r.id] || r.title)}</b><span class="gd">${WORDS.filter(w => r.filter(w.e)).length} 個字</span></button>`).join('')}</div></div>` : ''}
+    const usePath = IT.GX_PATH && !q && UI.gramView !== 'cat';
+    const viewSeg = IT.GX_PATH && !q ? `<div class="seg gr-view" role="group" aria-label="文法排列">${[['path', '關卡（照順序學）'], ['cat', '分類']].map(([k, l]) => `<button data-gview="${k}" aria-pressed="${(UI.gramView || 'path') === k}">${l}</button>`).join('')}</div>` : '';
+    const rulesHTML = rhit.length ? `<div class="gr-group"><h3>詞性變化規則</h3><div class="rc-grid">${rhit.map(r => `<button class="gr-row rc-tile" data-gram="${r.id}"><b>${esc(RULE_SHORT[r.id] || r.title)}</b><span class="gd">${WORDS.filter(w => r.filter(w.e)).length} 個字</span></button>`).join('')}</div></div>` : '';
+    host.innerHTML = `<input class="gr-search" id="grQ" type="search" placeholder="${esc(LC.gramPh || '搜尋文法：冠詞、piace、過去式…')}" value="${esc(UI.gramQ || '')}" aria-label="搜尋文法">${viewSeg}
+      ${usePath ? gxPathHTML() + rulesHTML : `${rhit.length ? `<div class="gr-group"><h3>詞性變化規則</h3><div class="rc-grid">${rhit.map(r => `<button class="gr-row rc-tile" data-gram="${r.id}"><b>${esc(RULE_SHORT[r.id] || r.title)}</b><span class="gd">${WORDS.filter(w => r.filter(w.e)).length} 個字</span></button>`).join('')}</div></div>` : ''}
       ${groups.map(([h, ps]) => `<div class="gr-group"><h3>${esc(h)}</h3>${ps.map(g => `<button class="gr-row" data-gram="${g.id}"><b>${esc(g.title)}</b><span class="gn"><span>${(idx[g.id] || []).length}</span>›</span><span class="gd">${esc(gramPreview(g.body))}</span></button>`).join('')}</div>`).join('')}
-      ${!rhit.length && !groups.length ? '<p class="meta">找不到符合的文法。</p>' : ''}`;
+      ${!rhit.length && !groups.length ? '<p class="meta">找不到符合的文法。</p>' : ''}`}`;
+    $$('[data-gview]', host).forEach(b => b.onclick = () => { UI.gramView = b.dataset.gview; saveUI(); renderGram(); });
     const inp = $('#grQ', host);
     inp.oninput = () => { UI.gramQ = inp.value; const pos = inp.selectionStart; renderGram(); const i = $('#grQ'); i.focus(); try { i.setSelectionRange(pos, pos); } catch (e) {} };
     return;
@@ -3842,13 +3934,13 @@ function renderGram() {
   const seg = gx ? `<div class="seg gx-seg" role="group" aria-label="文法分頁">${[['body', '說明'], ['ex', '看範例'], ['q', '練習題']].map(([k, l]) => `<button data-gpane="${k}" aria-pressed="${gramPane === k}">${l}</button>`).join('')}</div>` : '';
   const pane = gramPane === 'ex' ? gxExamplesHTML(gx) : gramPane === 'q' ? '<div id="gxQuiz" class="gx-quiz"></div>' : `<div class="gbody scroll-x">${p.body}</div>${gx ? `<div class="btnrow gx-cta"><button class="btn quiet" data-gpane="ex">看範例拆解</button><button class="btn solid" data-gpane="q">練習這個文法（${gx.q.length} 題）</button></div>` : ''}`;
   host.innerHTML = `<button class="gr-back" id="grBack">‹ 文法列表</button>
-    <div class="card"><div class="gr-head"><h2>${esc(p.title)}</h2><span class="lv">${esc(p.tag)}</span></div>${seg}${pane}</div>
+    <div class="card"><div class="gr-head"><h2>${esc(p.title)}</h2><span class="lv">${esc(p.tag)}</span></div>${gxWhere(p.id)}${seg}${pane}</div>
     ${gramPane !== 'body' ? '' : `<div class="card"><div class="gp-title" style="margin-bottom:8px">App 裡用到的例句（${exs.length}）</div><p class="meta" style="margin:0 0 6px">黃色是這個文法點，點任何一個字可以查意思。</p>
       ${exs.length ? `<div class="gr-exs">${exs.slice(0, gramShow).map(x => `<div class="gr-ex"><div class="ex-row"><div class="sent" lang="${LC.id}">${sentHTML(x.s, { ranges: x.r })}</div>${iconPlay(x.s, '播放例句')}</div><div class="zhline">${esc(x.zh)}</div>${x.w ? `<div class="from">出自單字：<span lang="${LC.id}">${esc(x.w.title)}</span>（${esc(meanPlain(x.w))}）</div>` : ''}</div>`).join('')}</div>${exs.length > gramShow ? `<button class="btn quiet gr-more" id="grMore">再顯示 ${Math.min(8, exs.length - gramShow)} 句（共 ${exs.length} 句）</button>` : ''}` : '<p class="meta">目前的例句裡還沒有用到這個文法。</p>'}
     </div>`}`;
   $('#grBack', host).onclick = back;
   $$('[data-gpane]', host).forEach(b => b.onclick = () => { gramPane = b.dataset.gpane; renderGram(); const c = $('.gr-head', host); if (c && c.getBoundingClientRect().top < 0) c.scrollIntoView({ block: 'start' }); });
-  if (gramPane === 'q') startGxQuiz($('#gxQuiz', host), gx);
+  if (gramPane === 'q') startGxQuiz($('#gxQuiz', host), gx, p.id);
   const m = $('#grMore', host); if (m) m.onclick = () => { gramShow += 8; renderGram(); };
 }
 document.addEventListener('click', e => {
@@ -3996,7 +4088,7 @@ function renderLib() {
         const d = raw.startsWith('N5Z.') ? unpackState(await unzipCode(raw), ALL_IDS) : raw.startsWith('N5.') ? unpackState(raw, ALL_IDS) : JSON.parse(raw);
         if (!d || typeof d.items !== 'object') throw new Error('bad');
         const clean = {};
-        for (const id in d.items) if (WMAP[id]) clean[id] = d.items[id];
+        for (const id in d.items) if (WMAP[id] || id.startsWith(LP + 'gx:')) clean[id] = d.items[id];
         reloadShared();
         S = mergeState(S, { items: clean, days: d.days || {} });
         saveLocal(); Cloud.schedule(); renderGoal(); renderLib();
