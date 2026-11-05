@@ -3134,6 +3134,368 @@ write|寫
 })(typeof window !== 'undefined' ? window : globalThis);
 
 ;
+/* 英文 B2 文法的範例拆解與練習題（1）：時態、情態動詞、動詞句型、名詞形容詞
+   EN.GX[文法點 id] = {
+     ex: [[句子, 中文, [[字, 意思], …], [逐字說明…], 白話總結]],
+     q:  [[題目（___ 是空格）, 答案, [錯的選項…], 中文, 為什麼]]
+   }
+   英文有很多撇號，所以這個檔案的字串一律用雙引號 */
+(function (G) {
+  const EN = G.EN || (G.EN = {});
+  EN.GX = Object.assign(EN.GX || {}, {
+    // ---------- 第 1 關：完成式和過去 ----------
+    "pres-perf": {
+      ex: [["I have lived here for ten years.", "我在這裡住了十年（現在還住）。", [["I", "我"], ["have", "（完成）"], ["lived", "住"], ["here", "這裡"], ["for", "長達"], ["ten", "十"], ["years", "年"]],
+        ["have ＋ 過去分詞＝從過去一直到現在。", "如果說 I lived here for ten years，表示已經不住了。"],
+        "現在完成式連接「過去」和「現在」：事情從以前開始、影響或持續到現在。"],
+        ["Have you ever been to Japan?", "你去過日本嗎？", [["Have", "（完成）"], ["you", "你"], ["ever", "曾經"], ["been", "去過"], ["to", "到"], ["Japan", "日本"]],
+        ["問經驗用 Have you ever…?", "去過某地用 been to，不是 gone to（gone 是去了還沒回來）。"],
+        "問「這輩子有沒有做過」，不管哪一年，用現在完成式。"]],
+      q: [["I ___ my keys. I can't find them.", "have lost", ["lost", "had lost"], "我把鑰匙弄丟了，找不到。", "過去的事影響現在（現在找不到），用現在完成式。"],
+        ["She ___ to Paris three times.", "has been", ["has gone", "went"], "她去過巴黎三次。", "經驗用 has been；has gone 是「去了還沒回來」。"],
+        ["I ___ him yesterday.", "saw", ["have seen", "have saw"], "我昨天見過他。", "有明確的過去時間（yesterday）就用過去式，不用完成式。"]]
+    },
+    "for-since": {
+      ex: [["I've known her since 2015, for over ten years.", "我從 2015 年就認識她，已經十多年了。", [["I've", "我已經"], ["known", "認識"], ["her", "她"], ["since", "從…起"], ["2015", "2015"], [",", ""], ["for", "長達"], ["over", "超過"], ["ten", "十"], ["years", "年"]],
+        ["since ＋ 起點（某年、某天）。", "for ＋ 一段時間（十年、三天）。"],
+        "since 後面是「時間點」，for 後面是「時間長度」；ago 是「多久以前」，配過去式。"]],
+      q: [["We've been friends ___ we were kids.", "since", ["for", "ago"], "我們從小就是朋友。", "since ＋ 起點（一件事）。"],
+        ["I've waited ___ two hours.", "for", ["since", "ago"], "我等了兩個小時。", "for ＋ 一段時間。"],
+        ["I moved here three years ___ .", "ago", ["since", "for"], "我三年前搬來這裡。", "「多久以前」用 ago，配過去式。"]]
+    },
+    "perf-cont": {
+      ex: [["I've been studying all day.", "我念了一整天書（現在還在念或剛念完）。", [["I've", "我已經"], ["been", "（進行）"], ["studying", "念書"], ["all", "整"], ["day", "天"]],
+        ["have been ＋ -ing＝從過去一直「在做」，強調持續的過程。"],
+        "強調「做了多久、一直在做」用完成進行式；強調「做完了多少」用完成式。"]],
+      q: [["You look tired. ___ you been running?", "Have", ["Did", "Are"], "你看起來好累，你剛剛在跑步嗎？", "從剛剛一直在做、留下結果：have been -ing。"],
+        ["I've been ___ this book for a week.", "reading", ["read", "to read"], "這本書我讀了一個禮拜（還沒讀完）。", "have been 後面接 -ing。"],
+        ["I've ___ three books this month.", "read", ["been reading", "reading"], "我這個月讀完了三本書。", "強調「完成的數量」用完成式，不用進行。"]]
+    },
+    "past-perf": {
+      ex: [["When I arrived, the train had already left.", "我到的時候，火車已經開走了。", [["When", "當"], ["I", "我"], ["arrived", "到達"], [",", ""], ["the", "那班"], ["train", "火車"], ["had", "（過去完成）"], ["already", "已經"], ["left", "離開"]],
+        ["兩件過去的事：火車先走（had left），我後到（arrived）。"],
+        "過去完成式是「過去的過去」：比另一件過去的事更早發生。"]],
+      q: [["She was sad because she ___ her phone.", "had lost", ["has lost", "loses"], "她很難過，因為她弄丟了手機。", "弄丟比難過更早：had lost。"],
+        ["I ___ never seen snow before I went to Korea.", "had", ["have", "was"], "我去韓國之前從沒看過雪。", "在去韓國（過去）之前：had seen。"],
+        ["By the time we got there, the film ___ .", "had started", ["has started", "starts"], "我們到的時候電影已經開始了。", "by the time ＋ 過去 → 另一件用 had done。"]]
+    },
+    "used-to": {
+      ex: [["I used to smoke, but now I'm used to living without it.", "我以前抽菸，但現在已經習慣不抽了。", [["I", "我"], ["used", "以前"], ["to", "（會）"], ["smoke", "抽菸"], [",", ""], ["but", "但是"], ["now", "現在"], ["I'm", "我是"], ["used", "習慣"], ["to", "（於）"], ["living", "生活"], ["without", "沒有"], ["it", "它"]],
+        ["used to ＋ 原形＝以前常常、現在不了。", "be used to ＋ -ing／名詞＝習慣某事。"],
+        "used to do 是「以前會」，be used to doing 是「已經習慣」，get used to doing 是「漸漸習慣」。"]],
+      q: [["I used to ___ in Taipei.", "live", ["living", "lived"], "我以前住在台北。", "used to 後面接原形。"],
+        ["I'm used to ___ up early.", "getting", ["get", "got"], "我習慣早起。", "be used to 後面接 -ing。"],
+        ["It took me a year to get used to ___ on the left.", "driving", ["drive", "drove"], "我花了一年才習慣靠左開車。", "get used to 後面接 -ing。"]]
+    },
+    // ---------- 第 2 關：未來和情態動詞 ----------
+    "future": {
+      ex: [["I'm going to visit my aunt, and I'm meeting her at six.", "我打算去看阿姨，六點跟她見面。", [["I'm", "我"], ["going", "打算"], ["to", "（要）"], ["visit", "拜訪"], ["my", "我的"], ["aunt", "阿姨"], [",", ""], ["and", "而且"], ["I'm", "我"], ["meeting", "見面"], ["her", "她"], ["at", "在"], ["six", "六點"]],
+        ["be going to＝已經打算好的計畫。", "現在進行式＝已經約好、排好時間的事。"],
+        "will 是當下決定或預測；be going to 是早就有的打算；現在進行式是已經安排好的行程。"]],
+      q: [["The phone's ringing. — I ___ get it.", "'ll", ["'m going to", "'m getting"], "電話響了。——我來接。", "當下才決定，用 will。"],
+        ["Look at those clouds. It's ___ rain.", "going to", ["will to", "going"], "看那些雲，要下雨了。", "看到證據的預測用 be going to。"],
+        ["I ___ the dentist tomorrow at ten.", "'m seeing", ["see", "'ll seeing"], "我明天十點要看牙醫。", "已經約好的行程用現在進行式。"]]
+    },
+    "fut-perf": {
+      ex: [["This time tomorrow I'll be flying to London.", "明天這時候我會正在飛往倫敦。", [["This", "這"], ["time", "時候"], ["tomorrow", "明天"], ["I'll", "我會"], ["be", "（進行）"], ["flying", "飛"], ["to", "到"], ["London", "倫敦"]],
+        ["will be ＋ -ing＝未來某個時間點正在做。"],
+        "未來進行式說「那時候正在做」，未來完成式說「到那時已經做完」。"],
+        ["By June I'll have finished the course.", "到六月我就會上完這門課了。", [["By", "到…為止"], ["June", "六月"], ["I'll", "我會"], ["have", "（完成）"], ["finished", "完成"], ["the", "那門"], ["course", "課程"]],
+        ["will have ＋ 過去分詞＝在未來某時間之前已經完成。", "常和 by（到…為止）一起用。"],
+        "看到 by ＋ 未來時間，常常就是未來完成式。"]],
+      q: [["Don't call at eight — I'll ___ dinner.", "be having", ["have had", "having"], "八點別打來，我那時會正在吃晚餐。", "那個時間點正在做：will be -ing。"],
+        ["By 2030 they ___ built the new airport.", "will have", ["will be", "have"], "到 2030 年他們就會蓋好新機場了。", "by ＋ 未來時間 → will have done。"],
+        ["Next month I'll have ___ here for five years.", "worked", ["working", "work"], "下個月我就在這裡工作滿五年了。", "will have 後面接過去分詞。"]]
+    },
+    "obligation": {
+      ex: [["You don't have to come, but you mustn't be late if you do.", "你不一定要來，但要來就不能遲到。", [["You", "你"], ["don't", "不"], ["have", "必須"], ["to", "（要）"], ["come", "來"], [",", ""], ["but", "但是"], ["you", "你"], ["mustn't", "不准"], ["be", "是"], ["late", "遲到"], ["if", "如果"], ["you", "你"], ["do", "（來）"]],
+        ["don't have to＝不必（可以不做）。", "mustn't＝不准（一定不能做）。"],
+        "肯定句 must 和 have to 很像，但否定句意思完全不同：mustn't 是禁止，don't have to 是不用。"]],
+      q: [["You ___ wear a uniform. It's optional.", "don't have to", ["mustn't", "shouldn't to"], "你不一定要穿制服，可以自己選。", "不必＝don't have to。"],
+        ["You ___ smoke here. It's forbidden.", "mustn't", ["don't have to", "needn't"], "你不能在這裡抽菸，這是禁止的。", "禁止＝mustn't。"],
+        ["You look ill. You ___ see a doctor.", "should", ["must to", "have"], "你看起來不舒服，應該去看醫生。", "建議用 should。"]]
+    },
+    "deduction": {
+      ex: [["He must be tired; he can't be hungry, he just ate.", "他一定很累；他不可能餓，他才剛吃過。", [["He", "他"], ["must", "一定"], ["be", "是"], ["tired", "累的"], [";", ""], ["he", "他"], ["can't", "不可能"], ["be", "是"], ["hungry", "餓的"], [",", ""], ["he", "他"], ["just", "剛剛"], ["ate", "吃了"]],
+        ["must be＝我很確定是。", "can't be＝我很確定不是（不用 mustn't）。", "might／could be＝可能是。"],
+        "推測現在：很確定 must，可能 might／could，確定不是 can't。"]],
+      q: [["The lights are off. They ___ be out.", "must", ["can't", "mustn't"], "燈都關了，他們一定出去了。", "有證據、很確定：must。"],
+        ["That ___ be John — he's in Paris.", "can't", ["mustn't", "must"], "那不可能是 John，他在巴黎。", "確定不是：can't，不是 mustn't。"],
+        ["Take an umbrella. It ___ rain later.", "might", ["must", "can't"], "帶把傘，等一下可能會下雨。", "不確定的可能用 might。"]]
+    },
+    "better-rather": {
+      ex: [["You'd better leave now; I'd rather stay.", "你最好現在走；我寧願留下來。", [["You'd", "你最好"], ["better", "（最好）"], ["leave", "離開"], ["now", "現在"], [";", ""], ["I'd", "我寧願"], ["rather", "（寧願）"], ["stay", "留下"]],
+        ["had better ＋ 原形＝最好（不然會有後果）。", "would rather ＋ 原形＝寧願、比較想。"],
+        "'d 在 'd better 是 had，在 'd rather 是 would，後面都接原形。"]],
+      q: [["You'd better ___ late again.", "not be", ["not to be", "don't be"], "你最好別再遲到。", "had better 的否定：had better not ＋ 原形。"],
+        ["I'd rather ___ at home tonight.", "stay", ["to stay", "staying"], "我今晚寧願待在家。", "would rather 後面接原形。"],
+        ["It's time we ___ home.", "went", ["go", "will go"], "我們該回家了。", "It's time ＋ 主詞 ＋ 過去式，表示「早該做了」。"]]
+    },
+    // ---------- 第 3 關：動詞句型 ----------
+    "gerund": {
+      ex: [["I enjoy cooking, and I've finished cleaning.", "我喜歡做菜，而且打掃完了。", [["I", "我"], ["enjoy", "喜歡"], ["cooking", "做菜"], [",", ""], ["and", "而且"], ["I've", "我已經"], ["finished", "完成"], ["cleaning", "打掃"]],
+        ["enjoy、finish、avoid、mind、suggest 後面一定接 -ing。"],
+        "有些動詞後面的動作要用 -ing，像名詞一樣：enjoy reading、avoid eating。"]],
+      q: [["Would you mind ___ the window?", "opening", ["to open", "open"], "你介意開一下窗嗎？", "mind 後面接 -ing。"],
+        ["He suggested ___ a taxi.", "taking", ["to take", "take"], "他建議搭計程車。", "suggest 後面接 -ing。"],
+        ["I'm looking forward to ___ you.", "seeing", ["see", "saw"], "我很期待見到你。", "look forward to 的 to 是介係詞，後面接 -ing。"]]
+    },
+    "infinitive": {
+      ex: [["I decided to quit and hope to travel.", "我決定辭職，希望能去旅行。", [["I", "我"], ["decided", "決定"], ["to", "（去）"], ["quit", "辭職"], ["and", "而且"], ["hope", "希望"], ["to", "（去）"], ["travel", "旅行"]],
+        ["decide、hope、want、plan、promise 後面接 to ＋ 原形。"],
+        "跟「未來想做、打算做」有關的動詞，常接 to ＋ 原形。"]],
+      q: [["She promised ___ me.", "to call", ["calling", "call"], "她答應會打給我。", "promise 後面接 to ＋ 原形。"],
+        ["We can't afford ___ a new car.", "to buy", ["buying", "buy"], "我們買不起新車。", "afford 後面接 to ＋ 原形。"],
+        ["He refused ___ the question.", "to answer", ["answering", "answer"], "他拒絕回答這個問題。", "refuse 後面接 to ＋ 原形。"]]
+    },
+    "ing-to": {
+      ex: [["I stopped to buy coffee, then stopped drinking it.", "我停下來買咖啡，後來就戒掉喝咖啡了。", [["I", "我"], ["stopped", "停下"], ["to", "（為了）"], ["buy", "買"], ["coffee", "咖啡"], [",", ""], ["then", "後來"], ["stopped", "停止"], ["drinking", "喝"], ["it", "它"]],
+        ["stop to do＝停下來「去做」某事。", "stop doing＝停止「正在做」的事。"],
+        "remember、forget、stop、try 接 -ing 或 to，意思不一樣：-ing 多半是已經做過的，to 多半是接下來要做的。"]],
+      q: [["Remember ___ the door when you leave.", "to lock", ["locking", "lock"], "離開時記得鎖門。", "記得「要去做」：remember to do。"],
+        ["I remember ___ him at the party.", "meeting", ["to meet", "meet"], "我記得在派對上見過他。", "記得「做過」：remember doing。"],
+        ["Try ___ it off and on again.", "turning", ["to turning", "turn"], "試試看關掉再打開。", "try doing＝試試看這個方法。"]]
+    },
+    "phrasal": {
+      ex: [["She gave up smoking and now looks after her health.", "她戒菸了，現在很照顧自己的健康。", [["She", "她"], ["gave", "（放棄）"], ["up", "（放棄）"], ["smoking", "抽菸"], ["and", "而且"], ["now", "現在"], ["looks", "（照顧）"], ["after", "（照顧）"], ["her", "她的"], ["health", "健康"]],
+        ["give up＝放棄、戒掉。", "look after＝照顧。", "片語動詞的意思常常猜不出來，要整組背。"],
+        "動詞 ＋ 小字（up、off、after…）組成新意思：give up、turn down、look after。"]],
+      q: [["Can you ___ my cat this weekend?", "look after", ["look for", "look up"], "你這週末可以幫我照顧貓嗎？", "照顧＝look after；look for 是找。"],
+        ["They ___ the meeting until Friday.", "put off", ["put on", "put up"], "他們把會議延到星期五。", "延期＝put off。"],
+        ["I ___ an old friend in town.", "ran into", ["ran out", "ran over"], "我在鎮上巧遇老朋友。", "巧遇＝run into。"]]
+    },
+    "make-let": {
+      ex: [["My boss made me work late but let me leave early on Friday.", "老闆叫我加班，但星期五讓我早走。", [["My", "我的"], ["boss", "老闆"], ["made", "使、逼"], ["me", "我"], ["work", "工作"], ["late", "晚"], ["but", "但是"], ["let", "讓"], ["me", "我"], ["leave", "離開"], ["early", "早"], ["on", "在"], ["Friday", "星期五"]],
+        ["make ＋ 人 ＋ 原形＝逼某人做。", "let ＋ 人 ＋ 原形＝允許某人做。"],
+        "make 和 let 後面接原形（不加 to）；allow 要加 to：allow me to leave。"]],
+      q: [["My parents let me ___ out late.", "stay", ["to stay", "staying"], "我爸媽讓我晚歸。", "let ＋ 人 ＋ 原形。"],
+        ["They don't allow us ___ photos.", "to take", ["take", "taking"], "他們不准我們拍照。", "allow ＋ 人 ＋ to ＋ 原形。"],
+        ["The film made me ___ .", "cry", ["to cry", "crying"], "那部電影讓我哭了。", "make ＋ 人 ＋ 原形。"]]
+    },
+    // ---------- 第 4 關：名詞和形容詞 ----------
+    "uncount": {
+      ex: [["Can you give me some advice and information?", "你可以給我一些建議和資訊嗎？", [["Can", "可以"], ["you", "你"], ["give", "給"], ["me", "我"], ["some", "一些"], ["advice", "建議"], ["and", "和"], ["information", "資訊"]],
+        ["advice、information 是不可數名詞：不加 -s，不能說 an advice。"],
+        "中文覺得能數的，英文不一定能數：advice、information、furniture、news 都不可數。"]],
+      q: [["She gave me a useful piece of ___ .", "advice", ["advices", "an advice"], "她給了我一個有用的建議。", "不可數，要「一個」用 a piece of。"],
+        ["The news ___ good.", "is", ["are", "were"], "這個消息很好。", "news 雖然有 s，但是不可數單數。"],
+        ["We need some new ___ .", "furniture", ["furnitures", "a furniture"], "我們需要一些新家具。", "furniture 不可數。"]]
+    },
+    "quant": {
+      ex: [["I have a few friends here, but little free time.", "我在這裡有幾個朋友，但空閒時間很少。", [["I", "我"], ["have", "有"], ["a few", "幾個"], ["friends", "朋友"], ["here", "這裡"], [",", ""], ["but", "但是"], ["little", "很少"], ["free", "空閒的"], ["time", "時間"]],
+        ["a few＋可數＝有一些（正面）。", "little＋不可數＝很少、幾乎沒有（負面）。"],
+        "可數用 few／a few，不可數用 little／a little；有 a 是「還有一些」，沒 a 是「幾乎沒有」。"]],
+      q: [["There's ___ milk left. Let's buy some.", "little", ["few", "a few"], "牛奶快沒了，我們買一點吧。", "milk 不可數，「幾乎沒有」用 little。"],
+        ["I've got ___ minutes. What's up?", "a few", ["a little", "little"], "我有幾分鐘，什麼事？", "minutes 可數，「有一些」用 a few。"],
+        ["Very ___ people came to the party.", "few", ["little", "a little"], "很少人來派對。", "people 可數，「很少」用 few。"]]
+    },
+    "ed-ing": {
+      ex: [["The film was boring, so I was bored.", "那部電影很無聊，所以我覺得很無聊。", [["The", "那部"], ["film", "電影"], ["was", "是"], ["boring", "令人無聊的"], [",", ""], ["so", "所以"], ["I", "我"], ["was", "是"], ["bored", "感到無聊的"]],
+        ["-ing：東西本身讓人有這種感覺。", "-ed：人感覺到這種感覺。"],
+        "電影 boring（讓人無聊），我 bored（覺得無聊）。說自己 I'm boring 是「我很無趣」。"]],
+      q: [["I'm really ___ in history.", "interested", ["interesting", "interest"], "我對歷史很有興趣。", "人的感覺用 -ed。"],
+        ["The news was ___ .", "shocking", ["shocked", "shock"], "這個消息很驚人。", "東西帶給人的感覺用 -ing。"],
+        ["She felt ___ after the long trip.", "exhausted", ["exhausting", "exhaust"], "長途旅行後她累壞了。", "人的感覺用 -ed。"]]
+    },
+    "word-form": {
+      ex: [["It's impossible to be happy without happiness.", "沒有幸福就不可能快樂。", [["It's", "它是"], ["impossible", "不可能的"], ["to", "（要）"], ["be", "是"], ["happy", "快樂的"], ["without", "沒有"], ["happiness", "幸福"]],
+        ["im- ＋ possible＝不可能。", "happy ＋ -ness＝名詞「幸福」。"],
+        "字首改意思（un-、im-、dis-），字尾改詞性（-ness、-tion 名詞；-ful、-able 形容詞；-ly 副詞）。"]],
+      q: [["He drives very ___ .", "carefully", ["careful", "care"], "他開車很小心。", "修飾動詞要用副詞 -ly。"],
+        ["Thank you for your ___ .", "kindness", ["kind", "kindly"], "謝謝你的好意。", "your 後面要名詞：kind → kindness。"],
+        ["That's a very ___ question.", "difficult", ["difficulty", "difficultly"], "那是個很難的問題。", "名詞前面要形容詞。"]]
+    },
+    "prep-coll": {
+      ex: [["She's good at maths and interested in art.", "她擅長數學，對藝術有興趣。", [["She's", "她是"], ["good", "擅長的"], ["at", "（在）"], ["maths", "數學"], ["and", "而且"], ["interested", "有興趣的"], ["in", "（對）"], ["art", "藝術"]],
+        ["good at、interested in、afraid of 是固定搭配。"],
+        "形容詞後面接哪個介係詞是固定的，要整組背。"]],
+      q: [["I'm afraid ___ spiders.", "of", ["from", "with"], "我怕蜘蛛。", "afraid of。"],
+        ["She's proud ___ her son.", "of", ["for", "on"], "她以兒子為榮。", "proud of。"],
+        ["He's responsible ___ the project.", "for", ["of", "to"], "他負責這個專案。", "responsible for。"]]
+    }
+  });
+})(typeof window !== 'undefined' ? window : globalThis);
+
+;
+/* 英文 B2 文法的範例拆解與練習題（2）：比較、被動與子句、假設、連接詞 */
+(function (G) {
+  const EN = G.EN || (G.EN = {});
+  EN.GX = Object.assign(EN.GX || {}, {
+    // ---------- 第 5 關：比較 ----------
+    "compar": {
+      ex: [["This flat is bigger than mine, but it's the most expensive.", "這間公寓比我的大，但它是最貴的。", [["This", "這間"], ["flat", "公寓"], ["is", "是"], ["bigger", "更大"], ["than", "比"], ["mine", "我的"], [",", ""], ["but", "但是"], ["it's", "它是"], ["the", "（最）"], ["most", "最"], ["expensive", "貴的"]],
+        ["短的形容詞加 -er／-est：big → bigger → the biggest。", "長的形容詞用 more／the most：the most expensive。"],
+        "一兩個音節加 -er，三個音節以上用 more；比較用 than，最高級前面加 the。"]],
+      q: [["She's ___ than her brother.", "taller", ["more tall", "tallest"], "她比她哥哥高。", "短形容詞加 -er。"],
+        ["It's the ___ film I've ever seen.", "worst", ["baddest", "worse"], "這是我看過最爛的電影。", "bad → worse → the worst。"],
+        ["This test is ___ difficult than the last one.", "more", ["most", "much"], "這次考試比上次難。", "長形容詞用 more … than。"]]
+    },
+    "so-such": {
+      ex: [["It was such a good film that I watched it twice.", "那部電影好看到我看了兩次。", [["It", "它"], ["was", "是"], ["such", "這麼"], ["a", "一部"], ["good", "好的"], ["film", "電影"], ["that", "以至於"], ["I", "我"], ["watched", "看"], ["it", "它"], ["twice", "兩次"]],
+        ["such ＋ (a) ＋ 形容詞 ＋ 名詞 ＋ that…", "so ＋ 形容詞 ＋ that…：The film was so good that…"],
+        "後面有名詞用 such，只有形容詞用 so；that 後面接「結果」。"]],
+      q: [["The soup was ___ hot that I couldn't eat it.", "so", ["such", "such a"], "湯燙到我不能吃。", "只有形容詞用 so。"],
+        ["She's ___ a kind person.", "such", ["so", "too"], "她真是個好人。", "形容詞 ＋ 名詞前用 such。"],
+        ["We had ___ fun that we didn't want to leave.", "such", ["so", "such a"], "我們玩得太開心，都不想走了。", "fun 是不可數名詞：such fun（不加 a）。"]]
+    },
+    "too-enough": {
+      ex: [["The coffee is too hot to drink, and I'm not old enough to vote.", "咖啡燙到不能喝，而我年紀還不夠投票。", [["The", "那杯"], ["coffee", "咖啡"], ["is", "是"], ["too", "太"], ["hot", "燙"], ["to", "（以致不能）"], ["drink", "喝"], [",", ""], ["and", "而且"], ["I'm", "我"], ["not", "不"], ["old", "老"], ["enough", "足夠"], ["to", "（去）"], ["vote", "投票"]],
+        ["too ＋ 形容詞＝太…（有問題）。", "形容詞 ＋ enough＝夠…；enough 放在形容詞後面。"],
+        "too 放形容詞前面，enough 放形容詞後面、名詞前面：old enough、enough money。"]],
+      q: [["He isn't ___ to reach the shelf.", "tall enough", ["enough tall", "too tall"], "他不夠高，搆不到架子。", "形容詞 ＋ enough。"],
+        ["We don't have ___ time.", "enough", ["too", "too much enough"], "我們時間不夠。", "名詞前面放 enough。"],
+        ["This bag is ___ heavy for me to carry.", "too", ["enough", "so"], "這個包包太重，我拿不動。", "太…（有問題）用 too。"]]
+    },
+    "degree": {
+      ex: [["The exam was fairly easy, but the last part was extremely hard.", "考試還算簡單，但最後一部分非常難。", [["The", "那場"], ["exam", "考試"], ["was", "是"], ["fairly", "還算"], ["easy", "簡單"], [",", ""], ["but", "但是"], ["the", "那個"], ["last", "最後的"], ["part", "部分"], ["was", "是"], ["extremely", "極度"], ["hard", "難"]],
+        ["fairly＝還算（輕）、quite／rather＝相當、extremely＝非常非常。"],
+        "程度由弱到強：a bit → fairly → quite／rather → very → extremely。rather 常帶「比預期更…」的意思。"]],
+      q: [["It's ___ cold today — wear a coat.", "rather", ["rather a", "fairly a"], "今天相當冷，穿件外套。", "rather＋形容詞＝相當（常是不好的方面）。"],
+        ["The view was ___ beautiful.", "absolutely", ["very much", "fairly very"], "景色美極了。", "beautiful 很強時可以用 absolutely。"],
+        ["I'm ___ tired, but I can keep going.", "a bit", ["extremely", "absolutely"], "我有點累，但還能繼續。", "還能繼續，表示只是一點點：a bit。"]]
+    },
+    // ---------- 第 6 關：被動和子句 ----------
+    "passive": {
+      ex: [["The bridge was built in 1990.", "這座橋是 1990 年建的。", [["The", "那座"], ["bridge", "橋"], ["was", "被"], ["built", "建造"], ["in", "在"], ["1990", "1990"]],
+        ["be ＋ 過去分詞＝被動。", "重點是橋，不是誰蓋的，所以用被動。"],
+        "不知道、或不重要是誰做的時候，用被動：be 照時態變，後面接過去分詞。"]],
+      q: [["English ___ all over the world.", "is spoken", ["speaks", "is speaking"], "全世界都說英文。", "現在式被動：is ＋ 過去分詞。"],
+        ["The window ___ last night.", "was broken", ["broke by", "has broken"], "窗戶昨晚被打破了。", "過去式被動：was ＋ 過去分詞。"],
+        ["The results will ___ tomorrow.", "be announced", ["announced", "being announced"], "結果明天公布。", "未來被動：will be ＋ 過去分詞。"]]
+    },
+    "have-done": {
+      ex: [["I had my hair cut yesterday.", "我昨天去剪了頭髮。", [["I", "我"], ["had", "讓（別人）"], ["my", "我的"], ["hair", "頭髮"], ["cut", "剪"], ["yesterday", "昨天"]],
+        ["have ＋ 東西 ＋ 過去分詞＝請別人幫你做。", "不是自己剪，是理髮師剪。"],
+        "I cut my hair＝我自己剪；I had my hair cut＝我請人剪。"]],
+      q: [["We're having our kitchen ___ .", "painted", ["paint", "painting"], "我們正在請人油漆廚房。", "have ＋ 東西 ＋ 過去分詞。"],
+        ["You should get your eyes ___ .", "tested", ["test", "to test"], "你該去檢查眼睛。", "get ＋ 東西 ＋ 過去分詞，跟 have 一樣。"],
+        ["She ___ her car repaired last week.", "had", ["made", "did"], "她上週把車送修了。", "請人做：had ＋ 東西 ＋ 過去分詞。"]]
+    },
+    "relative": {
+      ex: [["The woman who lives next door is a doctor.", "住隔壁的那位女士是醫生。", [["The", "那位"], ["woman", "女士"], ["who", "（她）"], ["lives", "住"], ["next", "旁邊"], ["door", "門"], ["is", "是"], ["a", "一位"], ["doctor", "醫生"]],
+        ["who lives next door 整段用來說明是哪一位女士。", "中文把說明放前面（住隔壁的女士），英文放後面。"],
+        "人用 who，東西用 which，兩者都可以用 that；「…的」所有格用 whose。"]],
+      q: [["This is the book ___ I told you about.", "that", ["who", "whose"], "這就是我跟你說的那本書。", "東西用 that 或 which。"],
+        ["I have a friend ___ father is a pilot.", "whose", ["who", "which"], "我有個朋友，他爸爸是機師。", "「他的爸爸」用 whose。"],
+        ["The man ___ called you is my boss.", "who", ["which", "whose"], "打給你的那個人是我老闆。", "人用 who。"]]
+    },
+    "reported": {
+      ex: [["She said that she was tired.", "她說她很累。", [["She", "她"], ["said", "說"], ["that", "（說）"], ["she", "她"], ["was", "是"], ["tired", "累的"]],
+        ["她原本說 I am tired，轉述時時態往前退一格：am → was。", "I 也要改成 she。"],
+        "間接引述：時態往過去退（is → was、will → would、has done → had done），人稱也要換。"]],
+      q: [["He said he ___ come tomorrow.", "would", ["will", "is"], "他說他明天會來。", "will 轉述時變 would。"],
+        ["She told me she ___ already eaten.", "had", ["has", "have"], "她跟我說她已經吃過了。", "has eaten 轉述時變 had eaten。"],
+        ["They ___ me that the shop was closed.", "told", ["said", "said to"], "他們告訴我店關了。", "後面直接接人用 told；said 後面不直接接人。"]]
+    },
+    "rep-q": {
+      ex: [["Do you know where the station is?", "你知道車站在哪嗎？", [["Do", "（問句）"], ["you", "你"], ["know", "知道"], ["where", "哪裡"], ["the", "那個"], ["station", "車站"], ["is", "在"]],
+        ["直接問：Where is the station?", "間接問：…where the station is，主詞在前、動詞在後，不倒裝。"],
+        "問句包在另一句裡面時，順序變回直述句：where it is，不是 where is it。"]],
+      q: [["Could you tell me what time ___ ?", "it is", ["is it", "does it"], "可以告訴我現在幾點嗎？", "間接問句不倒裝。"],
+        ["I wonder ___ he'll come.", "if", ["that", "does"], "不知道他會不會來。", "是非問句轉間接，用 if／whether。"],
+        ["Do you know where ___ ?", "she lives", ["does she live", "lives she"], "你知道她住哪嗎？", "不倒裝，也不用 does。"]]
+    },
+    // ---------- 第 7 關：假設 ----------
+    "cond1": {
+      ex: [["If it rains, we'll stay at home.", "如果下雨，我們就待在家。", [["If", "如果"], ["it", "（天氣）"], ["rains", "下雨"], [",", ""], ["we'll", "我們會"], ["stay", "待"], ["at", "在"], ["home", "家"]],
+        ["if 子句用現在式（rains），不用 will。", "結果用 will ＋ 原形。"],
+        "真的可能發生的事：If ＋ 現在式, will ＋ 原形。"]],
+      q: [["If you ___ hard, you'll pass.", "study", ["will study", "studied"], "如果你用功，就會及格。", "if 子句用現在式。"],
+        ["If I see him, I ___ tell him.", "'ll", ["would", "am"], "如果我看到他，我會告訴他。", "結果用 will。"],
+        ["We'll miss the bus if we ___ hurry.", "don't", ["won't", "didn't"], "如果不快點，我們會錯過公車。", "if 子句否定用 don't。"]]
+    },
+    "cond2": {
+      ex: [["If I had more money, I would travel.", "如果我有更多錢，我就會去旅行。", [["If", "如果"], ["I", "我"], ["had", "有（假設）"], ["more", "更多"], ["money", "錢"], [",", ""], ["I", "我"], ["would", "會"], ["travel", "旅行"]],
+        ["現在不是真的（我沒有更多錢），所以用過去式 had。", "結果用 would ＋ 原形。"],
+        "跟現在事實相反的想像：If ＋ 過去式, would ＋ 原形。"]],
+      q: [["If I ___ you, I'd take the job.", "were", ["am", "will be"], "如果我是你，我會接這份工作。", "假設語氣的 be 常用 were。"],
+        ["What ___ you do if you won the lottery?", "would", ["will", "did"], "如果你中樂透，你會做什麼？", "結果用 would。"],
+        ["If he ___ harder, he'd get better marks.", "worked", ["works", "would work"], "如果他更努力，成績就會更好。", "if 子句用過去式。"]]
+    },
+    "cond3": {
+      ex: [["If I had known, I would have helped.", "如果我早知道，我就會幫忙了。", [["If", "如果"], ["I", "我"], ["had", "（過去完成）"], ["known", "知道"], [",", ""], ["I", "我"], ["would", "會"], ["have", "（完成）"], ["helped", "幫忙"]],
+        ["過去已經發生，不能改了：if 子句用 had ＋ 過去分詞。", "結果用 would have ＋ 過去分詞。"],
+        "跟過去事實相反（後悔、可惜）：If ＋ had done, would have done。"]],
+      q: [["If we had left earlier, we ___ the train.", "would have caught", ["would catch", "had caught"], "如果我們早點出門，就趕上火車了。", "結果用 would have ＋ 過去分詞。"],
+        ["If she ___ the ad, she wouldn't have applied.", "hadn't seen", ["didn't see", "wouldn't see"], "如果她沒看到廣告，就不會應徵了。", "if 子句用 had done。"],
+        ["I would have called you if I ___ your number.", "had had", ["had", "would have"], "如果我有你的號碼，我就打給你了。", "過去的「有」：had had。"]]
+    },
+    "wish": {
+      ex: [["I wish I lived near the sea.", "真希望我住在海邊。", [["I", "我"], ["wish", "希望"], ["I", "我"], ["lived", "住（假設）"], ["near", "靠近"], ["the", "那片"], ["sea", "海"]],
+        ["現在其實沒住海邊，所以 wish 後面用過去式 lived。"],
+        "wish 後面跟現在相反用過去式，跟過去相反用 had done：I wish I had studied。"]],
+      q: [["I wish I ___ speak French.", "could", ["can", "will"], "真希望我會說法文。", "現在不會 → wish ＋ could。"],
+        ["I wish I ___ that.", "hadn't said", ["didn't say", "don't say"], "真希望我沒說那句話。", "後悔過去 → wish ＋ had done。"],
+        ["If only it ___ so cold!", "weren't", ["isn't", "won't be"], "要是沒這麼冷就好了！", "if only 跟 wish 一樣，現在相反用過去式。"]]
+    },
+    "cond-link": {
+      ex: [["You won't pass unless you study.", "除非你用功，否則不會及格。", [["You", "你"], ["won't", "不會"], ["pass", "及格"], ["unless", "除非"], ["you", "你"], ["study", "用功"]],
+        ["unless＝if … not（除非）。", "unless 後面跟 if 一樣用現在式。"],
+        "unless 除非、as long as 只要、provided that 前提是、in case 以防萬一。"]],
+      q: [["Take an umbrella ___ it rains.", "in case", ["unless", "as long as"], "帶把傘以防下雨。", "以防萬一用 in case。"],
+        ["You can borrow it ___ you bring it back.", "as long as", ["unless", "in case"], "只要你會還，就可以借。", "只要＝as long as。"],
+        ["I won't go ___ you come with me.", "unless", ["if", "in case"], "除非你陪我，不然我不去。", "除非＝unless。"]]
+    },
+    "past-modal": {
+      ex: [["You should have told me; he must have forgotten.", "你應該早點告訴我；他一定是忘了。", [["You", "你"], ["should", "應該"], ["have", "（完成）"], ["told", "告訴"], ["me", "我"], [";", ""], ["he", "他"], ["must", "一定"], ["have", "（完成）"], ["forgotten", "忘了"]],
+        ["should have done＝當初應該做（但沒做）。", "must have done＝推測過去一定是…。"],
+        "情態動詞 ＋ have ＋ 過去分詞＝講過去：後悔 should have，推測 must／might／can't have。"]],
+      q: [["I ___ have studied more. I failed.", "should", ["must", "can"], "我當初應該多念一點，我考砸了。", "後悔用 should have。"],
+        ["She's not here. She ___ have left already.", "must", ["should", "mustn't"], "她不在，一定已經走了。", "很確定的推測用 must have。"],
+        ["He ___ have seen us — it was too dark.", "can't", ["mustn't", "shouldn't"], "他不可能看到我們，太暗了。", "確定沒有用 can't have。"]]
+    },
+    // ---------- 第 8 關：連接 ----------
+    "contrast": {
+      ex: [["Although it was raining, we went out. However, we got wet.", "雖然在下雨，我們還是出門了。不過，我們淋濕了。", [["Although", "雖然"], ["it", "（天氣）"], ["was", "（過去）"], ["raining", "下雨"], [",", ""], ["we", "我們"], ["went", "去"], ["out", "外面"], [".", ""], ["However", "不過"], [",", ""], ["we", "我們"], ["got", "變得"], ["wet", "濕的"]],
+        ["although 後面接一個完整的句子。", "however 放在新句子的開頭，後面加逗號。", "despite 後面接名詞或 -ing：despite the rain。"],
+        "英文不說「雖然…但是…」兩個一起：用了 although 就不加 but。"]],
+      q: [["___ the rain, we enjoyed the trip.", "Despite", ["Although", "However"], "雖然下雨，我們還是玩得很開心。", "後面是名詞（the rain），用 despite。"],
+        ["___ she was tired, she kept working.", "Although", ["Despite", "However"], "雖然她很累，還是繼續工作。", "後面是完整句子，用 although。"],
+        ["It's expensive. ___ , it's worth it.", "However", ["Although", "Despite"], "這很貴。不過，很值得。", "新句子開頭轉折用 however。"]]
+    },
+    "purpose": {
+      ex: [["I'm saving money in order to buy a car.", "我在存錢，為了買車。", [["I'm", "我"], ["saving", "存"], ["money", "錢"], ["in", "（為了）"], ["order", "（為了）"], ["to", "（去）"], ["buy", "買"], ["a", "一台"], ["car", "車"]],
+        ["in order to ＋ 原形＝為了…（比較正式的 to）。", "so that ＋ 句子：so that I can buy a car。"],
+        "說目的：to／in order to ＋ 原形，或 so that ＋ 完整句子。"]],
+      q: [["I left early ___ I wouldn't be late.", "so that", ["in order to", "for"], "我提早出門，這樣才不會遲到。", "後面是完整句子，用 so that。"],
+        ["She studies hard in order ___ pass.", "to", ["for", "that"], "她努力念書，為了及格。", "in order to ＋ 原形。"],
+        ["I went to the shop ___ some milk.", "to buy", ["for buy", "for buying"], "我去商店買牛奶。", "目的用 to ＋ 原形，不用 for ＋ 動詞。"]]
+    },
+    "cause": {
+      ex: [["The flight was cancelled due to the storm. Therefore, we stayed.", "因為暴風雨，班機取消了。所以我們留下來了。", [["The", "那班"], ["flight", "班機"], ["was", "被"], ["cancelled", "取消"], ["due", "（因為）"], ["to", "（因為）"], ["the", "那場"], ["storm", "暴風雨"], [".", ""], ["Therefore", "所以"], [",", ""], ["we", "我們"], ["stayed", "留下"]],
+        ["due to／because of ＋ 名詞。", "because ＋ 完整句子。", "therefore＝所以，放在新句子開頭。"],
+        "原因是名詞用 because of／due to，是句子用 because；結果用 so 或 therefore。"]],
+      q: [["We stayed inside ___ the rain.", "because of", ["because", "therefore"], "因為下雨我們待在室內。", "後面是名詞，用 because of。"],
+        ["She was ill. ___ , she missed the exam.", "Therefore", ["Because", "Due to"], "她生病了，因此錯過了考試。", "新句子開頭說結果用 therefore。"],
+        ["I'm late ___ the bus didn't come.", "because", ["because of", "due to"], "我遲到是因為公車沒來。", "後面是完整句子，用 because。"]]
+    },
+    "markers": {
+      ex: [["Actually, I don't agree. Anyway, let's move on.", "其實我不同意。不管怎樣，我們繼續吧。", [["Actually", "其實"], [",", ""], ["I", "我"], ["don't", "不"], ["agree", "同意"], [".", ""], ["Anyway", "不管怎樣"], [",", ""], ["let's", "我們（來）"], ["move", "移動"], ["on", "繼續"]],
+        ["actually＝其實（不是「實際上」那麼重）。", "anyway＝話說回來、不管怎樣，用來換話題。"],
+        "說話時的小轉折：actually 其實、anyway 總之、by the way 對了、to be honest 老實說。"]],
+      q: [["___ , have you seen my keys?", "By the way", ["Actually not", "Therefore"], "對了，你有看到我的鑰匙嗎？", "突然換話題用 by the way。"],
+        ["___ , I didn't like the film much.", "To be honest", ["By the way", "In case"], "老實說，我不太喜歡那部電影。", "老實說＝to be honest。"],
+        ["It was boring. ___ , it's over now.", "Anyway", ["Actually", "However that"], "很無聊。總之，已經結束了。", "總之、話說回來用 anyway。"]]
+    }
+  });
+})(typeof window !== 'undefined' ? window : globalThis);
+
+;
+(function (G) { const EN = G.EN || (G.EN = {});
+/* 英文 B2 文法關卡：由淺到深，後面的關卡會用到前面學過的東西 */
+EN.GX_PATH = [
+  ['完成式和過去', '現在完成式、for／since、完成進行式、過去完成式', ['pres-perf', 'for-since', 'perf-cont', 'past-perf']],
+  ['未來和情態動詞', 'will 和 be going to、未來完成式、must／have to、推測、had better', ['future', 'fut-perf', 'obligation', 'deduction', 'better-rather']],
+  ['動詞句型', '後面接 -ing 還是 to、used to、片語動詞、make／let', ['gerund', 'infinitive', 'ing-to', 'used-to', 'phrasal', 'make-let']],
+  ['名詞和形容詞', '不可數名詞、few／little、bored／boring、詞性變化、形容詞＋介係詞', ['uncount', 'quant', 'ed-ing', 'word-form', 'prep-coll']],
+  ['比較', '比較級、so／such、too／enough、程度副詞', ['compar', 'so-such', 'too-enough', 'degree']],
+  ['被動和子句', '被動語態、請人做、關係子句、間接引述、間接問句', ['passive', 'have-done', 'relative', 'reported', 'rep-q']],
+  ['假設', '三種條件句、I wish、unless、should have', ['cond1', 'cond2', 'cond3', 'wish', 'cond-link', 'past-modal']],
+  ['連接', '雖然、為了、因為所以、說話時的轉折語', ['contrast', 'purpose', 'cause', 'markers']]
+];
+})(typeof window !== 'undefined' ? window : globalThis);
+
+;
 /* 語言頁（義大利文、西班牙文、德文、俄文…）：放在日文 N5 App 裡
    語言專屬的文字和設定放在 window.LANGCFG，資料和變化引擎放在 window.LX
    - 介面、音效、下拉選單、間隔複習規則都跟日文頁一樣
