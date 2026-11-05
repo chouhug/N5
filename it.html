@@ -767,7 +767,7 @@ body.hide-gen .sent{line-height:1.75}
 .gp-where p{flex-basis:100%;margin:4px 0 0;padding:8px 10px;border-radius:8px;background:var(--surface2);color:inherit;font-size:13px;line-height:1.5}
 .gp-pass{display:inline-flex;align-items:center;gap:4px;color:var(--ok-deep,var(--ok))}
 .gp-pass svg{width:15px;height:15px}
-.gx-done .btnrow{flex-direction:column;align-items:stretch;max-width:340px;margin:0 auto}
+.gx-done .btnrow{grid-template-columns:1fr;max-width:340px;margin:0 auto}
 .gp-row .gn .gp-nowt{color:#fff;background:var(--pri)}
 
 :root{--pat:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 900' preserveAspectRatio='xMidYMax slice'%3E%3Ccircle cx='330' cy='150' r='46' fill='%23f7e6cc'/%3E%3Crect x='40' y='120' width='90' height='12' rx='6' fill='%23e6ebf3'/%3E%3Crect x='70' y='140' width='60' height='12' rx='6' fill='%23e6ebf3'/%3E%3Crect x='250' y='250' width='110' height='12' rx='6' fill='%23e6ebf3'/%3E%3Crect x='290' y='270' width='70' height='12' rx='6' fill='%23e6ebf3'/%3E%3Cpath d='M80 210 q6 -6 12 0 q6 -6 12 0' fill='none' stroke='%23cdd5e2' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M110 232 q6 -6 12 0 q6 -6 12 0' fill='none' stroke='%23cdd5e2' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M-10 640 C 60 585 130 585 200 610 C 260 630 320 580 430 600 L430 910 L-10 910Z' fill='%23e6ebf3'/%3E%3Cg fill='%23dde4ef'%3E%3Crect x='238' y='548' width='9' height='44'/%3E%3Cpath d='M236 548 l6.5 -10 l6.5 10z'/%3E%3Crect x='252' y='572' width='18' height='22'/%3E%3Crect x='272' y='566' width='14' height='28'/%3E%3Crect x='288' y='576' width='20' height='18'/%3E%3Crect x='218' y='578' width='16' height='16'/%3E%3Cpath d='M200 594 a16 16 0 0 1 32 0z'/%3E%3C/g%3E%3Cg fill='%23d3dbe8'%3E%3Cpath d='M251 572 l10 -7 l10 7z'/%3E%3Cpath d='M271 566 l8 -6 l8 6z'/%3E%3Cpath d='M287 576 l11 -6 l11 6z'/%3E%3Cpath d='M217 578 l9 -6 l9 6z'/%3E%3C/g%3E%3Cpath d='M-10 720 C 70 670 150 690 220 705 C 290 720 350 670 430 685 L430 910 L-10 910Z' fill='%23d8e0ec'/%3E%3Cpath d='M40 706 q8 -35.2 8 -64 q0 28.8 8 64z' fill='%23c3cede'/%3E%3Cpath d='M62 708 q6.5 -25.3 6.5 -46 q0 20.7 6.5 46z' fill='%23c3cede'/%3E%3Cpath d='M338 690 q8 -38.5 8 -70 q0 31.5 8 70z' fill='%23c3cede'/%3E%3Cpath d='M360 694 q6.5 -27.500000000000004 6.5 -50 q0 22.5 6.5 50z' fill='%23c3cede'/%3E%3Cpath d='M-10 800 C 60 760 150 770 230 785 C 320 802 370 760 430 768 L430 910 L-10 910Z' fill='%23cfd8e6'/%3E%3Cpath d='M286 790 q9 -44 9 -80 q0 36 9 80z' fill='%23c3cede'/%3E%3Cpath d='M310 792 q7.5 -31.900000000000002 7.5 -58 q0 26.1 7.5 58z' fill='%23c3cede'/%3E%3Cpath d='M330 794 q6 -22 6 -40 q0 18 6 40z' fill='%23c3cede'/%3E%3Cpath d='M150 900 C 175 870, 230 860, 222 835 S 255 800, 300 790 L 308 795 C 270 806, 240 820, 245 840 S 200 875, 190 900 Z' fill='%23eef3fa'/%3E%3C/svg%3E")}
@@ -2616,6 +2616,461 @@ window.LANGCFG = {
 })(typeof window !== 'undefined' ? window : globalThis);
 
 ;
+/* 義大利文文法的範例拆解與練習題（1）：冠詞、名詞、動詞現在式、基本句型
+   IT.GX[文法點 id] = {
+     ex: [[句子, 中文, [[字, 意思], …], [逐字說明…], 白話總結]],
+     q:  [[題目（___ 是空格）, 答案, [錯的選項…], 中文, 為什麼]]
+   } */
+(function (G) {
+  const IT = G.IT || (G.IT = {});
+  IT.GX = Object.assign(IT.GX || {}, {
+    // ---------- 冠詞、名詞、形容詞 ----------
+    'art-def': {
+      ex: [["Il libro è sul tavolo.", '書在桌上。', [['Il', '那本'], ['libro', '書'], ['è', '在'], ['sul', '在…上'], ['tavolo', '桌子']],
+        ['il：libro 是陽性、子音開頭，所以用 il。', 'sul ＝ su（在…上）＋ il，合成一個字。'],
+        '義大利文的名詞前面幾乎都要帶一個「the」。帶哪一個，看名詞是陽性還是陰性、開頭是什麼字母。'],
+        ["Lo studente legge la lettera.", '那個學生在讀那封信。', [['Lo', '那個'], ['studente', '學生'], ['legge', '讀'], ['la', '那封'], ['lettera', '信']],
+        ['lo：studente 是 s＋子音開頭的陽性字，不能用 il，要用 lo。', 'la：lettera 是陰性（-a 結尾），用 la。'],
+        '陽性一般用 il；碰到 s＋子音、z 開頭改 lo；母音開頭變 l\'。陰性用 la。']],
+      q: [['___ zaino è nuovo.', 'Lo', ['Il', 'La'], '那個背包是新的。', 'zaino 是 z 開頭的陽性字，用 lo。'],
+        ['___ amica di Marco è simpatica.', "L'", ['La', 'Il'], 'Marco 的朋友很親切。', "amica 是母音開頭，la 要縮成 l'。"],
+        ['___ ragazzi giocano.', 'I', ['Gli', 'Le'], '男孩們在玩。', 'ragazzi 是陽性複數、子音開頭，用 i。']]
+    },
+    'art-indef': {
+      ex: [["Ho un fratello e una sorella.", '我有一個哥哥和一個姊姊。', [['Ho', '我有'], ['un', '一個'], ['fratello', '哥哥'], ['e', '和'], ['una', '一個'], ['sorella', '姊姊']],
+        ['un：fratello 是陽性。', 'una：sorella 是陰性。'],
+        '「一個」也分男女：陽性 un，陰性 una。']],
+      q: [['Vorrei ___ caffè.', 'un', ['una', 'uno'], '我想要一杯咖啡。', 'caffè 是陽性、子音開頭，用 un。'],
+        ['È ___ studente.', 'uno', ['un', 'una'], '他是一個學生。', 's＋子音開頭的陽性字用 uno。'],
+        ['Ho ___ idea!', "un'", ['un', 'uno'], '我有一個主意！', "idea 是陰性、母音開頭，una 縮成 un'。"]]
+    },
+    'noun-gender': {
+      ex: [["Il gatto e la casa.", '貓和房子。', [['Il', '那隻'], ['gatto', '貓'], ['e', '和'], ['la', '那間'], ['casa', '房子']],
+        ['gatto：-o 結尾，通常是陽性。', 'casa：-a 結尾，通常是陰性。'],
+        '看最後一個字母：-o 多半是男生、-a 多半是女生。-e 結尾的要一個一個記。']],
+      q: [['___ ragazza', 'la', ['il', 'lo'], '那個女孩', 'ragazza 是 -a 結尾，陰性。'],
+        ['___ treno', 'il', ['la', 'lo'], '那班火車', 'treno 是 -o 結尾，陽性。'],
+        ['___ mano', 'la', ['il', 'lo'], '那隻手', 'mano 是例外：雖然 -o 結尾，卻是陰性。']]
+    },
+    'noun-plural': {
+      ex: [["Due libri e tre case.", '兩本書和三間房子。', [['Due', '兩'], ['libri', '書（複數）'], ['e', '和'], ['tre', '三'], ['case', '房子（複數）']],
+        ['libro → libri：-o 變 -i。', 'casa → case：-a 變 -e。'],
+        '義大利文的複數不是加 s，而是換最後一個字母：-o→-i、-a→-e、-e→-i。']],
+      q: [['due ___ (ragazzo)', 'ragazzi', ['ragazze', 'ragazzos'], '兩個男孩', '-o 結尾的複數改 -i。'],
+        ['tre ___ (pizza)', 'pizze', ['pizzi', 'pizzas'], '三個披薩', '-a 結尾的複數改 -e。'],
+        ['due ___ (lezione)', 'lezioni', ['lezione', 'lezionie'], '兩堂課', '-e 結尾的複數改 -i。']]
+    },
+    'adj': {
+      ex: [["Ho una macchina rossa.", '我有一台紅色的車。', [['Ho', '我有'], ['una', '一台'], ['macchina', '車'], ['rossa', '紅色的']],
+        ['rossa 放在名詞後面，跟中文順序相反。', 'macchina 是陰性單數，所以 rosso → rossa。'],
+        '形容詞通常放在名詞後面，而且要跟名詞同一個性別和單複數。'],
+        ["I ragazzi sono simpatici.", '那些男孩很親切。', [['I', '那些'], ['ragazzi', '男孩'], ['sono', '是'], ['simpatici', '親切的']],
+        ['ragazzi 是陽性複數，simpatico 也跟著變 simpatici。'],
+        '名詞變成複數，形容詞也要一起變。']],
+      q: [['una casa ___', 'bianca', ['bianco', 'bianchi'], '一間白色的房子', 'casa 是陰性單數，形容詞用 -a。'],
+        ['i libri ___', 'nuovi', ['nuovo', 'nuove'], '那些新書', 'libri 是陽性複數，形容詞用 -i。'],
+        ['le ragazze ___', 'italiane', ['italiana', 'italiani'], '那些義大利女孩', 'ragazze 是陰性複數，形容詞用 -e。']]
+    },
+    // ---------- 基本動詞 ----------
+    'essere': {
+      ex: [["Io sono Marco, lei è Anna.", '我是 Marco，她是 Anna。', [['Io', '我'], ['sono', '是'], ['Marco', 'Marco'], [',', ''], ['lei', '她'], ['è', '是'], ['Anna', 'Anna']],
+        ['sono：essere 的「我」形。', 'è：essere 的「他／她」形，上面有重音符號，跟 e（和）不一樣。'],
+        'essere 就是英文的 be，每個人稱長得都不一樣，要整組背：sono、sei、è、siamo、siete、sono。'],
+        ["Siamo di Taiwan.", '我們來自台灣。', [['Siamo', '我們是'], ['di', '來自'], ['Taiwan', '台灣']],
+        ['siamo：「我們」形。動詞已經看得出是誰，所以 noi 可以省略。', 'essere di ＋ 地方＝「是…人、來自…」。'],
+        '義大利文常把主詞省掉，因為動詞的詞尾已經告訴你是誰了。']],
+      q: [['Tu ___ italiano?', 'sei', ['è', 'sono'], '你是義大利人嗎？', 'tu 配 sei。'],
+        ['Noi ___ studenti.', 'siamo', ['siete', 'sono'], '我們是學生。', 'noi 配 siamo。'],
+        ['Il museo ___ chiuso.', 'è', ['e', 'sono'], '博物館關著。', '單數的東西用 è（有重音）；e 是「和」。']]
+    },
+    'avere': {
+      ex: [["Ho un cane.", '我有一隻狗。', [['Ho', '我有'], ['un', '一隻'], ['cane', '狗']],
+        ['ho：avere 的「我」形。h 不發音，唸起來像「歐」。'],
+        'avere＝「有」。h 只是寫的，不唸：ho、hai、ha、abbiamo、avete、hanno。']],
+      q: [['___ una sorella?', 'Hai', ['Ha', 'Ho'], '你有姊妹嗎？', 'tu 的形是 hai。'],
+        ['Loro ___ una casa grande.', 'hanno', ['hai', 'avete'], '他們有一間大房子。', 'loro 配 hanno。'],
+        ['Anna ___ un gatto.', 'ha', ['è', 'hanno'], 'Anna 有一隻貓。', '「她有」是 ha；è 是「她是」。']]
+    },
+    'avere-expr': {
+      ex: [["Ho fame e ho sete.", '我餓了，也渴了。', [['Ho', '我有'], ['fame', '飢餓'], ['e', '和'], ['ho', '我有'], ['sete', '口渴']],
+        ['義大利文不說「我是餓的」，而是說「我有飢餓」。'],
+        '餓、渴、冷、熱、怕、幾歲，這幾個都用 avere（有）＋ 名詞。'],
+        ["Ho vent'anni.", '我二十歲。', [['Ho', '我有'], ["vent'anni", '二十年']],
+        ["年齡也用「有」：我有二十年。", "vent'anni ＝ venti anni，母音碰在一起時縮寫。"],
+        '問年齡：Quanti anni hai?（你有幾年？）']],
+      q: [['Ho ___ .', 'freddo', ['fredda', 'fredde'], '我很冷。', 'avere freddo 是固定說法，freddo 不跟著人變。'],
+        ['Quanti anni ___ ?', 'hai', ['sei', 'fai'], '你幾歲？', '年齡用 avere，不用 essere。'],
+        ['Abbiamo ___ del cane.', 'paura', ['fame', 'sete'], '我們怕那隻狗。', 'avere paura di ＝ 怕…。']]
+    },
+    'ce': {
+      ex: [["C'è un bar qui vicino.", '這附近有一間咖啡館。', [["C'è", '有'], ['un', '一間'], ['bar', '咖啡館'], ['qui', '這裡'], ['vicino', '附近']],
+        ["c'è ＝ ci è，單數用。", '這個「有」是「存在」，不是「擁有」（那是 avere）。'],
+        '說「某個地方有什麼東西」用 c\'è（一個）或 ci sono（好幾個）。'],
+        ["Ci sono due bagni.", '有兩間廁所。', [['Ci', '（那裡）'], ['sono', '有'], ['due', '兩'], ['bagni', '廁所']],
+        ['後面是複數，所以用 ci sono。'],
+        '一個 → c\'è；兩個以上 → ci sono。']],
+      q: [['___ molti turisti a Roma.', 'Ci sono', ["C'è", 'Hanno'], '羅馬有很多觀光客。', 'turisti 是複數，用 ci sono。'],
+        ['___ una farmacia qui?', "C'è", ['Ci sono', 'Ha'], '這裡有藥局嗎？', '一間藥局，單數用 c\'è。'],
+        ['Non ___ problema.', "c'è", ['ci sono', 'ho'], '沒問題。', 'problema 是單數：non c\'è problema。']]
+    },
+    'pres-are': {
+      ex: [["Io parlo italiano.", '我說義大利文。', [['Io', '我'], ['parlo', '說'], ['italiano', '義大利文']],
+        ['parlare 去掉 -are，剩 parl-，「我」加 -o → parlo。'],
+        '-are 動詞先切掉 -are，再接人稱詞尾：-o、-i、-a、-iamo、-ate、-ano。'],
+        ["Voi abitate a Milano?", '你們住在米蘭嗎？', [['Voi', '你們'], ['abitate', '住'], ['a', '在'], ['Milano', '米蘭']],
+        ['abitare → abit- ＋ -ate（你們）。', '城市前面用 a。'],
+        '同一個動詞，主詞不同，最後幾個字母就不同。']],
+      q: [['Tu ___ molto bene. (parlare)', 'parli', ['parla', 'parlo'], '你說得很好。', 'tu 的詞尾是 -i。'],
+        ['Noi ___ la TV. (guardare)', 'guardiamo', ['guardate', 'guardano'], '我們在看電視。', 'noi 的詞尾是 -iamo。'],
+        ['Loro ___ in banca. (lavorare)', 'lavorano', ['lavora', 'lavorate'], '他們在銀行工作。', 'loro 的詞尾是 -ano。']]
+    },
+    'pres-ere': {
+      ex: [["Leggo un libro.", '我在讀一本書。', [['Leggo', '我讀'], ['un', '一本'], ['libro', '書']],
+        ['leggere → legg- ＋ -o。主詞 io 省略。'],
+        '-ere 動詞的詞尾：-o、-i、-e、-iamo、-ete、-ono。']],
+      q: [['Lui ___ la pasta. (prendere)', 'prende', ['prendi', 'prenda'], '他點義大利麵。', 'lui 的詞尾是 -e。'],
+        ['Voi ___ la lettera? (scrivere)', 'scrivete', ['scrivate', 'scrivono'], '你們在寫信嗎？', 'voi 的詞尾是 -ete（-are 動詞才是 -ate）。'],
+        ['Loro ___ il treno. (prendere)', 'prendono', ['prendano', 'prende'], '他們搭火車。', '-ere 動詞的 loro 是 -ono。']]
+    },
+    'pres-ire': {
+      ex: [["Dormo otto ore.", '我睡八個小時。', [['Dormo', '我睡'], ['otto', '八'], ['ore', '小時']],
+        ['dormire → dorm- ＋ -o。'],
+        '-ire 動詞跟 -ere 幾乎一樣，只有「你們」是 -ite。']],
+      q: [['Tu ___ la porta? (aprire)', 'apri', ['apre', 'apra'], '你開門嗎？', 'tu 的詞尾是 -i。'],
+        ['Voi ___ bene? (dormire)', 'dormite', ['dormete', 'dormono'], '你們睡得好嗎？', '-ire 動詞的 voi 是 -ite。'],
+        ['Il treno ___ alle otto. (partire)', 'parte', ['parti', 'parto'], '火車八點出發。', '火車是「它」，用 -e。']]
+    },
+    'pres-isc': {
+      ex: [["Non capisco.", '我聽不懂。', [['Non', '不'], ['capisco', '懂']],
+        ['capire 的「我」不是 capo，而是中間塞 -isc-：cap-isc-o。'],
+        '有些 -ire 動詞在 io、tu、lui、loro 這四個形中間多一個 -isc-，noi 和 voi 不加。']],
+      q: [['Tu ___ l\'italiano? (capire)', 'capisci', ['capi', 'capisce'], '你懂義大利文嗎？', 'tu：cap-isc-i。'],
+        ['Noi ___ alle sei. (finire)', 'finiamo', ['finisciamo', 'finiscono'], '我們六點結束。', 'noi 不加 -isc-。'],
+        ['Lei ___ il lavoro. (finire)', 'finisce', ['fine', 'finisci'], '她做完工作。', 'lei：fin-isc-e。']]
+    },
+    'pres-irr': {
+      ex: [["Vado a casa.", '我回家。', [['Vado', '我去'], ['a', '到'], ['casa', '家']],
+        ['andare 是不規則動詞，「我」形是 vado，不是 ando。'],
+        'andare、fare、venire、dire、uscire 這些常用動詞不照規則變，要整組背。'],
+        ["Cosa fai stasera?", '你今晚做什麼？', [['Cosa', '什麼'], ['fai', '你做'], ['stasera', '今晚']],
+        ['fai：fare（做）的「你」形。'],
+        '問別人在做什麼、要做什麼，就用 fare。']],
+      q: [['Loro ___ al cinema. (andare)', 'vanno', ['andano', 'vadono'], '他們去電影院。', 'andare 的 loro 是 vanno。'],
+        ['Io ___ i compiti. (fare)', 'faccio', ['fo', 'faco'], '我寫作業。', 'fare 的 io 是 faccio。'],
+        ['Da dove ___ ? (venire)', 'vieni', ['veni', 'viene'], '你從哪裡來？', 'venire 的 tu 是 vieni。']]
+    },
+    'modal': {
+      ex: [["Posso entrare?", '我可以進來嗎？', [['Posso', '我可以'], ['entrare', '進來']],
+        ['posso：potere（能夠）的「我」形，會變。', 'entrare 用原形，不用變。'],
+        '「想／能／必須 ＋ 做某事」：前面的動詞照人稱變，後面的動詞保持原形。'],
+        ["Devo lavorare domani.", '我明天得上班。', [['Devo', '我必須'], ['lavorare', '工作'], ['domani', '明天']],
+        ['devo：dovere（必須）的「我」形。'],
+        'voglio 想、posso 能、devo 必須，後面一律接原形。']],
+      q: [['Vuoi ___ un caffè?', 'prendere', ['prendi', 'prende'], '你想喝杯咖啡嗎？', 'volere 後面的動詞用原形。'],
+        ['Noi ___ partire alle otto.', 'dobbiamo', ['dovete', 'devono'], '我們得八點出發。', 'dovere 的 noi 是 dobbiamo。'],
+        ['___ aiutarmi?', 'Può', ['Potere', 'Posso'], '您可以幫我嗎？', '對「您」用第三人稱 può。']]
+    },
+    'sapere': {
+      ex: [["So nuotare, ma non conosco Roma.", '我會游泳，但不熟羅馬。', [['So', '我會'], ['nuotare', '游泳'], [',', ''], ['ma', '但是'], ['non', '不'], ['conosco', '認識'], ['Roma', '羅馬']],
+        ['so：sapere，知道一件事、會做一件事。', 'conosco：conoscere，認識人、熟悉地方。'],
+        'sapere 是「知道／會」，後面接事情或動詞；conoscere 是「認識」，後面接人或地方。']],
+      q: [['___ Maria?', 'Conosci', ['Sai', 'Sei'], '你認識 Maria 嗎？', '認識一個人用 conoscere。'],
+        ['Non ___ dov\'è la stazione.', 'so', ['conosco', 'sono'], '我不知道車站在哪。', '知道一件事用 sapere。'],
+        ['Lei ___ cucinare bene.', 'sa', ['conosce', 'è'], '她很會做菜。', '「會做某事」用 sapere ＋ 原形。']]
+    },
+    'piacere': {
+      ex: [["Mi piace la pizza.", '我喜歡披薩。', [['Mi', '對我'], ['piace', '討人喜歡'], ['la', '那個'], ['pizza', '披薩']],
+        ['字面是「披薩讓我喜歡」：披薩才是主詞。', 'mi＝對我；piace 跟著披薩（單數）。'],
+        '義大利文的「喜歡」是倒過來說的：被喜歡的東西是主詞，喜歡的人放前面用 mi、ti、gli…。'],
+        ["Mi piacciono i gatti.", '我喜歡貓。', [['Mi', '對我'], ['piacciono', '討人喜歡'], ['i', '那些'], ['gatti', '貓']],
+        ['gatti 是複數，所以動詞變 piacciono。'],
+        '喜歡一個東西 → piace；喜歡好幾個 → piacciono。']],
+      q: [['Ti ___ il caffè?', 'piace', ['piacciono', 'piaci'], '你喜歡咖啡嗎？', 'il caffè 是單數，用 piace。'],
+        ['Mi ___ le lingue.', 'piacciono', ['piace', 'piaccio'], '我喜歡語言。', 'le lingue 是複數，用 piacciono。'],
+        ['___ piace leggere.', 'Mi', ['Io', 'Me'], '我喜歡閱讀。', '喜歡的人用 mi（對我），不是 io。']]
+    },
+    'refl': {
+      ex: [["Mi chiamo Howard.", '我叫 Howard。', [['Mi', '我自己'], ['chiamo', '叫'], ['Howard', 'Howard']],
+        ['字面是「我把自己叫做 Howard」。', 'mi 放在動詞前面。'],
+        '反身動詞是「對自己做」：起床＝把自己叫起來，所以前面有 mi、ti、si…。'],
+        ["Ci alziamo alle sette.", '我們七點起床。', [['Ci', '我們自己'], ['alziamo', '起'], ['alle', '在…點'], ['sette', '七']],
+        ['ci 配 noi，alziamo 也是 noi 形。'],
+        '前面的小字和後面的動詞要對到同一個人。']],
+      q: [['Come ti ___ ?', 'chiami', ['chiamo', 'chiama'], '你叫什麼名字？', 'ti 配 tu，動詞也用 tu 形。'],
+        ['Lui ___ lava le mani.', 'si', ['ti', 'mi'], '他洗手。', '「他自己」用 si。'],
+        ['Io ___ alzo presto.', 'mi', ['si', 'ci'], '我早起。', '「我自己」用 mi。']]
+    },
+    'neg': {
+      ex: [["Non parlo tedesco.", '我不會說德文。', [['Non', '不'], ['parlo', '說'], ['tedesco', '德文']],
+        ['non 直接放在動詞前面。'],
+        '否定很簡單：動詞前面加 non。'],
+        ["Non mangio mai la carne.", '我從來不吃肉。', [['Non', '不'], ['mangio', '吃'], ['mai', '從來'], ['la', '那個'], ['carne', '肉']],
+        ['non … mai＝從來不，mai 放在動詞後面。', 'non 不能省略。'],
+        '義大利文是「雙重否定」：non 在前、mai／niente 在後，兩個一起才表示「從不／什麼都不」。']],
+      q: [['___ capisco.', 'Non', ['No', 'Niente'], '我不懂。', '動詞前面用 non，no 是單獨回答的「不」。'],
+        ['Non bevo ___ il vino.', 'mai', ['non', 'no'], '我從來不喝酒。', 'non … mai＝從來不。'],
+        ['Non vedo ___ .', 'niente', ['mai', 'non'], '我什麼都看不到。', 'non … niente＝什麼都不。']]
+    },
+    'questions': {
+      ex: [["Dove abiti?", '你住在哪裡？', [['Dove', '哪裡'], ['abiti', '你住']],
+        ['疑問詞放最前面，動詞緊跟在後。'],
+        '問句不用倒裝，只要把疑問詞放前面、句尾語氣上揚。'],
+        ["Quanto costa?", '多少錢？', [['Quanto', '多少'], ['costa', '值']],
+        ['costa：costare 的「它」形，主詞（那東西）省略了。'],
+        '買東西最常用的一句：Quanto costa?']],
+      q: [['___ ti chiami?', 'Come', ['Cosa', 'Chi'], '你叫什麼名字？', '字面是「你怎麼叫自己」，用 come。'],
+        ['___ è quel ragazzo?', 'Chi', ['Cosa', 'Dove'], '那個男孩是誰？', '問人用 chi。'],
+        ['___ studi l\'italiano?', 'Perché', ['Quando', 'Quale'], '你為什麼學義大利文？', '問原因用 perché。']]
+    },
+    'lei': {
+      ex: [["Come sta, signora?", '您好嗎，太太？', [['Come', '怎樣'], ['sta', '您好'], [',', ''], ['signora', '太太']],
+        ['sta：對「您」用第三人稱（跟「她」一樣），不是 stai。'],
+        '對不熟或長輩說「您」，動詞用「他／她」的形，像在跟第三個人說話。']],
+      q: [['Lei ___ italiano?', 'parla', ['parli', 'parlo'], '您說義大利文嗎？', '「您」用第三人稱 parla。'],
+        ['Scusi, ___ dov\'è la stazione?', 'sa', ['sai', 'so'], '不好意思，您知道車站在哪嗎？', '對「您」用 sa。'],
+        ['Come si ___ ?', 'chiama', ['chiami', 'chiamo'], '您貴姓大名？', '對「您」：Come si chiama?']]
+    },
+    'stare': {
+      ex: [["Sto bene, grazie.", '我很好，謝謝。', [['Sto', '我（狀態）'], ['bene', '好'], [',', ''], ['grazie', '謝謝']],
+        ['sto：stare 的「我」形。', '問候身體狀況用 stare，不用 essere。'],
+        'Come stai?（你好嗎）→ Sto bene（我很好）。']],
+      q: [['Come ___ ?', 'stai', ['sei', 'stari'], '你好嗎？', '問候用 stare，tu 形是 stai。'],
+        ['Mia madre ___ male.', 'sta', ['è', 'stai'], '我媽媽身體不舒服。', '身體狀況用 stare，她 → sta。'],
+        ['Noi ___ bene.', 'stiamo', ['stamo', 'siamo'], '我們很好。', 'stare 的 noi 是 stiamo。']]
+    }
+  });
+})(typeof window !== 'undefined' ? window : globalThis);
+
+;
+/* 義大利文文法的範例拆解與練習題（2）：介係詞、限定詞、數字時間、過去式、其他句型 */
+(function (G) {
+  const IT = G.IT || (G.IT = {});
+  IT.GX = Object.assign(IT.GX || {}, {
+    // ---------- 介係詞 ----------
+    'prep': {
+      ex: [["Vado a Roma con Marco.", '我和 Marco 去羅馬。', [['Vado', '我去'], ['a', '到'], ['Roma', '羅馬'], ['con', '和'], ['Marco', 'Marco']],
+        ['a：到某個城市。', 'con：和誰一起。'],
+        '介係詞放在名詞前面，跟中文的「到、和、從」差不多，只是位置在名詞前。'],
+        ["Il libro è di Anna.", '這本書是 Anna 的。', [['Il', '那本'], ['libro', '書'], ['è', '是'], ['di', '…的'], ['Anna', 'Anna']],
+        ['di＝「…的」，但要放在人名前面。'],
+        '中文說「Anna 的書」，義大利文說「書 di Anna」。']],
+      q: [['Sono ___ Taiwan.', 'di', ['a', 'con'], '我是台灣人。', 'essere di ＋ 地方＝來自那裡。'],
+        ['Questo regalo è ___ te.', 'per', ['di', 'con'], '這個禮物是給你的。', 'per＝為了、給。'],
+        ['Vengo ___ Milano.', 'da', ['a', 'in'], '我從米蘭來。', 'da＝從（某處來）。']]
+    },
+    'artprep': {
+      ex: [["Il gatto è sul letto.", '貓在床上。', [['Il', '那隻'], ['gatto', '貓'], ['è', '在'], ['sul', '在…上'], ['letto', '床']],
+        ['sul ＝ su ＋ il，兩個字黏成一個。'],
+        'di、a、da、in、su 碰到後面的定冠詞，要合成一個字。'],
+        ["Vado alla stazione.", '我去車站。', [['Vado', '我去'], ['alla', '到那個'], ['stazione', '車站']],
+        ['alla ＝ a ＋ la，因為 stazione 是陰性。'],
+        '先決定冠詞（il、la、lo…），再跟前面的介係詞合起來。']],
+      q: [['Il libro è ___ tavolo. (su + il)', 'sul', ['sulla', 'su il'], '書在桌上。', 'su ＋ il ＝ sul。'],
+        ['Abito ___ centro. (in + il)', 'nel', ['nella', 'in il'], '我住在市中心。', 'in ＋ il ＝ nel。'],
+        ['La casa ___ ragazzi. (di + i)', 'dei', ['degli', 'di i'], '男孩們的家。', 'di ＋ i ＝ dei。']]
+    },
+    'place': {
+      ex: [["Abito a Taipei, in Taiwan.", '我住在台灣的台北。', [['Abito', '我住'], ['a', '在'], ['Taipei', '台北'], [',', ''], ['in', '在'], ['Taiwan', '台灣']],
+        ['城市前用 a。', '國家、地區前用 in。'],
+        '小的地方（城市）用 a，大的地方（國家）用 in。']],
+      q: [['Vivo ___ Italia.', 'in', ['a', 'di'], '我住在義大利。', '國家用 in。'],
+        ['Andiamo ___ Firenze.', 'a', ['in', 'da'], '我們去佛羅倫斯。', '城市用 a。'],
+        ['Sono ___ casa.', 'a', ['in la', 'di'], '我在家。', '固定說法：a casa。']]
+    },
+    'transport': {
+      ex: [["Vado al lavoro in treno, ma torno a piedi.", '我搭火車去上班，但走路回家。', [['Vado', '我去'], ['al', '到'], ['lavoro', '工作'], ['in', '搭'], ['treno', '火車'], [',', ''], ['ma', '但是'], ['torno', '我回來'], ['a', '用'], ['piedi', '腳']],
+        ['交通工具前用 in，不加冠詞：in treno、in macchina。', '走路是例外：a piedi。'],
+        '「搭什麼去」＝ in ＋ 交通工具；「走路」＝ a piedi。']],
+      q: [['Vengo ___ autobus.', 'in', ['a', 'con il'], '我搭公車來。', '交通工具用 in。'],
+        ['Vado a scuola ___ piedi.', 'a', ['in', 'con'], '我走路上學。', '走路固定是 a piedi。'],
+        ['Andiamo a Roma ___ aereo.', 'in', ['a', 'su'], '我們搭飛機去羅馬。', '交通工具用 in。']]
+    },
+    // ---------- 限定詞 ----------
+    'poss': {
+      ex: [["La mia casa è piccola.", '我的房子很小。', [['La', '那間'], ['mia', '我的'], ['casa', '房子'], ['è', '是'], ['piccola', '小的']],
+        ['mia：casa 是陰性，「我的」用 mia。', '所有格前面還要加冠詞 la。'],
+        '「我的」跟著後面的東西變性別，而且前面通常要有冠詞。'],
+        ["Mia sorella si chiama Lucia.", '我妹妹叫 Lucia。', [['Mia', '我的'], ['sorella', '妹妹'], ['si', '自己'], ['chiama', '叫'], ['Lucia', 'Lucia']],
+        ['家人（單數）是例外：不加冠詞，直接 mia sorella。'],
+        '一個家人：mia madre、mio padre；好幾個家人就要加冠詞：le mie sorelle。']],
+      q: [['Il ___ libro è nuovo.', 'mio', ['mia', 'miei'], '我的書是新的。', 'libro 是陽性單數，用 mio。'],
+        ['___ padre è medico.', 'Mio', ['Il mio', 'Mia'], '我爸爸是醫生。', '單數家人不加冠詞。'],
+        ['Dove sono le ___ chiavi?', 'mie', ['mia', 'miei'], '我的鑰匙在哪？', 'chiavi 是陰性複數，用 mie。']]
+    },
+    'demo': {
+      ex: [["Questo libro è bello, quella borsa no.", '這本書很好看，那個包包不好看。', [['Questo', '這本'], ['libro', '書'], ['è', '是'], ['bello', '好看'], [',', ''], ['quella', '那個'], ['borsa', '包包'], ['no', '不']],
+        ['questo：近的東西，libro 陽性 → questo。', 'quella：遠的東西，borsa 陰性 → quella。'],
+        'questo＝這、quello＝那，兩個都要跟著名詞變 -o／-a／-i／-e。']],
+      q: [['___ ragazza è mia sorella.', 'Questa', ['Questo', 'Questi'], '這個女孩是我妹妹。', 'ragazza 是陰性單數，用 questa。'],
+        ['Mi piacciono ___ scarpe.', 'queste', ['questi', 'questa'], '我喜歡這雙鞋。', 'scarpe 是陰性複數，用 queste。'],
+        ['Quanto costa ___ ?', 'questo', ['questi', 'queste'], '這個多少錢？', '單獨指一個東西就說 questo。']]
+    },
+    // ---------- 數字時間 ----------
+    'numbers': {
+      ex: [["Ho ventuno anni.", '我二十一歲。', [['Ho', '我有'], ['ventuno', '二十一'], ['anni', '年']],
+        ['venti ＋ uno → ventuno：碰到 uno 或 otto 時，venti 的 i 會掉。'],
+        '十位數＋個位數直接黏在一起寫：ventidue、trentatré。']],
+      q: [['Ho ___ anni. (28)', 'ventotto', ['ventiotto', 'venti otto'], '我二十八歲。', 'venti ＋ otto，i 掉了。'],
+        ['Costa ___ euro. (13)', 'tredici', ['treddici', 'trenta'], '十三歐元。', '13 是 tredici；30 是 trenta。'],
+        ['Siamo in ___ . (100)', 'cento', ['mille', 'centi'], '我們有一百個人。', '100 是 cento，1000 是 mille。']]
+    },
+    'time': {
+      ex: [["Sono le tre e mezza.", '現在三點半。', [['Sono', '是'], ['le', '那些'], ['tre', '三（點）'], ['e', '加'], ['mezza', '半']],
+        ['幾點用 sono le ＋ 數字（因為 ore 是複數）。', 'e mezza＝再加半小時。'],
+        '問：Che ore sono? 答：Sono le … ；只有一點是 È l\'una。'],
+        ["Il treno parte alle otto.", '火車八點出發。', [['Il', '那班'], ['treno', '火車'], ['parte', '出發'], ['alle', '在…點'], ['otto', '八']],
+        ['「在幾點」用 alle（a ＋ le）。'],
+        '「現在幾點」用 sono le，「在幾點做某事」用 alle。']],
+      q: [['___ le cinque.', 'Sono', ['È', 'Ci sono'], '現在五點。', '兩點以後都用 sono le。'],
+        ["___ l'una.", 'È', ['Sono', 'Ha'], '現在一點。', '一點是單數：è l\'una。'],
+        ['Ci vediamo ___ nove.', 'alle', ['le', 'a'], '我們九點見。', '「在幾點」用 alle。']]
+    },
+    'dates': {
+      ex: [["Il lunedì vado in palestra.", '我每週一去健身房。', [['Il', '每個'], ['lunedì', '星期一'], ['vado', '我去'], ['in', '到'], ['palestra', '健身房']],
+        ['il lunedì＝每週一；只說 lunedì＝這個星期一。'],
+        '星期前面加 il 表示「每週的那一天」。'],
+        ["A luglio fa caldo.", '七月很熱。', [['A', '在'], ['luglio', '七月'], ['fa', '（天氣）是'], ['caldo', '熱']],
+        ['月份前面用 a 或 in。', '月份、星期都小寫開頭。'],
+        '在幾月：a luglio、in luglio 都可以。']],
+      q: [['Il mio compleanno è ___ maggio.', 'a', ['il', 'di'], '我的生日在五月。', '在幾月用 a（或 in）。'],
+        ['___ domenica dormo tanto.', 'La', ['Il', 'A'], '每週日我睡很多。', 'domenica 是陰性，每週日＝la domenica。'],
+        ['In ___ fa freddo.', 'inverno', ['estate', 'luglio'], '冬天很冷。', 'inverno 是冬天；estate 是夏天。']]
+    },
+    'weather': {
+      ex: [["Oggi fa bel tempo.", '今天天氣很好。', [['Oggi', '今天'], ['fa', '做（天氣）'], ['bel', '好的'], ['tempo', '天氣']],
+        ['天氣用 fare（做）：fa caldo、fa freddo、fa bel tempo。'],
+        '義大利文說天氣「做熱、做冷」，動詞用 fa。'],
+        ["Oggi piove.", '今天在下雨。', [['Oggi', '今天'], ['piove', '下雨']],
+        ['一個字就是一句話，沒有主詞。'],
+        '下雨 piove、下雪 nevica，不用說「天」。']],
+      q: [['Oggi ___ freddo.', 'fa', ['è', 'ha'], '今天很冷。', '天氣冷熱用 fa。'],
+        ['Che tempo ___ ?', 'fa', ['è', 'ha'], '天氣怎麼樣？', '問天氣：Che tempo fa?'],
+        ['Domani ___ .', 'piove', ['fa piove', 'è pioggia'], '明天會下雨。', '下雨直接說 piove。']]
+    },
+    // ---------- 過去式 ----------
+    'pp-avere': {
+      ex: [["Ieri ho mangiato la pizza.", '我昨天吃了披薩。', [['Ieri', '昨天'], ['ho', '我有'], ['mangiato', '吃了'], ['la', '那個'], ['pizza', '披薩']],
+        ['過去式＝avere（照人稱變）＋ 過去分詞（不變）。', 'mangiare → mangiato：-are 變 -ato。'],
+        '像英文的 I have eaten：前面的 ho、hai、ha 告訴你是誰，後面的 -ato／-uto／-ito 告訴你做了什麼。']],
+      q: [['Ieri ___ visto un film.', 'ho', ['sono', 'ha visto'], '我昨天看了一部電影。', 'vedere 用 avere 當助動詞。'],
+        ['Hai ___ la cena? (preparare)', 'preparato', ['preparata', 'preparare'], '你做了晚餐嗎？', '-are 的過去分詞是 -ato。'],
+        ['Abbiamo ___ tutto. (capire)', 'capito', ['capato', 'capisco'], '我們都懂了。', '-ire 的過去分詞是 -ito。']]
+    },
+    'pp-essere': {
+      ex: [["Anna è andata a Roma.", 'Anna 去了羅馬。', [['Anna', 'Anna'], ['è', '是'], ['andata', '去了'], ['a', '到'], ['Roma', '羅馬']],
+        ['去、來、出發、留下這類動詞用 essere 當助動詞。', '用 essere 時，分詞要跟主詞配：Anna 是女生 → andata。'],
+        '「移動、改變狀態」的動詞用 essere，而且分詞的字尾要跟主詞的性別、單複數一樣。']],
+      q: [['Marco ___ partito ieri.', 'è', ['ha', 'sono'], 'Marco 昨天出發了。', 'partire 用 essere。'],
+        ['Le ragazze sono ___ . (uscire)', 'uscite', ['uscito', 'usciti'], '女孩們出去了。', '用 essere，分詞跟主詞配：陰性複數 -e。'],
+        ['Siamo ___ a casa. (tornare)', 'tornati', ['tornato', 'tornare'], '我們回家了。', 'noi（陽性或混合）→ 分詞 -i。']]
+    },
+    'imper': {
+      ex: [["Apri la finestra, per favore.", '請打開窗戶。', [['Apri', '打開'], ['la', '那扇'], ['finestra', '窗戶'], [',', ''], ['per', '請'], ['favore', '（幫忙）']],
+        ['apri：對「你」的命令，跟 tu apri 一樣。'],
+        '-ere、-ire 動詞對「你」的命令跟現在式一樣；-are 動詞改成 -a：parla!、guarda!'],
+        ["Non toccare!", '不要碰！', [['Non', '不要'], ['toccare', '碰']],
+        ['對「你」說「不要」＝ non ＋ 原形。'],
+        '禁止別人：non ＋ 原形，很簡單。']],
+      q: [['___ qui! (guardare)', 'Guarda', ['Guardi', 'Guardo'], '看這裡！', '-are 動詞對 tu 的命令是 -a。'],
+        ['Non ___ ! (parlare)', 'parlare', ['parla', 'parli'], '不要說話！', '否定命令用 non ＋ 原形。'],
+        ['___ ! (venire)', 'Vieni', ['Veni', 'Viene'], '過來！', 'venire 對 tu 的命令是 vieni。']]
+    },
+    // ---------- 形容詞、數量 ----------
+    'compar': {
+      ex: [["Marco è più alto di Luca.", 'Marco 比 Luca 高。', [['Marco', 'Marco'], ['è', '是'], ['più', '更'], ['alto', '高'], ['di', '比'], ['Luca', 'Luca']],
+        ['più ＋ 形容詞＝更…。', 'di ＋ 被比的人＝比…。'],
+        '順序是「A 是 更高 比 B」：più … di。']],
+      q: [['Roma è ___ grande di Firenze.', 'più', ['molto', 'di'], '羅馬比佛羅倫斯大。', '比較用 più … di。'],
+        ['Il treno è meno caro ___ aereo.', "dell'", ['di', 'che'], '火車比飛機便宜。', "di ＋ l' 合成 dell'。"],
+        ['Anna è ___ alta di me.', 'meno', ['più di', 'molto'], 'Anna 沒有我高。', 'meno … di＝沒有…那麼。']]
+    },
+    'molto': {
+      ex: [["Ho molti amici e poco tempo.", '我有很多朋友，時間很少。', [['Ho', '我有'], ['molti', '很多'], ['amici', '朋友'], ['e', '和'], ['poco', '很少'], ['tempo', '時間']],
+        ['molti：放在名詞前面當「很多」時，要跟名詞變（amici 陽性複數）。', 'poco：tempo 陽性單數。'],
+        'molto 修飾名詞時會變；修飾形容詞或動詞時不變：molto bello、lavoro molto。']],
+      q: [['Ci sono ___ persone.', 'molte', ['molto', 'molti'], '有很多人。', 'persone 是陰性複數。'],
+        ['Questa casa è ___ bella.', 'molto', ['molta', 'molte'], '這間房子很漂亮。', '修飾形容詞時不變。'],
+        ['Hai ___ lavoro?', 'troppo', ['troppa', 'troppi'], '你工作太多嗎？', 'lavoro 是陽性單數。']]
+    },
+    // ---------- 句型 ----------
+    'vorrei': {
+      ex: [["Vorrei un cappuccino, per favore.", '我想要一杯卡布奇諾，麻煩了。', [['Vorrei', '我想要'], ['un', '一杯'], ['cappuccino', '卡布奇諾'], [',', ''], ['per', '請'], ['favore', '（幫忙）']],
+        ['vorrei 比 voglio 客氣，像英文的 I would like。'],
+        '點餐、請求的時候說 vorrei，不要說 voglio（聽起來太直接）。']],
+      q: [['___ un bicchiere d\'acqua.', 'Vorrei', ['Voglio', 'Vuoi'], '我想要一杯水。', '客氣的請求用 vorrei。'],
+        ['___ aiutarmi, per favore?', 'Potrebbe', ['Potere', 'Posso'], '可以請您幫我嗎？', 'potrebbe＝您能不能（很客氣）。'],
+        ['Vorrei ___ un tavolo.', 'prenotare', ['prenoto', 'prenotato'], '我想訂位。', 'vorrei 後面接原形。']]
+    },
+    'andare': {
+      ex: [["Vado in Italia, poi vado a Roma.", '我去義大利，然後去羅馬。', [['Vado', '我去'], ['in', '到'], ['Italia', '義大利'], [',', ''], ['poi', '然後'], ['vado', '我去'], ['a', '到'], ['Roma', '羅馬']],
+        ['國家用 in，城市用 a。'],
+        'andare a ＋ 城市、andare in ＋ 國家。'],
+        ["Vengo da Taiwan.", '我從台灣來。', [['Vengo', '我來'], ['da', '從'], ['Taiwan', '台灣']],
+        ['venire da＝從哪裡來。'],
+        '去：andare a／in；來自：venire da。']],
+      q: [['Vado ___ Spagna.', 'in', ['a', 'da'], '我去西班牙。', '國家用 in。'],
+        ['Domani andiamo ___ Venezia.', 'a', ['in', 'da'], '我們明天去威尼斯。', '城市用 a。'],
+        ['Vieni ___ Giappone?', 'dal', ['in', 'a'], '你從日本來嗎？', 'da ＋ il Giappone ＝ dal Giappone。']]
+    },
+    'conj': {
+      ex: [["Studio perché voglio andare in Italia.", '我讀書是因為想去義大利。', [['Studio', '我讀書'], ['perché', '因為'], ['voglio', '我想'], ['andare', '去'], ['in', '到'], ['Italia', '義大利']],
+        ['perché 在問句是「為什麼」，在句中是「因為」。'],
+        '連接詞把兩個句子接起來，順序跟中文一樣。'],
+        ["Se piove, resto a casa.", '如果下雨，我就待在家。', [['Se', '如果'], ['piove', '下雨'], [',', ''], ['resto', '我待'], ['a', '在'], ['casa', '家']],
+        ['se＝如果。'],
+        '「如果…就…」：Se ＋ 條件, ＋ 結果。']],
+      q: [['Mi piace il tè ___ non il caffè.', 'ma', ['e', 'se'], '我喜歡茶，但不喜歡咖啡。', '轉折用 ma（但是）。'],
+        ['Vuoi il tè ___ il caffè?', 'o', ['ma', 'perché'], '你要茶還是咖啡？', '選擇用 o（或）。'],
+        ['___ arrivo, ti chiamo.', 'Quando', ['Perché', 'Ma'], '我到的時候打給你。', 'quando＝…的時候。']]
+    },
+    'freq': {
+      ex: [["Vado spesso al cinema.", '我常常去看電影。', [['Vado', '我去'], ['spesso', '常常'], ['al', '到'], ['cinema', '電影院']],
+        ['頻率副詞通常放在動詞後面，不像中文放在動詞前。'],
+        'sempre 總是、spesso 常常、qualche volta 有時候，放在動詞後面。']],
+      q: [['Mangio ___ a casa.', 'sempre', ['mai', 'non'], '我總是在家吃飯。', '總是＝sempre，放動詞後。'],
+        ['Non bevo ___ il caffè.', 'mai', ['sempre', 'spesso'], '我從不喝咖啡。', '和 non 配在一起的是 mai。'],
+        ['___ volta vado a piedi.', 'Qualche', ['Spesso', 'Mai'], '我有時候走路去。', 'qualche volta＝有時候。']]
+    },
+    'si': {
+      ex: [["Come si dice «grazie» in cinese?", '「grazie」中文怎麼說？', [['Come', '怎麼'], ['si', '人們'], ['dice', '說'], ['«grazie»', '「謝謝」'], ['in', '用'], ['cinese', '中文']],
+        ['si ＋ 第三人稱動詞＝「一般人會…」，不指特定的人。'],
+        '問「這裡怎麼做、這個怎麼說」都用 si：Come si dice? Come si fa?']],
+      q: [['Qui non ___ fuma.', 'si', ['ci', 'se'], '這裡不能抽菸。', '「一般人不…」用 si ＋ 動詞。'],
+        ['Come si ___ «book»?', 'dice', ['dici', 'dire'], '「book」怎麼說？', 'si 後面用第三人稱 dice。'],
+        ['In Italia si ___ bene.', 'mangia', ['mangi', 'mangiare'], '在義大利吃得很好。', 'si ＋ 第三人稱單數。']]
+    },
+    'pron-obj': {
+      ex: [["Ti chiamo domani.", '我明天打給你。', [['Ti', '你'], ['chiamo', '我打電話'], ['domani', '明天']],
+        ['ti＝「你」當受詞，放在動詞前面。', 'chiamo 是「我」形，所以主詞是我。'],
+        '中文是「我 打給 你」，義大利文把「你」放到動詞前面：ti chiamo。'],
+        ["Mi aiuti?", '你可以幫我嗎？', [['Mi', '我'], ['aiuti', '你幫']],
+        ['mi＝我（被幫的人）；aiuti 是「你」形。'],
+        '看動詞詞尾知道誰在做，看前面的 mi／ti 知道對誰做。']],
+      q: [['___ amo.', 'Ti', ['Tu', 'Te'], '我愛你。', '受詞「你」用 ti，放在動詞前。'],
+        ['Marco ___ aspetta.', 'ci', ['noi', 'vi'], 'Marco 在等我們。', '受詞「我們」用 ci。'],
+        ['Non ___ capisco.', 'ti', ['tu', 'tuo'], '我聽不懂你說的。', '受詞放在動詞前、non 後面。']]
+    }
+  });
+})(typeof window !== 'undefined' ? window : globalThis);
+
+;
+(function (G) { const IT = G.IT || (G.IT = {});
+/* 義大利文文法關卡：由淺到深，後面的關卡會用到前面學過的東西 */
+IT.GX_PATH = [
+  ['開口說', '「我是…」、問好、問問題、說「不」', ['essere', 'stare', 'lei', 'questions', 'neg']],
+  ['冠詞和名詞', '名詞分男女，前面的冠詞和後面的形容詞都要跟著變', ['noun-gender', 'art-indef', 'art-def', 'noun-plural', 'adj']],
+  ['「有」和點東西', 'avere（有）、c\'è（那裡有）、禮貌地說「我想要」、數字', ['avere', 'avere-expr', 'ce', 'vorrei', 'numbers']],
+  ['現在式', '三種規則動詞，換掉字尾就能說「誰做什麼」', ['pres-are', 'pres-ere', 'pres-ire', 'pres-isc', 'freq']],
+  ['常用動詞和去哪裡', '不規則動詞、想／能／必須，去哪個城市、搭什麼車', ['pres-irr', 'modal', 'sapere', 'place', 'andare', 'transport']],
+  ['介係詞和「我的、這個」', '介係詞和冠詞合併、所有格、指示詞、很多', ['prep', 'artprep', 'poss', 'demo', 'molto']],
+  ['時間和天氣', '幾點、星期、月份，天氣怎麼說', ['time', 'dates', 'weather']],
+  ['喜歡、自己和代名詞', '倒過來說的「喜歡」、反身動詞、受詞代名詞、si', ['piacere', 'refl', 'pron-obj', 'si']],
+  ['過去式和命令', '「做了什麼」的兩種助動詞，還有請人做事', ['pp-avere', 'pp-essere', 'imper']],
+  ['長句子', '把句子接起來，還有比較', ['conj', 'compar']]
+];
+})(typeof window !== 'undefined' ? window : globalThis);
+
+;
 /* 語言頁（義大利文、西班牙文、德文、俄文…）：放在日文 N5 App 裡
    語言專屬的文字和設定放在 window.LANGCFG，資料和變化引擎放在 window.LX
    - 介面、音效、下拉選單、間隔複習規則都跟日文頁一樣
@@ -3880,7 +4335,7 @@ function startGxQuiz(box, gx, id) {
       return;
     }
     const [pr, ans, wr, zh, why] = qs[i++];
-    const full = pr.replace('___', ans).replace(/\s+([.,!?…])/g, '$1');
+    const full = (/'$/.test(ans) ? pr.replace('___ ', ans) : pr).replace('___', ans).replace(/\s+([.,!?…])/g, '$1');
     renderChoice(box, {
       head: `<div class="qhead"><span class="meta">文法練習 ${i} / ${qs.length}</span></div>`,
       promptHTML: `<div class="sent" lang="${LC.id}">${esc(pr).replace('___', '<span class="blank" id="blank">？</span>')}</div><div class="zhline">${esc(zh)}</div>`,
