@@ -2,7 +2,7 @@
 // - App 自己的檔案（html、js、圖示）：有網路就先拿最新版，沒網路或太慢（3 秒）才用快取，所以上傳新版後重新打開就會更新
 // - 字體、Firebase 程式庫：先用快取，背景更新（這些很少變）
 // - 登入和資料庫的連線（googleapis 等）一律直接走網路，不快取
-const CACHE = 'n5-v72';
+const CACHE = 'n5-v73';
 const CORE = ['./', './index.html', './lang.js', './it.html', './es.html', './de.html', './ru.html', './en.html', './manifest.json', './icon-192.png', './icon-512.png'];
 const CACHE_HOSTS = ['fonts.googleapis.com', 'fonts.gstatic.com', 'www.gstatic.com'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE.map(u => new Request(u, { cache: 'reload' }))))); self.skipWaiting(); });
