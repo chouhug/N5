@@ -474,6 +474,7 @@ body.hide-furi #gloss rt,body.hide-furi .furibtn rt{visibility:visible}
 .gr-group{display:flex;flex-direction:column;gap:8px}
 .gr-group h3{margin:4px 2px 0;font-size:14px;color:var(--muted);font-weight:600}
 .gr-row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px 10px;text-align:left;width:100%;min-height:60px;padding:10px 14px;border-radius:12px;border:1px solid var(--btn-edge);background:var(--btn);color:var(--btn-ink);box-shadow:0 3px 0 var(--btn-edge);transition:transform .08s,box-shadow .08s}
+/* 文法：範例拆解＋練習題 */.gx-seg{margin:12px 0 4px}.gx-cta{margin-top:14px;flex-wrap:wrap}.gx-tip{margin:10px 0 2px}.gx-ex{border-top:1px dashed var(--line);margin-top:14px;padding-top:14px;display:flex;flex-direction:column;gap:8px}.gx-n{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--muted)}.gx-gloss{display:flex;flex-wrap:wrap;gap:6px 6px;align-items:flex-end;background:var(--surface2);border-radius:12px;padding:10px}.gx-w{display:flex;flex-direction:column;align-items:center;min-width:2.4em;padding:4px 8px;border-radius:8px;background:var(--surface);border:1px solid var(--line)}.gx-w b{font-size:18px;font-weight:700;line-height:1.3}.gx-w i{font-style:normal;font-size:13px;color:var(--muted);line-height:1.35;text-align:center}.gx-p{font-size:18px;padding:4px 0;align-self:flex-start}.gx-notes{margin:2px 0 0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;font-size:15px;line-height:1.6}.gx-fw{font-weight:700;color:inherit}.gx-plain{display:flex;gap:10px;align-items:flex-start;background:var(--pri-soft);border-radius:10px;padding:10px 12px;font-size:15px;line-height:1.6}.gx-plain>b{flex:none;font-size:12px;font-weight:800;background:var(--pri);color:#fff;border-radius:6px;padding:2px 6px;margin-top:2px}.gx-go{margin-top:16px}.gx-quiz{margin-top:10px}.gx-quiz .qcard{box-shadow:none;border:0;padding:0;margin:0;background:none}.gx-why{background:var(--surface2);border-radius:10px;padding:10px 12px;margin:8px 0 12px;display:flex;flex-direction:column;gap:4px}.gx-why .sent{font-size:18px}.gx-why p{margin:0;font-size:15px;line-height:1.6}.gx-done{text-align:center;padding:16px 0 4px}.gx-score{font-size:34px;font-weight:800}.gx-done .btnrow{justify-content:center}/* 文法關卡 */.gr-view{margin:10px 0 4px}.gp-top{display:flex;flex-direction:column;gap:8px}.gp-top .meta{margin:0}.gp-tt{display:flex;justify-content:space-between;align-items:baseline;gap:10px}.gp-tt b{font-size:18px}.gp-tt span{color:var(--muted);font-size:14px}.gp-bar{height:8px;border-radius:99px;background:var(--track);overflow:hidden}.gp-bar i{display:block;height:100%;background:var(--ok);border-radius:99px}.gp-all{margin:0;font-weight:700;color:var(--ok-deep,var(--ok))}.gp-stage{margin:18px 0 0}.gp-sh{display:flex;align-items:center;gap:10px;margin:0 2px 8px}.gp-no{flex:none;width:32px;height:32px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;background:var(--pri);color:#fff}.gp-no svg{width:18px;height:18px}.gp-stage.done .gp-no{background:var(--ok)}.gp-stage.locked .gp-no{background:var(--surface2);color:var(--muted)}.gp-st{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}.gp-st b{font-size:16px}.gp-st span{font-size:13px;color:var(--muted);line-height:1.45}.gp-cnt{flex:none;font-size:13px;font-weight:700;color:var(--muted)}.gp-peek>summary{cursor:pointer;margin:0 2px 8px;font-size:13px;color:var(--muted);list-style-position:inside}.gp-stage.locked .gp-row{opacity:.55}.gp-row b{display:inline-flex;align-items:center;gap:6px}.gp-ck{display:inline-flex;width:18px;height:18px;color:var(--ok-deep,var(--ok))}.gp-ck svg{width:18px;height:18px}.gp-row.now{box-shadow:inset 0 0 0 2px var(--pri)}.gp-nowt{font-size:12px;font-weight:700;color:#fff;background:var(--pri);border-radius:6px;padding:1px 6px;margin-right:4px}.gp-where{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 10px;margin:8px 0 0;font-size:13px;color:var(--muted)}.gp-where p{flex-basis:100%;margin:4px 0 0;padding:8px 10px;border-radius:8px;background:var(--surface2);color:inherit;font-size:13px;line-height:1.5}.gp-pass{display:inline-flex;align-items:center;gap:4px;color:var(--ok-deep,var(--ok))}.gp-pass svg{width:15px;height:15px}.gx-done .btnrow{grid-template-columns:1fr;max-width:340px;margin:0 auto}.gp-row .gn .gp-nowt{color:#fff;background:var(--pri)}
 .gr-row:active{transform:translateY(2px);box-shadow:0 1px 0 var(--btn-edge)}
 .gr-row b{font-size:16px}
 .gr-row .gd{grid-column:1;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -2626,23 +2627,23 @@ window.LANGCFG = {
   IT.GX = Object.assign(IT.GX || {}, {
     // ---------- 冠詞、名詞、形容詞 ----------
     'art-def': {
-      ex: [["Il libro è sul tavolo.", '書在桌上。', [['Il', '那本'], ['libro', '書'], ['è', '在'], ['sul', '在…上'], ['tavolo', '桌子']],
-        ['il：libro 是陽性、子音開頭，所以用 il。', 'sul ＝ su（在…上）＋ il，合成一個字。'],
+      ex: [["Il libro è nuovo.", '那本書是新的。', [['Il', '那本'], ['libro', '書'], ['è', '是'], ['nuovo', '新的']],
+        ['il：libro 是陽性、子音開頭，所以用 il。'],
         '義大利文的名詞前面幾乎都要帶一個「the」。帶哪一個，看名詞是陽性還是陰性、開頭是什麼字母。'],
-        ["Lo studente legge la lettera.", '那個學生在讀那封信。', [['Lo', '那個'], ['studente', '學生'], ['legge', '讀'], ['la', '那封'], ['lettera', '信']],
-        ['lo：studente 是 s＋子音開頭的陽性字，不能用 il，要用 lo。', 'la：lettera 是陰性（-a 結尾），用 la。'],
+        ["Lo studente e la ragazza.", '那個學生和那個女孩。', [['Lo', '那個'], ['studente', '學生'], ['e', '和'], ['la', '那個'], ['ragazza', '女孩']],
+        ['lo：studente 是 s＋子音開頭的陽性字，不能用 il，要用 lo。', 'la：ragazza 是陰性（-a 結尾），用 la。'],
         '陽性一般用 il；碰到 s＋子音、z 開頭改 lo；母音開頭變 l\'。陰性用 la。']],
       q: [['___ zaino è nuovo.', 'Lo', ['Il', 'La'], '那個背包是新的。', 'zaino 是 z 開頭的陽性字，用 lo。'],
         ['___ amica di Marco è simpatica.', "L'", ['La', 'Il'], 'Marco 的朋友很親切。', "amica 是母音開頭，la 要縮成 l'。"],
-        ['___ ragazzi giocano.', 'I', ['Gli', 'Le'], '男孩們在玩。', 'ragazzi 是陽性複數、子音開頭，用 i。']]
+        ['___ ragazzi sono qui.', 'I', ['Gli', 'Le'], '男孩們在這裡。', 'ragazzi 是陽性複數、子音開頭，用 i。']]
     },
     'art-indef': {
-      ex: [["Ho un fratello e una sorella.", '我有一個哥哥和一個姊姊。', [['Ho', '我有'], ['un', '一個'], ['fratello', '哥哥'], ['e', '和'], ['una', '一個'], ['sorella', '姊姊']],
+      ex: [["Un fratello e una sorella.", '一個哥哥和一個姊姊。', [['Un', '一個'], ['fratello', '哥哥'], ['e', '和'], ['una', '一個'], ['sorella', '姊姊']],
         ['un：fratello 是陽性。', 'una：sorella 是陰性。'],
         '「一個」也分男女：陽性 un，陰性 una。']],
-      q: [['Vorrei ___ caffè.', 'un', ['una', 'uno'], '我想要一杯咖啡。', 'caffè 是陽性、子音開頭，用 un。'],
+      q: [['___ caffè, per favore.', 'Un', ['Una', 'Uno'], '一杯咖啡，麻煩了。', 'caffè 是陽性、子音開頭，用 un。'],
         ['È ___ studente.', 'uno', ['un', 'una'], '他是一個學生。', 's＋子音開頭的陽性字用 uno。'],
-        ['Ho ___ idea!', "un'", ['un', 'uno'], '我有一個主意！', "idea 是陰性、母音開頭，una 縮成 un'。"]]
+        ['È ___ idea!', "un'", ['un', 'uno'], '這是個好主意！', "idea 是陰性、母音開頭，una 縮成 un'。"]]
     },
     'noun-gender': {
       ex: [["Il gatto e la casa.", '貓和房子。', [['Il', '那隻'], ['gatto', '貓'], ['e', '和'], ['la', '那間'], ['casa', '房子']],
@@ -2661,7 +2662,7 @@ window.LANGCFG = {
         ['due ___ (lezione)', 'lezioni', ['lezione', 'lezionie'], '兩堂課', '-e 結尾的複數改 -i。']]
     },
     'adj': {
-      ex: [["Ho una macchina rossa.", '我有一台紅色的車。', [['Ho', '我有'], ['una', '一台'], ['macchina', '車'], ['rossa', '紅色的']],
+      ex: [["È una macchina rossa.", '這是一台紅色的車。', [['È', '是'], ['una', '一台'], ['macchina', '車'], ['rossa', '紅色的']],
         ['rossa 放在名詞後面，跟中文順序相反。', 'macchina 是陰性單數，所以 rosso → rossa。'],
         '形容詞通常放在名詞後面，而且要跟名詞同一個性別和單複數。'],
         ["I ragazzi sono simpatici.", '那些男孩很親切。', [['I', '那些'], ['ragazzi', '男孩'], ['sono', '是'], ['simpatici', '親切的']],
@@ -2700,7 +2701,7 @@ window.LANGCFG = {
         '問年齡：Quanti anni hai?（你有幾年？）']],
       q: [['Ho ___ .', 'freddo', ['fredda', 'fredde'], '我很冷。', 'avere freddo 是固定說法，freddo 不跟著人變。'],
         ['Quanti anni ___ ?', 'hai', ['sei', 'fai'], '你幾歲？', '年齡用 avere，不用 essere。'],
-        ['Abbiamo ___ del cane.', 'paura', ['fame', 'sete'], '我們怕那隻狗。', 'avere paura di ＝ 怕…。']]
+        ['Ho ___ !', 'paura', ['fame', 'sete'], '我好怕！', '「害怕」＝ avere paura；fame 是餓、sete 是渴。']]
     },
     'ce': {
       ex: [["C'è un bar qui vicino.", '這附近有一間咖啡館。', [["C'è", '有'], ['un', '一間'], ['bar', '咖啡館'], ['qui', '這裡'], ['vicino', '附近']],
@@ -2709,7 +2710,7 @@ window.LANGCFG = {
         ["Ci sono due bagni.", '有兩間廁所。', [['Ci', '（那裡）'], ['sono', '有'], ['due', '兩'], ['bagni', '廁所']],
         ['後面是複數，所以用 ci sono。'],
         '一個 → c\'è；兩個以上 → ci sono。']],
-      q: [['___ molti turisti a Roma.', 'Ci sono', ["C'è", 'Hanno'], '羅馬有很多觀光客。', 'turisti 是複數，用 ci sono。'],
+      q: [['___ due bar qui.', 'Ci sono', ["C'è", 'Hanno'], '這裡有兩間咖啡館。', 'due bar 是複數（bar 的複數不變），用 ci sono。'],
         ['___ una farmacia qui?', "C'è", ['Ci sono', 'Ha'], '這裡有藥局嗎？', '一間藥局，單數用 c\'è。'],
         ['Non ___ problema.', "c'è", ['ci sono', 'ho'], '沒問題。', 'problema 是單數：non c\'è problema。']]
     },
@@ -2738,14 +2739,14 @@ window.LANGCFG = {
         '-ire 動詞跟 -ere 幾乎一樣，只有「你們」是 -ite。']],
       q: [['Tu ___ la porta? (aprire)', 'apri', ['apre', 'apra'], '你開門嗎？', 'tu 的詞尾是 -i。'],
         ['Voi ___ bene? (dormire)', 'dormite', ['dormete', 'dormono'], '你們睡得好嗎？', '-ire 動詞的 voi 是 -ite。'],
-        ['Il treno ___ alle otto. (partire)', 'parte', ['parti', 'parto'], '火車八點出發。', '火車是「它」，用 -e。']]
+        ['Il treno ___ domani. (partire)', 'parte', ['parti', 'parto'], '火車明天出發。', '火車是「它」，用 -e。']]
     },
     'pres-isc': {
       ex: [["Non capisco.", '我聽不懂。', [['Non', '不'], ['capisco', '懂']],
         ['capire 的「我」不是 capo，而是中間塞 -isc-：cap-isc-o。'],
         '有些 -ire 動詞在 io、tu、lui、loro 這四個形中間多一個 -isc-，noi 和 voi 不加。']],
       q: [['Tu ___ l\'italiano? (capire)', 'capisci', ['capi', 'capisce'], '你懂義大利文嗎？', 'tu：cap-isc-i。'],
-        ['Noi ___ alle sei. (finire)', 'finiamo', ['finisciamo', 'finiscono'], '我們六點結束。', 'noi 不加 -isc-。'],
+        ['Noi ___ la lezione. (finire)', 'finiamo', ['finisciamo', 'finiscono'], '我們上完課了。', 'noi 不加 -isc-。'],
         ['Lei ___ il lavoro. (finire)', 'finisce', ['fine', 'finisci'], '她做完工作。', 'lei：fin-isc-e。']]
     },
     'pres-irr': {
@@ -2767,7 +2768,7 @@ window.LANGCFG = {
         ['devo：dovere（必須）的「我」形。'],
         'voglio 想、posso 能、devo 必須，後面一律接原形。']],
       q: [['Vuoi ___ un caffè?', 'prendere', ['prendi', 'prende'], '你想喝杯咖啡嗎？', 'volere 後面的動詞用原形。'],
-        ['Noi ___ partire alle otto.', 'dobbiamo', ['dovete', 'devono'], '我們得八點出發。', 'dovere 的 noi 是 dobbiamo。'],
+        ['Noi ___ studiare.', 'dobbiamo', ['dovete', 'devono'], '我們得念書。', 'dovere 的 noi 是 dobbiamo。'],
         ['___ aiutarmi?', 'Può', ['Potere', 'Posso'], '您可以幫我嗎？', '對「您」用第三人稱 può。']]
     },
     'sapere': {
@@ -2819,7 +2820,7 @@ window.LANGCFG = {
         ['costa：costare 的「它」形，主詞（那東西）省略了。'],
         '買東西最常用的一句：Quanto costa?']],
       q: [['___ ti chiami?', 'Come', ['Cosa', 'Chi'], '你叫什麼名字？', '字面是「你怎麼叫自己」，用 come。'],
-        ['___ è quel ragazzo?', 'Chi', ['Cosa', 'Dove'], '那個男孩是誰？', '問人用 chi。'],
+        ['___ è Marco?', 'Chi', ['Cosa', 'Dove'], 'Marco 是誰？', '問人用 chi。'],
         ['___ studi l\'italiano?', 'Perché', ['Quando', 'Quale'], '你為什麼學義大利文？', '問原因用 perché。']]
     },
     'lei': {
@@ -2827,7 +2828,7 @@ window.LANGCFG = {
         ['sta：對「您」用第三人稱（跟「她」一樣），不是 stai。'],
         '對不熟或長輩說「您」，動詞用「他／她」的形，像在跟第三個人說話。']],
       q: [['Lei ___ italiano?', 'parla', ['parli', 'parlo'], '您說義大利文嗎？', '「您」用第三人稱 parla。'],
-        ['Scusi, ___ dov\'è la stazione?', 'sa', ['sai', 'so'], '不好意思，您知道車站在哪嗎？', '對「您」用 sa。'],
+        ['Scusi, Lei ___ italiana?', 'è', ['sei', 'sono'], '不好意思，您是義大利人嗎？', '對「您」用第三人稱 è。'],
         ['Come si ___ ?', 'chiama', ['chiami', 'chiamo'], '您貴姓大名？', '對「您」：Come si chiama?']]
     },
     'stare': {
@@ -2835,7 +2836,7 @@ window.LANGCFG = {
         ['sto：stare 的「我」形。', '問候身體狀況用 stare，不用 essere。'],
         'Come stai?（你好嗎）→ Sto bene（我很好）。']],
       q: [['Come ___ ?', 'stai', ['sei', 'stari'], '你好嗎？', '問候用 stare，tu 形是 stai。'],
-        ['Mia madre ___ male.', 'sta', ['è', 'stai'], '我媽媽身體不舒服。', '身體狀況用 stare，她 → sta。'],
+        ['Anna ___ male.', 'sta', ['è', 'stai'], 'Anna 身體不舒服。', '身體狀況用 stare，她 → sta。'],
         ['Noi ___ bene.', 'stiamo', ['stamo', 'siamo'], '我們很好。', 'stare 的 noi 是 stiamo。']]
     }
   });
@@ -2890,7 +2891,7 @@ window.LANGCFG = {
       ex: [["La mia casa è piccola.", '我的房子很小。', [['La', '那間'], ['mia', '我的'], ['casa', '房子'], ['è', '是'], ['piccola', '小的']],
         ['mia：casa 是陰性，「我的」用 mia。', '所有格前面還要加冠詞 la。'],
         '「我的」跟著後面的東西變性別，而且前面通常要有冠詞。'],
-        ["Mia sorella si chiama Lucia.", '我妹妹叫 Lucia。', [['Mia', '我的'], ['sorella', '妹妹'], ['si', '自己'], ['chiama', '叫'], ['Lucia', 'Lucia']],
+        ["Mia sorella è simpatica.", '我妹妹很親切。', [['Mia', '我的'], ['sorella', '妹妹'], ['è', '是'], ['simpatica', '親切的']],
         ['家人（單數）是例外：不加冠詞，直接 mia sorella。'],
         '一個家人：mia madre、mio padre；好幾個家人就要加冠詞：le mie sorelle。']],
       q: [['Il ___ libro è nuovo.', 'mio', ['mia', 'miei'], '我的書是新的。', 'libro 是陽性單數，用 mio。'],
@@ -2902,7 +2903,7 @@ window.LANGCFG = {
         ['questo：近的東西，libro 陽性 → questo。', 'quella：遠的東西，borsa 陰性 → quella。'],
         'questo＝這、quello＝那，兩個都要跟著名詞變 -o／-a／-i／-e。']],
       q: [['___ ragazza è mia sorella.', 'Questa', ['Questo', 'Questi'], '這個女孩是我妹妹。', 'ragazza 是陰性單數，用 questa。'],
-        ['Mi piacciono ___ scarpe.', 'queste', ['questi', 'questa'], '我喜歡這雙鞋。', 'scarpe 是陰性複數，用 queste。'],
+        ['___ scarpe sono nuove.', 'Queste', ['Questi', 'Questa'], '這雙鞋是新的。', 'scarpe 是陰性複數，用 queste。'],
         ['Quanto costa ___ ?', 'questo', ['questi', 'queste'], '這個多少錢？', '單獨指一個東西就說 questo。']]
     },
     // ---------- 數字時間 ----------
@@ -2923,7 +2924,7 @@ window.LANGCFG = {
         '「現在幾點」用 sono le，「在幾點做某事」用 alle。']],
       q: [['___ le cinque.', 'Sono', ['È', 'Ci sono'], '現在五點。', '兩點以後都用 sono le。'],
         ["___ l'una.", 'È', ['Sono', 'Ha'], '現在一點。', '一點是單數：è l\'una。'],
-        ['Ci vediamo ___ nove.', 'alle', ['le', 'a'], '我們九點見。', '「在幾點」用 alle。']]
+        ['Il film comincia ___ nove.', 'alle', ['le', 'a'], '電影九點開始。', '「在幾點」用 alle。']]
     },
     'dates': {
       ex: [["Il lunedì vado in palestra.", '我每週一去健身房。', [['Il', '每個'], ['lunedì', '星期一'], ['vado', '我去'], ['in', '到'], ['palestra', '健身房']],
@@ -3057,12 +3058,12 @@ window.LANGCFG = {
 (function (G) { const IT = G.IT || (G.IT = {});
 /* 義大利文文法關卡：由淺到深，後面的關卡會用到前面學過的東西 */
 IT.GX_PATH = [
-  ['開口說', '「我是…」、問好、問問題、說「不」', ['essere', 'stare', 'lei', 'questions', 'neg']],
+  ['開口說', '「我是…」「你好嗎」', ['essere', 'stare']],
   ['冠詞和名詞', '名詞分男女，前面的冠詞和後面的形容詞都要跟著變', ['noun-gender', 'art-indef', 'art-def', 'noun-plural', 'adj']],
-  ['「有」和點東西', 'avere（有）、c\'è（那裡有）、禮貌地說「我想要」、數字', ['avere', 'avere-expr', 'ce', 'vorrei', 'numbers']],
-  ['現在式', '三種規則動詞，換掉字尾就能說「誰做什麼」', ['pres-are', 'pres-ere', 'pres-ire', 'pres-isc', 'freq']],
-  ['常用動詞和去哪裡', '不規則動詞、想／能／必須，去哪個城市、搭什麼車', ['pres-irr', 'modal', 'sapere', 'place', 'andare', 'transport']],
-  ['介係詞和「我的、這個」', '介係詞和冠詞合併、所有格、指示詞、很多', ['prep', 'artprep', 'poss', 'demo', 'molto']],
+  ['「有」和數字', 'avere（有）、c\'è（那裡有）、數字、禮貌地說「我想要」', ['avere', 'numbers', 'avere-expr', 'ce', 'vorrei']],
+  ['現在式', '三種規則動詞換字尾就能說「誰做什麼」，再學否定、問句和敬稱「您」', ['pres-are', 'pres-ere', 'pres-ire', 'pres-isc', 'neg', 'questions', 'lei']],
+  ['去哪裡', '介係詞、去哪個城市、搭什麼車，常用的不規則動詞', ['prep', 'place', 'artprep', 'pres-irr', 'andare', 'transport', 'freq']],
+  ['能、想、知道，我的、這個', '想／能／必須、sapere 和 conoscere、所有格、指示詞、很多', ['modal', 'sapere', 'poss', 'demo', 'molto']],
   ['時間和天氣', '幾點、星期、月份，天氣怎麼說', ['time', 'dates', 'weather']],
   ['喜歡、自己和代名詞', '倒過來說的「喜歡」、反身動詞、受詞代名詞、si', ['piacere', 'refl', 'pron-obj', 'si']],
   ['過去式和命令', '「做了什麼」的兩種助動詞，還有請人做事', ['pp-avere', 'pp-essere', 'imper']],
