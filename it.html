@@ -4543,7 +4543,7 @@ function renderGram() {
   if (gramPaneId !== p.id) { gramPane = 'body'; gramPaneId = p.id; }
   if (!gx) gramPane = 'body';
   const seg = gx ? `<div class="seg gx-seg" role="group" aria-label="文法分頁">${[['body', '說明'], ['ex', '看範例'], ['q', '練習題']].map(([k, l]) => `<button data-gpane="${k}" aria-pressed="${gramPane === k}">${l}</button>`).join('')}</div>` : '';
-  const pane = gramPane === 'ex' ? gxExamplesHTML(gx) : gramPane === 'q' ? '<div id="gxQuiz" class="gx-quiz"></div>' : `<div class="gbody scroll-x">${p.body}</div>${gx ? `<div class="btnrow gx-cta"><button class="btn quiet" data-gpane="ex">看範例拆解</button><button class="btn solid" data-gpane="q">練習這個文法（${gx.q.length} 題）</button></div>` : ''}`;
+  const pane = gramPane === 'ex' ? gxExamplesHTML(gx) : gramPane === 'q' ? '<div id="gxQuiz" class="gx-quiz"></div>' : `<div class="gbody scroll-x">${p.body}</div>${gx ? `<div class="btnrow gx-cta"><button class="btn quiet" data-gpane="ex">看範例拆解</button><button class="btn solid" data-gpane="q">練習題（${gx.q.length} 題）</button></div>` : ''}`;
   host.innerHTML = `<button class="gr-back" id="grBack">‹ 文法列表</button>
     <div class="card"><div class="gr-head"><h2>${esc(p.title)}</h2><span class="lv">${esc(p.tag)}</span></div>${gxWhere(p.id)}${seg}${pane}</div>
     ${gramPane !== 'body' ? '' : `<div class="card"><div class="gp-title" style="margin-bottom:8px">App 裡用到的例句（${exs.length}）</div><p class="meta" style="margin:0 0 6px">黃色是這個文法點，點任何一個字可以查意思。</p>
