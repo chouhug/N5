@@ -2650,6 +2650,476 @@ window.LANGCFG = {
 })(typeof window !== 'undefined' ? window : globalThis);
 
 ;
+/* 西班牙文文法的範例拆解與練習題（1）：ser／estar、冠詞名詞、tener、現在式、不規則動詞
+   ES.GX[文法點 id] = {
+     ex: [[句子, 中文, [[字, 意思], …], [逐字說明…], 白話總結]],
+     q:  [[題目（___ 是空格）, 答案, [錯的選項…], 中文, 為什麼]]
+   }
+   每一關的句子只用到「這一關和前面關卡」教過的文法（關卡在 gxpath.js） */
+(function (G) {
+  const ES = G.ES || (G.ES = {});
+  ES.GX = Object.assign(ES.GX || {}, {
+    // ---------- 第 1 關：開口說 ----------
+    'ser': {
+      ex: [['Soy Howard, soy de Taiwán.', '我是 Howard，我來自台灣。', [['Soy', '我是'], ['Howard', 'Howard'], [',', ''], ['soy', '我是'], ['de', '來自'], ['Taiwán', '台灣']],
+        ['soy：ser（是）的「我」形。', 'yo（我）省略了，因為 soy 已經看得出是「我」。', 'ser de ＋ 地方＝來自哪裡。'],
+        'ser 就是英文的 be，用來說「是誰、是哪裡人、是什麼」。每個人稱長得不一樣：soy、eres、es、somos、sois、son。'],
+        ['Ella es profesora.', '她是老師。', [['Ella', '她'], ['es', '是'], ['profesora', '老師']],
+        ['es：ser 的「他／她」形。', '說職業時，前面不加「一個」。'],
+        '說職業、身分用 ser：Es profesora。']],
+      q: [['Tú ___ de México.', 'eres', ['es', 'soy'], '你來自墨西哥。', 'tú 配 eres。'],
+        ['Nosotros ___ estudiantes.', 'somos', ['son', 'sois'], '我們是學生。', 'nosotros 配 somos。'],
+        ['Ellos ___ médicos.', 'son', ['somos', 'es'], '他們是醫生。', 'ellos 配 son。']]
+    },
+    'estar': {
+      ex: [['¿Cómo estás? — Estoy bien.', '你好嗎？——我很好。', [['Cómo', '怎樣'], ['estás', '你（狀態）'], ['—', ''], ['Estoy', '我（狀態）'], ['bien', '好']],
+        ['estar 說「現在的狀態」：好不好、累不累。', 'estás 是「你」形，estoy 是「我」形。'],
+        '問候、心情、身體狀況都用 estar：estoy、estás、está、estamos、estáis、están。'],
+        ['Ana está cansada.', 'Ana 很累。', [['Ana', 'Ana'], ['está', '（現在）是'], ['cansada', '累的']],
+        ['está：estar 的「她」形。', '累不是她的個性，只是現在的狀態，所以用 estar。'],
+        '暫時的狀態用 estar。']],
+      q: [['Yo ___ bien, gracias.', 'estoy', ['soy', 'está'], '我很好，謝謝。', '身體狀況用 estar，yo → estoy。'],
+        ['¿Cómo ___ usted?', 'está', ['estás', 'es'], '您好嗎？', '對「您」用第三人稱 está。'],
+        ['Nosotros ___ cansados.', 'estamos', ['somos', 'están'], '我們很累。', '累是狀態，nosotros → estamos。']]
+    },
+    // ---------- 第 2 關：冠詞和名詞 ----------
+    'noun-gender': {
+      ex: [['El libro y la mesa.', '書和桌子。', [['El', '那本'], ['libro', '書'], ['y', '和'], ['la', '那張'], ['mesa', '桌子']],
+        ['libro：-o 結尾，通常是陽性，用 el。', 'mesa：-a 結尾，通常是陰性，用 la。'],
+        '看最後一個字母：-o 多半是陽性、-a 多半是陰性。-e 或子音結尾的要一個一個記。']],
+      q: [['___ casa', 'la', ['el', 'lo'], '那間房子', 'casa 是 -a 結尾，陰性。'],
+        ['___ perro', 'el', ['la', 'lo'], '那隻狗', 'perro 是 -o 結尾，陽性。'],
+        ['___ mano', 'la', ['el', 'lo'], '那隻手', 'mano 是例外：-o 結尾卻是陰性。']]
+    },
+    'art-indef': {
+      ex: [['Es un hotel y una playa.', '是一間飯店和一片海灘。', [['Es', '是'], ['un', '一間'], ['hotel', '飯店'], ['y', '和'], ['una', '一片'], ['playa', '海灘']],
+        ['un：hotel 是陽性。', 'una：playa 是陰性。'],
+        '「一個」也分男女：陽性 un，陰性 una；複數 unos、unas＝一些。']],
+      q: [['Es ___ chica.', 'una', ['un', 'uno'], '是一個女孩。', 'chica 是陰性，用 una。'],
+        ['Es ___ libro.', 'un', ['una', 'uno'], '是一本書。', 'libro 是陽性，用 un（不是 uno）。'],
+        ['Son ___ amigas.', 'unas', ['unos', 'una'], '是一些朋友（女生）。', 'amigas 是陰性複數，用 unas。']]
+    },
+    'art-def': {
+      ex: [['Los chicos y las chicas.', '男孩們和女孩們。', [['Los', '那些'], ['chicos', '男孩'], ['y', '和'], ['las', '那些'], ['chicas', '女孩']],
+        ['el 的複數是 los，la 的複數是 las。'],
+        '定冠詞只有四個：el、la、los、las，比義大利文簡單很多。']],
+      q: [['___ coches son nuevos.', 'Los', ['Las', 'El'], '那些車是新的。', 'coches 是陽性複數，用 los。'],
+        ['___ flores son bonitas.', 'Las', ['Los', 'La'], '那些花很漂亮。', 'flores 是陰性複數，用 las。'],
+        ['___ agua está fría.', 'El', ['La', 'Lo'], '水是冰的。', 'agua 是陰性，但重音 a 開頭，單數用 el。']]
+    },
+    'noun-plural': {
+      ex: [['Son libros y flores.', '這些是書和花。', [['Son', '是'], ['libros', '書（複數）'], ['y', '和'], ['flores', '花（複數）']],
+        ['母音結尾加 -s：libro → libros。', '子音結尾加 -es：flor → flores。'],
+        '西班牙文的複數很規則：母音結尾加 -s，子音結尾加 -es。']],
+      q: [['Son ___ . (casa)', 'casas', ['cases', 'casaes'], '這些是房子。', '母音結尾加 -s。'],
+        ['Son ___ . (ciudad)', 'ciudades', ['ciudads', 'ciudad'], '這些是城市。', '子音結尾加 -es。'],
+        ['Son ___ . (lápiz)', 'lápices', ['lápizes', 'lápizs'], '這些是鉛筆。', '-z 結尾的複數改成 -ces。']]
+    },
+    'adj': {
+      ex: [['Es una casa blanca.', '是一間白色的房子。', [['Es', '是'], ['una', '一間'], ['casa', '房子'], ['blanca', '白色的']],
+        ['blanca 放在名詞後面，跟中文順序相反。', 'casa 是陰性，所以 blanco → blanca。'],
+        '形容詞通常放在名詞後面，而且要跟名詞同一個性別和單複數。'],
+        ['Los chicos son altos.', '那些男孩很高。', [['Los', '那些'], ['chicos', '男孩'], ['son', '是'], ['altos', '高的']],
+        ['chicos 是陽性複數，alto 也跟著變 altos。'],
+        '名詞變成複數，形容詞也一起加 -s。']],
+      q: [['una chica ___', 'simpática', ['simpático', 'simpáticos'], '一個親切的女孩', 'chica 是陰性單數，用 -a。'],
+        ['los coches ___', 'rojos', ['rojo', 'rojas'], '那些紅色的車', 'coches 是陽性複數，用 -os。'],
+        ['una mujer ___', 'inteligente', ['inteligenta', 'inteligentes'], '一位聰明的女士', '-e 結尾的形容詞男女都一樣，不用改 -a。']]
+    },
+    // ---------- 第 3 關：「有」和數字 ----------
+    'tener': {
+      ex: [['Tengo un hermano.', '我有一個哥哥。', [['Tengo', '我有'], ['un', '一個'], ['hermano', '哥哥']],
+        ['tengo：tener（有）的「我」形，不規則。'],
+        'tener＝「有」：tengo、tienes、tiene、tenemos、tenéis、tienen。'],
+        ['Tengo hambre y tengo veinte años.', '我餓了，我二十歲。', [['Tengo', '我有'], ['hambre', '飢餓'], ['y', '和'], ['tengo', '我有'], ['veinte', '二十'], ['años', '年']],
+        ['餓、渴、冷、熱、怕、幾歲，西班牙文都說「有」。'],
+        '「我餓」＝我有飢餓；「我 20 歲」＝我有 20 年。']],
+      q: [['¿___ hermanos?', 'Tienes', ['Tiene', 'Tengo'], '你有兄弟姊妹嗎？', 'tú 的形是 tienes。'],
+        ['Tengo ___ .', 'frío', ['fría', 'fríos'], '我很冷。', 'tener frío 是固定說法，frío 不跟著人變。'],
+        ['Ellos ___ un perro.', 'tienen', ['tenen', 'tiene'], '他們有一隻狗。', 'ellos 配 tienen。']]
+    },
+    'numbers': {
+      ex: [['Tengo veintiún años.', '我二十一歲。', [['Tengo', '我有'], ['veintiún', '二十一'], ['años', '年']],
+        ['21～29 寫成一個字：veinte ＋ uno → veintiuno。', '放在名詞前面時 uno 變 un：veintiún años。'],
+        '十幾、二十幾都連在一起寫；31 以後用 y 分開：treinta y uno。']],
+      q: [['Tengo ___ años. (16)', 'dieciséis', ['diez y seis', 'seisdiez'], '我十六歲。', '16～19 連寫：dieciséis。'],
+        ['Son ___ euros. (35)', 'treinta y cinco', ['treintacinco', 'tres cinco'], '三十五歐元。', '31 以後用 y 連接。'],
+        ['Hay ___ personas. (100)', 'cien', ['ciento', 'mil'], '有一百個人。', '剛好一百說 cien；101 以上才是 ciento…。']]
+    },
+    'hay': {
+      ex: [['Hay un banco y dos tiendas.', '有一間銀行和兩間商店。', [['Hay', '有'], ['un', '一間'], ['banco', '銀行'], ['y', '和'], ['dos', '兩'], ['tiendas', '商店']],
+        ['hay＝「（某處）有」，單數複數都用 hay，不會變。', '這個「有」是存在，不是擁有（那是 tener）。'],
+        'hay 很好用：後面接一個或很多個都一樣。']],
+      q: [['___ dos bancos.', 'Hay', ['Tienen', 'Son'], '有兩間銀行。', '存在用 hay，複數也不變。'],
+        ['¿___ un hotel?', 'Hay', ['Es', 'Tiene'], '有飯店嗎？', '問「有沒有」用 hay。'],
+        ['No ___ problema.', 'hay', ['es', 'tengo'], '沒問題。', '固定說法：no hay problema。']]
+    },
+    'quisiera': {
+      ex: [['Quisiera un café, por favor.', '我想要一杯咖啡，麻煩了。', [['Quisiera', '我想要'], ['un', '一杯'], ['café', '咖啡'], [',', ''], ['por', '請'], ['favor', '（幫忙）']],
+        ['quisiera 比 quiero 客氣，像英文的 I would like。'],
+        '點餐、請求的時候說 quisiera，聽起來比較有禮貌。']],
+      q: [['___ un vaso de agua, por favor.', 'Quisiera', ['Quieres', 'Quiere'], '我想要一杯水，麻煩了。', '客氣的請求用 quisiera。'],
+        ['¿Me ___ un café?', 'pone', ['pones', 'pongo'], '可以給我一杯咖啡嗎？', '在西班牙點餐常說 ¿Me pone…?（對店員用 usted 形）。'],
+        ['Quisiera ___ mesa para dos.', 'una', ['un', 'uno'], '我想要一張兩人桌。', 'mesa 是陰性，用 una。']]
+    },
+    // ---------- 第 4 關：現在式 ----------
+    'pres-ar': {
+      ex: [['Hablo español.', '我說西班牙文。', [['Hablo', '我說'], ['español', '西班牙文']],
+        ['hablar 去掉 -ar，剩 habl-，「我」加 -o → hablo。'],
+        '-ar 動詞先切掉 -ar，再接人稱詞尾：-o、-as、-a、-amos、-áis、-an。'],
+        ['¿Trabajáis mucho?', '你們工作很多嗎？', [['Trabajáis', '你們工作'], ['mucho', '很多']],
+        ['trabajar → trabaj- ＋ -áis（你們）。'],
+        '同一個動詞，主詞不同，最後幾個字母就不同，所以主詞常常省略。']],
+      q: [['Tú ___ muy bien. (hablar)', 'hablas', ['habla', 'hablo'], '你說得很好。', 'tú 的詞尾是 -as。'],
+        ['Nosotros ___ la tele. (mirar)', 'miramos', ['miráis', 'miran'], '我們在看電視。', 'nosotros 的詞尾是 -amos。'],
+        ['Ellos ___ mucho. (trabajar)', 'trabajan', ['trabaja', 'trabajáis'], '他們工作很多。', 'ellos 的詞尾是 -an。']]
+    },
+    'pres-er': {
+      ex: [['Como pan y bebo leche.', '我吃麵包、喝牛奶。', [['Como', '我吃'], ['pan', '麵包'], ['y', '和'], ['bebo', '我喝'], ['leche', '牛奶']],
+        ['comer → com- ＋ -o；beber → beb- ＋ -o。'],
+        '-er 動詞的詞尾：-o、-es、-e、-emos、-éis、-en。']],
+      q: [['Él ___ un libro. (leer)', 'lee', ['lea', 'lees'], '他在讀一本書。', 'él 的詞尾是 -e。'],
+        ['Vosotros ___ mucho. (comer)', 'coméis', ['comáis', 'comen'], '你們吃很多。', 'vosotros 的詞尾是 -éis（-ar 動詞才是 -áis）。'],
+        ['Ellas ___ agua. (beber)', 'beben', ['beban', 'bebe'], '她們喝水。', '-er 動詞的 ellas 是 -en。']]
+    },
+    'pres-ir': {
+      ex: [['Vivo cerca y escribo mucho.', '我住在附近，而且寫很多東西。', [['Vivo', '我住'], ['cerca', '附近'], ['y', '和'], ['escribo', '我寫'], ['mucho', '很多']],
+        ['vivir → viv- ＋ -o。'],
+        '-ir 動詞跟 -er 幾乎一樣，只有「我們」-imos、「你們」-ís 不同。']],
+      q: [['Nosotros ___ cerca. (vivir)', 'vivimos', ['vivemos', 'viven'], '我們住在附近。', '-ir 動詞的 nosotros 是 -imos。'],
+        ['¿Tú ___ la puerta? (abrir)', 'abres', ['abras', 'abris'], '你開門嗎？', 'tú 的詞尾是 -es。'],
+        ['Vosotros ___ bien. (escribir)', 'escribís', ['escribéis', 'escriben'], '你們寫得很好。', '-ir 動詞的 vosotros 是 -ís。']]
+    },
+    'neg': {
+      ex: [['No hablo alemán.', '我不會說德文。', [['No', '不'], ['hablo', '說'], ['alemán', '德文']],
+        ['no 直接放在動詞前面。'],
+        '否定很簡單：動詞前面加 no。'],
+        ['No como nunca carne.', '我從來不吃肉。', [['No', '不'], ['como', '吃'], ['nunca', '從來'], ['carne', '肉']],
+        ['no … nunca＝從來不，nunca 放在動詞後面。', 'nunca 也可以直接放動詞前面：Nunca como carne。'],
+        '西班牙文常用「雙重否定」：no 在前、nunca／nada 在後。']],
+      q: [['___ trabajo hoy.', 'No', ['Nada', 'Nunca no'], '我今天不工作。', '動詞前面加 no。'],
+        ['No bebo ___ café.', 'nunca', ['no', 'sí'], '我從來不喝咖啡。', 'no … nunca＝從來不。'],
+        ['No como ___ .', 'nada', ['nunca no', 'no'], '我什麼都不吃。', 'no … nada＝什麼都不。']]
+    },
+    'questions': {
+      ex: [['¿Dónde vives?', '你住在哪裡？', [['Dónde', '哪裡'], ['vives', '你住']],
+        ['問句前面要加倒過來的 ¿，後面加 ?。', '疑問詞都有重音符號：dónde、qué、cómo。'],
+        '疑問詞放最前面，動詞緊跟在後，句子前後都要有問號。'],
+        ['¿Cuánto cuesta?', '多少錢？', [['Cuánto', '多少'], ['cuesta', '值']],
+        ['cuesta：costar 的「它」形，主詞（那東西）省略了。'],
+        '買東西最常用的一句：¿Cuánto cuesta?']],
+      q: [['¿___ te llamas?', 'Cómo', ['Qué', 'Quién'], '你叫什麼名字？', '字面是「你怎麼叫自己」，用 cómo。'],
+        ['¿___ es él?', 'Quién', ['Qué', 'Dónde'], '他是誰？', '問人用 quién。'],
+        ['¿___ estudias español?', 'Por qué', ['Porque', 'Cuándo'], '你為什麼學西班牙文？', '問「為什麼」是分開的 por qué（有重音）；porque 是「因為」。']]
+    },
+    'usted': {
+      ex: [['¿Cómo está usted, señora?', '您好嗎，太太？', [['Cómo', '怎樣'], ['está', '（狀態）'], ['usted', '您'], [',', ''], ['señora', '太太']],
+        ['usted（您）的動詞用第三人稱，跟「他／她」一樣：está，不是 estás。'],
+        '對不熟或長輩說 usted，動詞用 él／ella 的形。']],
+      q: [['¿Usted ___ español?', 'habla', ['hablas', 'hablo'], '您說西班牙文嗎？', 'usted 用第三人稱 habla。'],
+        ['¿Ustedes ___ de aquí?', 'son', ['sois', 'es'], '你們（敬稱）是本地人嗎？', 'ustedes 用 ellos 的形 son。'],
+        ['¿Cómo se ___ usted?', 'llama', ['llamas', 'llamo'], '您貴姓大名？', '對「您」：¿Cómo se llama usted?']]
+    },
+    // ---------- 第 5 關：不規則動詞 ----------
+    'stem-ie': {
+      ex: [['Pienso que sí.', '我想是的。', [['Pienso', '我想'], ['que', '（說）'], ['sí', '是']],
+        ['pensar 的 e 在重音位置變成 ie：pens- → piens-o。'],
+        '有些動詞的 e 會變成 ie，但 nosotros、vosotros 不變：pienso、piensas…pensamos。']],
+      q: [['¿Qué ___ tú? (querer)', 'quieres', ['queres', 'quiere'], '你想要什麼？', 'querer：e → ie，tú → quieres。'],
+        ['Nosotros ___ hoy. (empezar)', 'empezamos', ['empiezamos', 'empiezan'], '我們今天開始。', 'nosotros 不變：empezamos。'],
+        ['La película ___ ahora. (empezar)', 'empieza', ['empeza', 'empiezo'], '電影現在開始。', 'e → ie：empieza。']]
+    },
+    'stem-ue': {
+      ex: [['Duermo ocho horas.', '我睡八個小時。', [['Duermo', '我睡'], ['ocho', '八'], ['horas', '小時']],
+        ['dormir 的 o 變成 ue：dorm- → duerm-o。'],
+        'o → ue 的動詞（poder、dormir、volver），nosotros、vosotros 一樣不變。']],
+      q: [['¿___ ayudarme? (poder, tú)', 'Puedes', ['Podes', 'Puede'], '你可以幫我嗎？', 'poder：o → ue，tú → puedes。'],
+        ['Nosotros ___ mañana. (volver)', 'volvemos', ['vuelvemos', 'vuelven'], '我們明天回來。', 'nosotros 不變：volvemos。'],
+        ['¿Cuánto ___ ? (costar)', 'cuesta', ['costa', 'cuestan'], '多少錢？', 'costar：o → ue，單數 cuesta。']]
+    },
+    'stem-i': {
+      ex: [['Pido una pizza.', '我點一個披薩。', [['Pido', '我點'], ['una', '一個'], ['pizza', '披薩']],
+        ['pedir 的 e 變成 i：ped- → pid-o。'],
+        'e → i 的動詞不多：pedir、repetir、servir，nosotros、vosotros 不變。']],
+      q: [['¿Qué ___ tú? (pedir)', 'pides', ['pedes', 'pide'], '你點什麼？', 'pedir：e → i，tú → pides。'],
+        ['Ellos ___ agua. (pedir)', 'piden', ['peden', 'pidan'], '他們點水。', 'pedir：e → i，ellos → piden。'],
+        ['Nosotros ___ café. (pedir)', 'pedimos', ['pidimos', 'piden'], '我們點咖啡。', 'nosotros 不變：pedimos。']]
+    },
+    'yo-go': {
+      ex: [['Hago la cama y salgo.', '我整理床鋪，然後出門。', [['Hago', '我做'], ['la', '那張'], ['cama', '床'], ['y', '和'], ['salgo', '我出去']],
+        ['hacer 的「我」是 hago，salir 的「我」是 salgo。', '只有「我」不規則，其他人稱照規則：haces、hace…'],
+        '有一群動詞只有 yo 形加 -go：hago、pongo、salgo、tengo、vengo。']],
+      q: [['Yo ___ los deberes. (hacer)', 'hago', ['hazo', 'haco'], '我做功課。', 'hacer 的 yo 形是 hago。'],
+        ['Yo ___ ahora. (salir)', 'salgo', ['salo', 'sale'], '我現在出門。', 'salir 的 yo 形是 salgo。'],
+        ['Yo ___ la mesa. (poner)', 'pongo', ['pono', 'ponigo'], '我擺餐桌。', 'poner 的 yo 形是 pongo。']]
+    },
+    'ser-estar': {
+      ex: [['Ana es simpática, pero hoy está triste.', 'Ana 很親切，但今天很難過。', [['Ana', 'Ana'], ['es', '是（個性）'], ['simpática', '親切的'], [',', ''], ['pero', '但是'], ['hoy', '今天'], ['está', '是（狀態）'], ['triste', '難過']],
+        ['個性、本質用 ser：es simpática。', '現在的心情、狀態用 estar：está triste。'],
+        '問自己：這是「她是什麼樣的人」還是「她現在怎麼了」？前者 ser，後者 estar。']],
+      q: [['Madrid ___ en España.', 'está', ['es', 'hay'], '馬德里在西班牙。', '「在某個地方」用 estar。'],
+        ['Pedro ___ médico.', 'es', ['está', 'tiene'], 'Pedro 是醫生。', '職業、身分用 ser。'],
+        ['La sopa ___ fría.', 'está', ['es', 'son'], '湯是冷的（涼掉了）。', '現在的狀態用 estar。']]
+    }
+  });
+})(typeof window !== 'undefined' ? window : globalThis);
+
+;
+/* 西班牙文文法的範例拆解與練習題（2）：介係詞、限定詞、時間、gustar、過去與命令、長句子 */
+(function (G) {
+  const ES = G.ES || (G.ES = {});
+  ES.GX = Object.assign(ES.GX || {}, {
+    // ---------- 第 6 關：去哪裡 ----------
+    'prep': {
+      ex: [['Vivo en Madrid con Juan.', '我和 Juan 住在馬德里。', [['Vivo', '我住'], ['en', '在'], ['Madrid', '馬德里'], ['con', '和'], ['Juan', 'Juan']],
+        ['en：在某個地方。', 'con：和誰一起。'],
+        '介係詞放在名詞前面，跟中文的「在、和、從」差不多。'],
+        ['El libro es de Ana.', '這本書是 Ana 的。', [['El', '那本'], ['libro', '書'], ['es', '是'], ['de', '…的'], ['Ana', 'Ana']],
+        ['de＝「…的」，但要放在人名前面。'],
+        '中文說「Ana 的書」，西班牙文說「書 de Ana」。']],
+      q: [['Soy ___ Taiwán.', 'de', ['en', 'con'], '我來自台灣。', 'ser de ＋ 地方＝來自那裡。'],
+        ['Este regalo es ___ ti.', 'para', ['por', 'con'], '這個禮物是給你的。', 'para＝給、為了。'],
+        ['Trabajo ___ una oficina.', 'en', ['a', 'de'], '我在辦公室工作。', '在某個地方用 en。']]
+    },
+    'artprep': {
+      ex: [['Voy al cine.', '我去電影院。', [['Voy', '我去'], ['al', '到那個'], ['cine', '電影院']],
+        ['al ＝ a ＋ el，兩個字黏在一起。'],
+        '西班牙文只有兩個要合併：a ＋ el ＝ al，de ＋ el ＝ del。'],
+        ['Vengo del trabajo.', '我從公司回來。', [['Vengo', '我來'], ['del', '從那個'], ['trabajo', '工作（地方）']],
+        ['del ＝ de ＋ el。', 'la、los、las 都不合併：a la、de los。'],
+        '只有碰到 el 才合併，其他冠詞照寫。']],
+      q: [['Voy ___ parque. (a + el)', 'al', ['a el', 'a la'], '我去公園。', 'a ＋ el ＝ al。'],
+        ['La casa ___ profesor. (de + el)', 'del', ['de el', 'dela'], '老師的家。', 'de ＋ el ＝ del。'],
+        ['Voy ___ playa. (a + la)', 'a la', ['al', 'ala'], '我去海灘。', 'la 不合併：a la。']]
+    },
+    'transport': {
+      ex: [['Voy al trabajo en metro, pero vuelvo a pie.', '我搭捷運去上班，但走路回家。', [['Voy', '我去'], ['al', '到'], ['trabajo', '工作'], ['en', '搭'], ['metro', '捷運'], [',', ''], ['pero', '但是'], ['vuelvo', '我回來'], ['a', '用'], ['pie', '腳']],
+        ['交通工具前用 en，不加冠詞：en tren、en coche。', '走路是例外：a pie。'],
+        '「搭什麼去」＝ en ＋ 交通工具；「走路」＝ a pie。']],
+      q: [['Voy ___ autobús.', 'en', ['a', 'con el'], '我搭公車去。', '交通工具用 en。'],
+        ['Voy a clase ___ pie.', 'a', ['en', 'con'], '我走路去上課。', '走路固定是 a pie。'],
+        ['Vamos a Sevilla ___ tren.', 'en', ['a', 'por el'], '我們搭火車去塞維亞。', '交通工具用 en。']]
+    },
+    'ir-a': {
+      ex: [['Voy a estudiar mañana.', '我明天要念書。', [['Voy', '我去'], ['a', '（要）'], ['estudiar', '念書'], ['mañana', '明天']],
+        ['ir（去）＋ a ＋ 原形＝「要去做…」，用來說未來。', 'voy 照人稱變，estudiar 保持原形。'],
+        '最簡單的未來式：voy a、vas a、va a ＋ 原形。']],
+      q: [['Mañana ___ a llover.', 'va', ['vas', 'voy'], '明天會下雨。', '天氣是「它」，用 va。'],
+        ['¿Qué ___ a hacer hoy?', 'vas', ['va', 'vamos'], '你今天要做什麼？', 'tú 配 vas。'],
+        ['Vamos a ___ la cena.', 'preparar', ['preparamos', 'preparado'], '我們要做晚餐。', 'ir a 後面接原形。']]
+    },
+    'freq': {
+      ex: [['Siempre como en casa, pero a veces voy al restaurante.', '我總是在家吃，但有時候去餐廳。', [['Siempre', '總是'], ['como', '我吃'], ['en', '在'], ['casa', '家'], [',', ''], ['pero', '但是'], ['a veces', '有時候'], ['voy', '我去'], ['al', '到'], ['restaurante', '餐廳']],
+        ['siempre（總是）、a veces（有時候）通常放在句首或動詞前面。'],
+        'siempre 總是、a menudo 常常、a veces 有時候、nunca 從不。']],
+      q: [['___ desayuno en casa.', 'Siempre', ['Nunca no', 'Veces'], '我總是在家吃早餐。', '總是＝siempre。'],
+        ['No bebo ___ alcohol.', 'nunca', ['siempre', 'a veces'], '我從不喝酒。', '和 no 配在一起的是 nunca。'],
+        ['A ___ voy en bici.', 'veces', ['menudo veces', 'vez'], '我有時候騎腳踏車去。', 'a veces＝有時候。']]
+    },
+    // ---------- 第 7 關：能、想、知道，我的、這個 ----------
+    'modal': {
+      ex: [['¿Puedo entrar?', '我可以進去嗎？', [['Puedo', '我可以'], ['entrar', '進去']],
+        ['puedo：poder（能夠）的「我」形，會變。', 'entrar 用原形，不用變。'],
+        '「想／能／必須 ＋ 做某事」：前面的動詞照人稱變，後面的動詞保持原形。'],
+        ['Tengo que trabajar mañana.', '我明天得上班。', [['Tengo', '我有'], ['que', '（要）'], ['trabajar', '工作'], ['mañana', '明天']],
+        ['tener que ＋ 原形＝必須做…。'],
+        'quiero 想、puedo 能、tengo que 必須，後面一律接原形。']],
+      q: [['¿Quieres ___ un café?', 'tomar', ['tomas', 'toma'], '你想喝杯咖啡嗎？', 'querer 後面的動詞用原形。'],
+        ['Tenemos ___ salir ya.', 'que', ['de', 'a'], '我們得走了。', '「必須」是 tener que。'],
+        ['No ___ venir hoy. (poder, yo)', 'puedo', ['podo', 'puede'], '我今天不能來。', 'poder 的 yo 形是 puedo。']]
+    },
+    'saber': {
+      ex: [['Sé nadar, pero no conozco Madrid.', '我會游泳，但不熟馬德里。', [['Sé', '我會'], ['nadar', '游泳'], [',', ''], ['pero', '但是'], ['no', '不'], ['conozco', '認識'], ['Madrid', '馬德里']],
+        ['sé：saber，知道一件事、會做一件事。', 'conozco：conocer，認識人、熟悉地方。'],
+        'saber 是「知道／會」，後面接事情或動詞；conocer 是「認識」，後面接人或地方。']],
+      q: [['¿___ a María?', 'Conoces', ['Sabes', 'Eres'], '你認識 María 嗎？', '認識一個人用 conocer。'],
+        ['No ___ dónde está la estación.', 'sé', ['conozco', 'soy'], '我不知道車站在哪。', '知道一件事用 saber。'],
+        ['Ella ___ cocinar muy bien.', 'sabe', ['conoce', 'es'], '她很會做菜。', '「會做某事」用 saber ＋ 原形。']]
+    },
+    'personal-a': {
+      ex: [['Veo a Juan.', '我看到 Juan。', [['Veo', '我看到'], ['a', '（對人）'], ['Juan', 'Juan']],
+        ['受詞是「人」的時候，前面要加 a，這個 a 不用翻譯。'],
+        '看到東西：Veo la casa；看到人：Veo a Juan。'],
+        ['Visito a mi abuela.', '我去看奶奶。', [['Visito', '我拜訪'], ['a', '（對人）'], ['mi', '我的'], ['abuela', '奶奶']],
+        ['abuela 是人，所以前面加 a。'],
+        '只要動作的對象是人，就在前面放一個 a。']],
+      q: [['Busco ___ mi hermano.', 'a', ['—', 'en'], '我在找我哥哥。', '找的是人，要加 a。'],
+        ['Busco ___ mis llaves.', '—', ['a', 'de'], '我在找我的鑰匙。', '鑰匙不是人，不加 a。'],
+        ['¿Conoces ___ Pedro?', 'a', ['—', 'de'], '你認識 Pedro 嗎？', 'Pedro 是人，要加 a。']]
+    },
+    'poss': {
+      ex: [['Mi casa es pequeña.', '我的房子很小。', [['Mi', '我的'], ['casa', '房子'], ['es', '是'], ['pequeña', '小的']],
+        ['mi 放在名詞前面，不加冠詞。'],
+        'mi、tu、su 只分單複數，不分男女：mi casa、mi libro、mis libros。'],
+        ['Nuestra madre es profesora.', '我們的媽媽是老師。', [['Nuestra', '我們的'], ['madre', '媽媽'], ['es', '是'], ['profesora', '老師']],
+        ['nuestro／nuestra 要跟後面的名詞配性別。'],
+        '「我們的」「你們的」要分男女：nuestro padre、nuestra madre。']],
+      q: [['___ amigos son simpáticos.', 'Mis', ['Mi', 'Mios'], '我的朋友們很親切。', '複數名詞用 mis。'],
+        ['___ casa es grande.', 'Nuestra', ['Nuestro', 'Nuestros'], '我們的房子很大。', 'casa 是陰性，用 nuestra。'],
+        ['¿Es ___ coche, señor?', 'su', ['tu', 'sus'], '先生，這是您的車嗎？', '「您的」用 su。']]
+    },
+    'demo': {
+      ex: [['Este libro es bueno, esa revista no.', '這本書很好，那本雜誌不好。', [['Este', '這本'], ['libro', '書'], ['es', '是'], ['bueno', '好的'], [',', ''], ['esa', '那本'], ['revista', '雜誌'], ['no', '不']],
+        ['este：近的東西，libro 陽性。', 'esa：比較遠的，revista 陰性。'],
+        'este＝這、ese＝那、aquel＝那（更遠），都要跟名詞變：este／esta／estos／estas。']],
+      q: [['___ chica es mi hermana.', 'Esta', ['Este', 'Estos'], '這個女孩是我妹妹。', 'chica 是陰性單數，用 esta。'],
+        ['___ zapatos son nuevos.', 'Estos', ['Estas', 'Este'], '這雙鞋是新的。', 'zapatos 是陽性複數，用 estos。'],
+        ['¿Cuánto cuesta ___ ?', 'esto', ['este de', 'estas'], '這個多少錢？', '不知道是什麼東西時，用中性的 esto。']]
+    },
+    'muy': {
+      ex: [['Es muy simpática y tiene muchos amigos.', '她很親切，而且有很多朋友。', [['Es', '她是'], ['muy', '很'], ['simpática', '親切的'], ['y', '和'], ['tiene', '有'], ['muchos', '很多'], ['amigos', '朋友']],
+        ['muy 放在形容詞前面＝很，不會變。', 'mucho 放在名詞前面＝很多，要跟名詞變（amigos → muchos）。'],
+        '「很＋形容詞」用 muy；「很多＋名詞」用 mucho／mucha／muchos／muchas。']],
+      q: [['La casa es ___ bonita.', 'muy', ['mucho', 'mucha'], '房子很漂亮。', '修飾形容詞用 muy。'],
+        ['Hay ___ personas.', 'muchas', ['muy', 'muchos'], '有很多人。', 'personas 是陰性複數。'],
+        ['Trabajo ___ .', 'mucho', ['muy', 'mucha'], '我工作很多。', '放在動詞後面當「很多」用 mucho，不變。']]
+    },
+    // ---------- 第 8 關：時間和天氣 ----------
+    'time': {
+      ex: [['Son las tres y media.', '現在三點半。', [['Son', '是'], ['las', '那些'], ['tres', '三（點）'], ['y', '加'], ['media', '半']],
+        ['幾點用 son las ＋ 數字（因為 horas 是複數）。', 'y media＝再加半小時。'],
+        '問：¿Qué hora es? 答：Son las … ；只有一點是 Es la una。'],
+        ['La clase empieza a las nueve.', '課九點開始。', [['La', '那堂'], ['clase', '課'], ['empieza', '開始'], ['a', '在'], ['las', '（點）'], ['nueve', '九']],
+        ['「在幾點」用 a las。'],
+        '「現在幾點」用 son las，「在幾點做某事」用 a las。']],
+      q: [['___ las cinco.', 'Son', ['Es', 'Hay'], '現在五點。', '兩點以後都用 son las。'],
+        ['___ la una.', 'Es', ['Son', 'Está'], '現在一點。', '一點是單數：es la una。'],
+        ['Nos vemos ___ las ocho.', 'a', ['en', 'de'], '我們八點見。', '「在幾點」用 a las。']]
+    },
+    'dates': {
+      ex: [['Los lunes voy al gimnasio.', '我每週一去健身房。', [['Los', '每個'], ['lunes', '星期一'], ['voy', '我去'], ['al', '到'], ['gimnasio', '健身房']],
+        ['los lunes＝每週一；el lunes＝這個星期一。'],
+        '星期前面加 el 或 los，不用介係詞。'],
+        ['En julio hace calor.', '七月很熱。', [['En', '在'], ['julio', '七月'], ['hace', '（天氣）是'], ['calor', '熱']],
+        ['月份前面用 en。', '月份、星期都小寫開頭。'],
+        '在幾月：en julio；在星期幾：el lunes（不加 en）。']],
+      q: [['Mi cumpleaños es ___ mayo.', 'en', ['a', 'el'], '我的生日在五月。', '月份前用 en。'],
+        ['___ domingo no trabajo.', 'El', ['En', 'A'], '這個星期天我不工作。', '星期前用 el，不用 en。'],
+        ['En ___ hace frío.', 'invierno', ['verano', 'julio'], '冬天很冷。', 'invierno 是冬天，verano 是夏天。']]
+    },
+    'weather': {
+      ex: [['Hoy hace buen tiempo.', '今天天氣很好。', [['Hoy', '今天'], ['hace', '做（天氣）'], ['buen', '好的'], ['tiempo', '天氣']],
+        ['天氣用 hacer（做）：hace calor、hace frío、hace sol。'],
+        '西班牙文說天氣「做熱、做冷」，動詞用 hace。'],
+        ['Hoy llueve.', '今天在下雨。', [['Hoy', '今天'], ['llueve', '下雨']],
+        ['llueve 一個字就是「下雨」，沒有主詞。'],
+        '下雨 llueve、下雪 nieva，不用說「天」。']],
+      q: [['Hoy ___ frío.', 'hace', ['es', 'tiene'], '今天很冷。', '天氣冷熱用 hace。'],
+        ['¿Qué tiempo ___ ?', 'hace', ['es', 'está'], '天氣怎麼樣？', '問天氣：¿Qué tiempo hace?'],
+        ['En Taipéi ___ mucho.', 'llueve', ['hace lluvia', 'es lluvia'], '台北很常下雨。', '下雨直接說 llueve。']]
+    },
+    // ---------- 第 9 關：喜歡、自己和代名詞 ----------
+    'gustar': {
+      ex: [['Me gusta el café.', '我喜歡咖啡。', [['Me', '對我'], ['gusta', '討人喜歡'], ['el', '那個'], ['café', '咖啡']],
+        ['字面是「咖啡讓我喜歡」：咖啡才是主詞。', 'me＝對我；gusta 跟著咖啡（單數）。'],
+        '西班牙文的「喜歡」是倒過來說的：被喜歡的東西是主詞，喜歡的人放前面用 me、te、le…。'],
+        ['Me gustan los perros.', '我喜歡狗。', [['Me', '對我'], ['gustan', '討人喜歡'], ['los', '那些'], ['perros', '狗']],
+        ['perros 是複數，所以動詞變 gustan。', '要加冠詞 los，不能只說 gustan perros。'],
+        '喜歡一個東西 → gusta；喜歡好幾個 → gustan。']],
+      q: [['¿Te ___ el té?', 'gusta', ['gustan', 'gustas'], '你喜歡茶嗎？', 'el té 是單數，用 gusta。'],
+        ['Me ___ los idiomas.', 'gustan', ['gusta', 'gusto'], '我喜歡語言。', 'los idiomas 是複數，用 gustan。'],
+        ['A mi madre ___ gusta leer.', 'le', ['me', 'se'], '我媽媽喜歡閱讀。', '「對她」用 le。']]
+    },
+    'refl': {
+      ex: [['Me llamo Howard.', '我叫 Howard。', [['Me', '我自己'], ['llamo', '叫'], ['Howard', 'Howard']],
+        ['字面是「我把自己叫做 Howard」。', 'me 放在動詞前面。'],
+        '反身動詞是「對自己做」：起床＝把自己叫起來，所以前面有 me、te、se…。'],
+        ['Nos levantamos a las siete.', '我們七點起床。', [['Nos', '我們自己'], ['levantamos', '起'], ['a', '在'], ['las', '（點）'], ['siete', '七']],
+        ['nos 配 nosotros，levantamos 也是 nosotros 形。'],
+        '前面的小字和後面的動詞要對到同一個人。']],
+      q: [['¿Cómo te ___ ?', 'llamas', ['llamo', 'llama'], '你叫什麼名字？', 'te 配 tú，動詞也用 tú 形。'],
+        ['Él ___ ducha por la mañana.', 'se', ['te', 'me'], '他早上洗澡。', '「他自己」用 se。'],
+        ['Yo ___ acuesto tarde.', 'me', ['se', 'nos'], '我很晚睡。', '「我自己」用 me。']]
+    },
+    'pron-obj': {
+      ex: [['Te llamo mañana.', '我明天打給你。', [['Te', '你'], ['llamo', '我打電話'], ['mañana', '明天']],
+        ['te＝「你」當受詞，放在動詞前面。'],
+        '中文是「我 打給 你」，西班牙文把「你」放到動詞前面：te llamo。'],
+        ['¿El libro? Lo tengo yo.', '那本書？在我這裡。', [['El', '那本'], ['libro', '書'], ['Lo', '它'], ['tengo', '有'], ['yo', '我']],
+        ['lo 代替前面說過的 el libro（陽性）。', '陰性的東西用 la。'],
+        '已經說過的東西不重複，用 lo／la 代替，放在動詞前面。']],
+      q: [['___ quiero.', 'Te', ['Tú', 'Ti'], '我愛你。', '受詞「你」用 te，放在動詞前。'],
+        ['¿La película? Sí, ___ vi.', 'la', ['lo', 'le'], '那部電影？看過了。', 'película 是陰性，用 la。'],
+        ['Marta ___ espera.', 'nos', ['nosotros', 'os'], 'Marta 在等我們。', '受詞「我們」用 nos。']]
+    },
+    'se': {
+      ex: [['¿Cómo se dice «gracias» en chino?', '「gracias」中文怎麼說？', [['Cómo', '怎麼'], ['se', '人們'], ['dice', '說'], ['«gracias»', '「謝謝」'], ['en', '用'], ['chino', '中文']],
+        ['se ＋ 第三人稱動詞＝「一般人會…」，不指特定的人。'],
+        '問「這裡怎麼做、這個怎麼說」都用 se：¿Cómo se dice? ¿Cómo se hace?']],
+      q: [['Aquí no ___ fuma.', 'se', ['me', 'te'], '這裡不能抽菸。', '「一般人不…」用 se ＋ 動詞。'],
+        ['¿Cómo se ___ «book»?', 'dice', ['dices', 'decir'], '「book」怎麼說？', 'se 後面用第三人稱 dice。'],
+        ['En España se ___ tarde.', 'cena', ['cenas', 'cenar'], '在西班牙晚餐吃得很晚。', 'se ＋ 第三人稱單數。']]
+    },
+    // ---------- 第 10 關：正在做、做過、命令 ----------
+    'gerund': {
+      ex: [['Estoy estudiando.', '我正在念書。', [['Estoy', '我（狀態）'], ['estudiando', '念書中']],
+        ['estar ＋ 副動詞＝正在做。', '-ar → -ando：estudiar → estudiando。'],
+        '「正在…」：estar 照人稱變，後面加 -ando／-iendo。']],
+      q: [['¿Qué estás ___ ? (hacer)', 'haciendo', ['hacando', 'hecho'], '你在做什麼？', '-er → -iendo：haciendo。'],
+        ['Ella ___ comiendo.', 'está', ['es', 'tiene'], '她正在吃東西。', '「正在」用 estar。'],
+        ['Estamos ___ la tele. (ver)', 'viendo', ['vendo', 'viendando'], '我們正在看電視。', 'ver → viendo。']]
+    },
+    'perfecto': {
+      ex: [['Hoy he comido paella.', '我今天吃了海鮮飯。', [['Hoy', '今天'], ['he', '我已經'], ['comido', '吃了'], ['paella', '海鮮飯']],
+        ['haber（he、has、ha…）＋ 過去分詞＝做過、已經做了。', 'comer → comido：-er／-ir 變 -ido，-ar 變 -ado。'],
+        '像英文的 I have eaten：前面的 he、has、ha 告訴你是誰，後面的 -ado／-ido 告訴你做了什麼。']],
+      q: [['¿___ estado en España?', 'Has', ['Eres', 'Tienes'], '你去過西班牙嗎？', '經驗用 haber ＋ 過去分詞，tú → has。'],
+        ['Hemos ___ mucho. (trabajar)', 'trabajado', ['trabajido', 'trabajando'], '我們工作了很多。', '-ar 的過去分詞是 -ado。'],
+        ['Todavía no he ___ la carta. (escribir)', 'escrito', ['escribido', 'escribiendo'], '我還沒寫那封信。', 'escribir 的過去分詞是不規則的 escrito。']]
+    },
+    'imper': {
+      ex: [['Abre la ventana, por favor.', '請打開窗戶。', [['Abre', '打開'], ['la', '那扇'], ['ventana', '窗戶'], [',', ''], ['por', '請'], ['favor', '（幫忙）']],
+        ['abre：對「你」的命令，長得跟 él abre 一樣。'],
+        '對 tú 下命令：用現在式的 él／ella 形：habla、come、abre。'],
+        ['¡No toques!', '不要碰！', [['No', '不要'], ['toques', '碰']],
+        ['否定命令的形要換母音：tocar → no toques。'],
+        '「不要…」的形比較特別：-ar 動詞換成 -es，-er／-ir 換成 -as。']],
+      q: [['¡___ aquí! (mirar)', 'Mira', ['Miras', 'Miro'], '看這裡！', '對 tú 的命令：mira。'],
+        ['¡No ___ ! (hablar)', 'hables', ['hablas', 'habla'], '不要說話！', '否定命令：hablar → no hables。'],
+        ['___ la puerta, por favor. (cerrar)', 'Cierra', ['Cerra', 'Cierras'], '請關門。', 'cerrar 有 e → ie：cierra。']]
+    },
+    // ---------- 第 11 關：長句子 ----------
+    'conj': {
+      ex: [['Estudio español porque quiero ir a México.', '我學西班牙文，因為想去墨西哥。', [['Estudio', '我學'], ['español', '西班牙文'], ['porque', '因為'], ['quiero', '我想'], ['ir', '去'], ['a', '到'], ['México', '墨西哥']],
+        ['porque（連在一起，沒重音）＝因為；por qué（分開）＝為什麼。'],
+        '連接詞把兩個句子接起來，順序跟中文一樣。'],
+        ['Si llueve, me quedo en casa.', '如果下雨，我就待在家。', [['Si', '如果'], ['llueve', '下雨'], [',', ''], ['me', '我自己'], ['quedo', '待'], ['en', '在'], ['casa', '家']],
+        ['si（沒重音）＝如果；sí（有重音）＝是。'],
+        '「如果…就…」：Si ＋ 條件, ＋ 結果。']],
+      q: [['Me gusta el té, ___ no el café.', 'pero', ['y', 'si'], '我喜歡茶，但不喜歡咖啡。', '轉折用 pero（但是）。'],
+        ['¿Quieres té ___ café?', 'o', ['pero', 'porque'], '你要茶還是咖啡？', '選擇用 o（或）。'],
+        ['___ llego, te llamo.', 'Cuando', ['Porque', 'Pero'], '我到的時候打給你。', 'cuando＝…的時候。']]
+    },
+    'compar': {
+      ex: [['Pedro es más alto que Juan.', 'Pedro 比 Juan 高。', [['Pedro', 'Pedro'], ['es', '是'], ['más', '更'], ['alto', '高'], ['que', '比'], ['Juan', 'Juan']],
+        ['más ＋ 形容詞＝更…。', 'que ＋ 被比的人＝比…。'],
+        '順序是「A 是 更高 比 B」：más … que。']],
+      q: [['Madrid es ___ grande que Sevilla.', 'más', ['muy', 'mucho'], '馬德里比塞維亞大。', '比較用 más … que。'],
+        ['El tren es menos caro ___ el avión.', 'que', ['de', 'como'], '火車比飛機便宜。', '比較的「比」用 que。'],
+        ['Mi paella es ___ que la tuya.', 'mejor', ['más bueno', 'buena más'], '我的海鮮飯比你的好吃。', 'bueno 的比較級是不規則的 mejor。']]
+    }
+  });
+})(typeof window !== 'undefined' ? window : globalThis);
+
+;
+(function (G) { const ES = G.ES || (G.ES = {});
+/* 西班牙文文法關卡：由淺到深，後面的關卡會用到前面學過的東西 */
+ES.GX_PATH = [
+  ['開口說', '「我是…」「你好嗎」', ['ser', 'estar']],
+  ['冠詞和名詞', '名詞分男女，前面的冠詞和後面的形容詞都要跟著變', ['noun-gender', 'art-indef', 'art-def', 'noun-plural', 'adj']],
+  ['「有」和數字', 'tener（有）、hay（那裡有）、數字、禮貌地說「我想要」', ['tener', 'numbers', 'hay', 'quisiera']],
+  ['現在式', '三種規則動詞換字尾就能說「誰做什麼」，再學否定、問句和敬稱「您」', ['pres-ar', 'pres-er', 'pres-ir', 'neg', 'questions', 'usted']],
+  ['不規則動詞', '詞幹會變的動詞、yo 形不規則的動詞，還有 ser 和 estar 怎麼分', ['stem-ie', 'stem-ue', 'stem-i', 'yo-go', 'ser-estar']],
+  ['去哪裡', '介係詞、al／del、搭什麼車、「我要去做…」、多常做', ['prep', 'artprep', 'transport', 'ir-a', 'freq']],
+  ['能、想、知道，我的、這個', '想／能／必須、saber 和 conocer、人前面的 a、所有格、指示詞、很／很多', ['modal', 'saber', 'personal-a', 'poss', 'demo', 'muy']],
+  ['時間和天氣', '幾點、星期、月份，天氣怎麼說', ['time', 'dates', 'weather']],
+  ['喜歡、自己和代名詞', '倒過來說的「喜歡」、反身動詞、受詞代名詞、se', ['gustar', 'refl', 'pron-obj', 'se']],
+  ['正在做、做過、命令', '「正在…」「已經…了」，還有請人做事', ['gerund', 'perfecto', 'imper']],
+  ['長句子', '把句子接起來，還有比較', ['conj', 'compar']]
+];
+})(typeof window !== 'undefined' ? window : globalThis);
+
+;
 /* 語言頁（義大利文、西班牙文、德文、俄文…）：放在日文 N5 App 裡
    語言專屬的文字和設定放在 window.LANGCFG，資料和變化引擎放在 window.LX
    - 介面、音效、下拉選單、間隔複習規則都跟日文頁一樣
