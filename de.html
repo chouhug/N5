@@ -712,6 +712,30 @@ body.hide-gen .sent{line-height:1.75}
 /* 規則頁裡每個文法點的小標題 */
 .gbody h3.gb-h{font-size:16px;font-weight:700;color:var(--pri);margin:18px 0 4px;padding-top:12px;border-top:1px solid var(--line)}
 .gbody h3.gb-h:first-child{margin-top:0;padding-top:0;border-top:0}
+/* 文法：範例拆解＋練習題 */
+.gx-seg{margin:12px 0 4px}
+.gx-cta{margin-top:14px;flex-wrap:wrap}
+.gx-tip{margin:10px 0 2px}
+.gx-ex{border-top:1px dashed var(--line);margin-top:14px;padding-top:14px;display:flex;flex-direction:column;gap:8px}
+.gx-n{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--muted)}
+.gx-gloss{display:flex;flex-wrap:wrap;gap:6px 6px;align-items:flex-end;background:var(--surface2);border-radius:12px;padding:10px}
+.gx-w{display:flex;flex-direction:column;align-items:center;min-width:2.4em;padding:4px 8px;border-radius:8px;background:var(--surface);border:1px solid var(--line)}
+.gx-w b{font-size:18px;font-weight:700;line-height:1.3}
+.gx-w i{font-style:normal;font-size:13px;color:var(--muted);line-height:1.35;text-align:center}
+.gx-p{font-size:18px;padding:4px 0;align-self:flex-start}
+.gx-notes{margin:2px 0 0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;font-size:15px;line-height:1.6}
+.gx-fw{font-weight:700;color:inherit}
+.gx-plain{display:flex;gap:10px;align-items:flex-start;background:var(--pri-soft);border-radius:10px;padding:10px 12px;font-size:15px;line-height:1.6}
+.gx-plain>b{flex:none;font-size:12px;font-weight:800;background:var(--pri);color:#fff;border-radius:6px;padding:2px 6px;margin-top:2px}
+.gx-go{margin-top:16px}
+.gx-quiz{margin-top:10px}
+.gx-quiz .qcard{box-shadow:none;border:0;padding:0;margin:0;background:none}
+.gx-why{background:var(--surface2);border-radius:10px;padding:10px 12px;margin:8px 0 12px;display:flex;flex-direction:column;gap:4px}
+.gx-why .sent{font-size:18px}
+.gx-why p{margin:0;font-size:15px;line-height:1.6}
+.gx-done{text-align:center;padding:16px 0 4px}
+.gx-score{font-size:34px;font-weight:800}
+.gx-done .btnrow{justify-content:center}
 
 :root{--pat:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 900' preserveAspectRatio='xMidYMax slice'%3E%3Ccircle cx='330' cy='150' r='46' fill='%23f7e6cc'/%3E%3Crect x='40' y='120' width='90' height='12' rx='6' fill='%23e6ebf3'/%3E%3Crect x='70' y='140' width='60' height='12' rx='6' fill='%23e6ebf3'/%3E%3Crect x='250' y='250' width='110' height='12' rx='6' fill='%23e6ebf3'/%3E%3Crect x='290' y='270' width='70' height='12' rx='6' fill='%23e6ebf3'/%3E%3Cpath d='M80 210 q6 -6 12 0 q6 -6 12 0' fill='none' stroke='%23cdd5e2' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M110 232 q6 -6 12 0 q6 -6 12 0' fill='none' stroke='%23cdd5e2' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M-10 650 L60 560 L105 610 L170 520 L235 600 L290 545 L350 615 L430 575 L430 910 L-10 910Z' fill='%23e6ebf3'/%3E%3Cpath d='M152 545 L170 520 L188 545 L178 540 L170 548 L161 539Z M277 562 L290 545 L303 562 L296 559 L290 565 L283 558Z M48 576 L60 560 L72 576 L65 573 L60 579 L54 572Z' fill='%23f2f5fa'/%3E%3Cpath d='M-10 700 C 60 668 130 672 190 688 C 250 704 320 662 430 676 L430 910 L-10 910Z' fill='%23d8e0ec'/%3E%3Cg fill='%23dde4ef'%3E%3Crect x='296' y='636' width='46' height='34'/%3E%3Crect x='288' y='618' width='12' height='52'/%3E%3Crect x='336' y='610' width='12' height='60'/%3E%3Crect x='312' y='626' width='10' height='14'/%3E%3C/g%3E%3Cg fill='%23d3dbe8'%3E%3Cpath d='M286 618 l8 -18 l8 18z'/%3E%3Cpath d='M334 610 l8 -20 l8 20z'/%3E%3Cpath d='M310 626 l7 -12 l7 12z'/%3E%3C/g%3E%3Cpath d='M30 666 l9 14 h-4 l8 12 h-5 l7 8 h-30 l7 -8 h-5 l8 -12 h-4z' fill='%23c3cede'/%3E%3Cpath d='M58 674.8 l7.2 11.200000000000001 h-3.2 l6.4 9.600000000000001 h-4 l5.6000000000000005 6.4 h-24 l5.6000000000000005 -6.4 h-4 l6.4 -9.600000000000001 h-3.2z' fill='%23c3cede'/%3E%3Cpath d='M380 649.4 l8.1 12.6 h-3.6 l7.2 10.8 h-4.5 l6.3 7.2 h-27 l6.3 -7.2 h-4.5 l7.2 -10.8 h-3.6z' fill='%23c3cede'/%3E%3Cpath d='M404 658.5 l6.75 10.5 h-3 l6 9 h-3.75 l5.25 6 h-22.5 l5.25 -6 h-3.75 l6 -9 h-3z' fill='%23c3cede'/%3E%3Cpath d='M-10 790 C 70 760 160 768 240 782 C 320 796 370 764 430 768 L430 910 L-10 910Z' fill='%23cfd8e6'/%3E%3Crect x='196' y='760' width='30' height='26' fill='%23f2f5fa'/%3E%3Cpath d='M193 760 L211 741.4 L229 760Z' fill='%23d3dbe8'/%3E%3Cpath d='M196 772.48 H226 M211 760 V786 M196 760 L211 772.48 M226 760 L211 772.48' fill='none' stroke='%23d3dbe8' stroke-width='2'/%3E%3Crect x='200.2' y='775.6' width='6' height='5.72' fill='%23d3dbe8'/%3E%3Crect x='215.8' y='775.6' width='6' height='5.72' fill='%23d3dbe8'/%3E%3Crect x='232' y='762' width='26' height='22' fill='%23f2f5fa'/%3E%3Cpath d='M229 762 L245 745.88 L261 762Z' fill='%23d3dbe8'/%3E%3Cpath d='M232 772.56 H258 M245 762 V784 M232 762 L245 772.56 M258 762 L245 772.56' fill='none' stroke='%23d3dbe8' stroke-width='2'/%3E%3Crect x='235.64' y='775.2' width='5.2' height='4.84' fill='%23d3dbe8'/%3E%3Crect x='249.16' y='775.2' width='5.2' height='4.84' fill='%23d3dbe8'/%3E%3Crect x='264' y='760' width='32' height='28' fill='%23f2f5fa'/%3E%3Cpath d='M261 760 L280 740.16 L299 760Z' fill='%23d3dbe8'/%3E%3Cpath d='M264 773.44 H296 M280 760 V788 M264 760 L280 773.44 M296 760 L280 773.44' fill='none' stroke='%23d3dbe8' stroke-width='2'/%3E%3Crect x='268.48' y='776.8' width='6.4' height='6.16' fill='%23d3dbe8'/%3E%3Crect x='285.12' y='776.8' width='6.4' height='6.16' fill='%23d3dbe8'/%3E%3Cpath d='M112 753.4 l8.1 12.6 h-3.6 l7.2 10.8 h-4.5 l6.3 7.2 h-27 l6.3 -7.2 h-4.5 l7.2 -10.8 h-3.6z' fill='%23c3cede'/%3E%3Cpath d='M136 758.2 l6.3 9.799999999999999 h-2.8 l5.6 8.399999999999999 h-3.5 l4.8999999999999995 5.6 h-21 l4.8999999999999995 -5.6 h-3.5 l5.6 -8.399999999999999 h-2.8z' fill='%23c3cede'/%3E%3Cpath d='M150 900 C 175 870, 230 860, 222 835 S 255 800, 300 790 L 308 795 C 270 806, 240 820, 245 840 S 200 875, 190 900 Z' fill='%23eef3fa'/%3E%3C/svg%3E")}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--pat:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 900' preserveAspectRatio='xMidYMax slice'%3E%3Ccircle cx='330' cy='150' r='46' fill='%23252d3a'/%3E%3Crect x='40' y='120' width='90' height='12' rx='6' fill='%23161c26'/%3E%3Crect x='70' y='140' width='60' height='12' rx='6' fill='%23161c26'/%3E%3Crect x='250' y='250' width='110' height='12' rx='6' fill='%23161c26'/%3E%3Crect x='290' y='270' width='70' height='12' rx='6' fill='%23161c26'/%3E%3Cpath d='M80 210 q6 -6 12 0 q6 -6 12 0' fill='none' stroke='%232a3342' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M110 232 q6 -6 12 0 q6 -6 12 0' fill='none' stroke='%232a3342' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M-10 650 L60 560 L105 610 L170 520 L235 600 L290 545 L350 615 L430 575 L430 910 L-10 910Z' fill='%23141a23'/%3E%3Cpath d='M152 545 L170 520 L188 545 L178 540 L170 548 L161 539Z M277 562 L290 545 L303 562 L296 559 L290 565 L283 558Z M48 576 L60 560 L72 576 L65 573 L60 579 L54 572Z' fill='%23222a37'/%3E%3Cpath d='M-10 700 C 60 668 130 672 190 688 C 250 704 320 662 430 676 L430 910 L-10 910Z' fill='%2318202b'/%3E%3Cg fill='%231a212c'%3E%3Crect x='296' y='636' width='46' height='34'/%3E%3Crect x='288' y='618' width='12' height='52'/%3E%3Crect x='336' y='610' width='12' height='60'/%3E%3Crect x='312' y='626' width='10' height='14'/%3E%3C/g%3E%3Cg fill='%23202836'%3E%3Cpath d='M286 618 l8 -18 l8 18z'/%3E%3Cpath d='M334 610 l8 -20 l8 20z'/%3E%3Cpath d='M310 626 l7 -12 l7 12z'/%3E%3C/g%3E%3Cpath d='M30 666 l9 14 h-4 l8 12 h-5 l7 8 h-30 l7 -8 h-5 l8 -12 h-4z' fill='%23111720'/%3E%3Cpath d='M58 674.8 l7.2 11.200000000000001 h-3.2 l6.4 9.600000000000001 h-4 l5.6000000000000005 6.4 h-24 l5.6000000000000005 -6.4 h-4 l6.4 -9.600000000000001 h-3.2z' fill='%23111720'/%3E%3Cpath d='M380 649.4 l8.1 12.6 h-3.6 l7.2 10.8 h-4.5 l6.3 7.2 h-27 l6.3 -7.2 h-4.5 l7.2 -10.8 h-3.6z' fill='%23111720'/%3E%3Cpath d='M404 658.5 l6.75 10.5 h-3 l6 9 h-3.75 l5.25 6 h-22.5 l5.25 -6 h-3.75 l6 -9 h-3z' fill='%23111720'/%3E%3Cpath d='M-10 790 C 70 760 160 768 240 782 C 320 796 370 764 430 768 L430 910 L-10 910Z' fill='%231c2531'/%3E%3Crect x='196' y='760' width='30' height='26' fill='%23222a37'/%3E%3Cpath d='M193 760 L211 741.4 L229 760Z' fill='%23202836'/%3E%3Cpath d='M196 772.48 H226 M211 760 V786 M196 760 L211 772.48 M226 760 L211 772.48' fill='none' stroke='%23202836' stroke-width='2'/%3E%3Crect x='200.2' y='775.6' width='6' height='5.72' fill='%23202836'/%3E%3Crect x='215.8' y='775.6' width='6' height='5.72' fill='%23202836'/%3E%3Crect x='232' y='762' width='26' height='22' fill='%23222a37'/%3E%3Cpath d='M229 762 L245 745.88 L261 762Z' fill='%23202836'/%3E%3Cpath d='M232 772.56 H258 M245 762 V784 M232 762 L245 772.56 M258 762 L245 772.56' fill='none' stroke='%23202836' stroke-width='2'/%3E%3Crect x='235.64' y='775.2' width='5.2' height='4.84' fill='%23202836'/%3E%3Crect x='249.16' y='775.2' width='5.2' height='4.84' fill='%23202836'/%3E%3Crect x='264' y='760' width='32' height='28' fill='%23222a37'/%3E%3Cpath d='M261 760 L280 740.16 L299 760Z' fill='%23202836'/%3E%3Cpath d='M264 773.44 H296 M280 760 V788 M264 760 L280 773.44 M296 760 L280 773.44' fill='none' stroke='%23202836' stroke-width='2'/%3E%3Crect x='268.48' y='776.8' width='6.4' height='6.16' fill='%23202836'/%3E%3Crect x='285.12' y='776.8' width='6.4' height='6.16' fill='%23202836'/%3E%3Cpath d='M112 753.4 l8.1 12.6 h-3.6 l7.2 10.8 h-4.5 l6.3 7.2 h-27 l6.3 -7.2 h-4.5 l7.2 -10.8 h-3.6z' fill='%23111720'/%3E%3Cpath d='M136 758.2 l6.3 9.799999999999999 h-2.8 l5.6 8.399999999999999 h-3.5 l4.8999999999999995 5.6 h-21 l4.8999999999999995 -5.6 h-3.5 l5.6 -8.399999999999999 h-2.8z' fill='%23111720'/%3E%3Cpath d='M150 900 C 175 870, 230 860, 222 835 S 255 800, 300 790 L 308 795 C 270 806, 240 820, 245 840 S 200 875, 190 900 Z' fill='%2310151d'/%3E%3C/svg%3E")}}
@@ -3477,8 +3501,8 @@ function renderChoice(host, q, onNext) {
     q.onAnswer(ok, i);
     ok ? Sfx.ok() : Sfx.ng(); buzz(ok);
     const after = $('.after', host);
-    after.innerHTML = `<div class="afterbox">${verdict(ok)}<button class="btn solid block" data-next>下一題（Enter）</button>${!ok && q.afterHTML ? q.afterHTML(false) : ''}</div>`;
-    if (ok) state.timer = setTimeout(() => { if (Quiz.active === state) onNext(); }, 900);
+    after.innerHTML = `<div class="afterbox">${verdict(ok)}${q.explain || ''}<button class="btn solid block" data-next>下一題（Enter）</button>${!ok && q.afterHTML ? q.afterHTML(false) : ''}</div>`;
+    if (ok && !q.noAuto) state.timer = setTimeout(() => { if (Quiz.active === state) onNext(); }, 900);
     const nb = $('[data-next]', after);
     nb.onclick = () => { clearTimeout(state.timer); onNext(); };
     if (!ok) { nb.focus({ preventScroll: true }); revealAboveTabbar(nb); }
@@ -3897,7 +3921,7 @@ function scrollFillTop() {
 if (window.visualViewport) window.visualViewport.addEventListener('resize', () => { if (document.body.classList.contains('typing')) scrollFillTop(); });
 
 // ================= 文法 =================
-let GIDX = null, gramShow = 8;
+let GIDX = null, gramShow = 8, gramPane = 'body', gramPaneId = '';
 function gramIndex() {
   if (GIDX) return GIDX;
   GIDX = {};
@@ -3927,6 +3951,46 @@ function ruleDemo(R) {
   if (R.id === 'r-adj') return `<div class="scroll-x"><table class="t"><thead><tr><th>陽單</th><th>陰單</th><th>陽複</th><th>陰複</th></tr></thead><tbody>${R.demo.map(x => find(x, 'adj')).filter(Boolean).map(w => '<tr>' + IT.adjForms(w.e).map(x => `<td class="f" lang="${LC.id}">${esc(x)}</td>`).join('') + '</tr>').join('')}</tbody></table></div>`;
   return R.demo.map(x => find(x, 'v')).filter(Boolean).map(w => `<div class="rc-row" data-vk="${esc(w.id)}"><div class="rc-h"><b lang="${LC.id}">${esc(w.word)}</b><span class="meta">${esc(w.zh)}</span></div>${verbInfo(w)}
     <div class="seg" role="group" aria-label="時態 ${esc(w.word)}" style="margin:8px 0"><button data-tense="pres" aria-pressed="true">${esc(IT.conjugate(w.word, w.pos).presTab || '現在式')}</button><button data-tense="pass" aria-pressed="false">過去式</button><button data-tense="imp" aria-pressed="false">命令式</button></div><div class="vt">${conjTable(w, 'pres')}</div></div>`).join('');
+}
+// ================= 文法範例拆解＋練習題（IT.GX） =================
+// 說明裡的外文字標上 lang，字型和顏色跟中文分開
+function gxNote(t) {
+  const re = LC.id === 'ru' ? /[Ѐ-ӿ́]+(?:[ -‑][Ѐ-ӿ́]+)*/g : /[A-Za-zÀ-ÿ̀-ͯ'’]+(?:[ -][A-Za-zÀ-ÿ̀-ͯ'’]+)*/g;
+  return esc(t).replace(re, m => `<span class="gx-fw" lang="${LC.id}">${m}</span>`);
+}
+function gxExamplesHTML(gx) {
+  return `<p class="meta gx-tip">上面是整句，中間每個字下面是它的中文，最後一條一條說明為什麼這樣排。點句子裡的字可以查意思。</p>` + gx.ex.map(([s, zh, parts, notes, pl], i) => `<div class="gx-ex">
+    <div class="gx-n">範例 ${i + 1}</div>
+    <div class="ex-row"><div class="sent" lang="${LC.id}">${sentHTML(s, { noGen: true })}</div>${iconPlay(s, '播放範例')}</div>
+    <div class="zhline">${esc(zh)}</div>
+    <div class="gx-gloss">${parts.map(([w, g]) => g ? `<span class="gx-w"><b lang="${LC.id}">${esc(w)}</b><i>${esc(g)}</i></span>` : `<span class="gx-p" lang="${LC.id}">${esc(w)}</span>`).join('')}</div>
+    <ul class="gx-notes">${notes.map(n => `<li>${gxNote(n)}</li>`).join('')}</ul>
+    <div class="gx-plain"><b>白話</b><span>${gxNote(pl)}</span></div>
+  </div>`).join('') + `<button class="btn solid block gx-go" data-gpane="q">看懂了，來練習（${gx.q.length} 題）</button>`;
+}
+function startGxQuiz(box, gx) {
+  if (!box) return;
+  const qs = shuffle(gx.q); let i = 0, right = 0;
+  const next = () => {
+    if (!box.isConnected) return;
+    if (i >= qs.length) {
+      box.innerHTML = `<div class="gx-done"><div class="gx-score">${right} / ${qs.length}</div><p>${right === qs.length ? '全對！這個文法你會了。' : right ? '差一點，看一下範例再練一次。' : '先看範例拆解，再回來試試。'}</p><div class="btnrow"><button class="btn solid" id="gxAgain">再練一次</button><button class="btn quiet" data-gpane="ex">看範例</button></div></div>`;
+      $('#gxAgain', box).onclick = () => startGxQuiz(box, gx);
+      $$('[data-gpane]', box).forEach(b => b.onclick = () => { gramPane = b.dataset.gpane; renderGram(); });
+      return;
+    }
+    const [pr, ans, wr, zh, why] = qs[i++];
+    const full = pr.replace('___', ans).replace(/\s+([.,!?…])/g, '$1');
+    renderChoice(box, {
+      head: `<div class="qhead"><span class="meta">文法練習 ${i} / ${qs.length}</span></div>`,
+      promptHTML: `<div class="sent" lang="${LC.id}">${esc(pr).replace('___', '<span class="blank" id="blank">？</span>')}</div><div class="zhline">${esc(zh)}</div>`,
+      options: shuffle([ans].concat(wr)).map(o => ({ html: esc(o), correct: o === ans, lang: LC.id })),
+      onAnswer: ok => { if (ok) right++; bumpDay(); const b = $('#blank', box); if (b) { b.textContent = ans; b.classList.add(ok ? 'ok' : 'ng'); } },
+      explain: `<div class="gx-why"><div class="ex-row"><div class="sent" lang="${LC.id}">${esc(full)}</div>${iconPlay(full, '播放整句')}</div><p><b>為什麼：</b>${gxNote(why)}</p></div>`,
+      noAuto: true
+    }, next);
+  };
+  next();
 }
 function renderGram() {
   const host = $('#tab-gram');
@@ -3960,12 +4024,19 @@ function renderGram() {
     return;
   }
   const exs = idx[p.id] || [];
+  const gx = IT.GX && IT.GX[p.id];
+  if (gramPaneId !== p.id) { gramPane = 'body'; gramPaneId = p.id; }
+  if (!gx) gramPane = 'body';
+  const seg = gx ? `<div class="seg gx-seg" role="group" aria-label="文法分頁">${[['body', '說明'], ['ex', '看範例'], ['q', '練習題']].map(([k, l]) => `<button data-gpane="${k}" aria-pressed="${gramPane === k}">${l}</button>`).join('')}</div>` : '';
+  const pane = gramPane === 'ex' ? gxExamplesHTML(gx) : gramPane === 'q' ? '<div id="gxQuiz" class="gx-quiz"></div>' : `<div class="gbody scroll-x">${p.body}</div>${gx ? `<div class="btnrow gx-cta"><button class="btn quiet" data-gpane="ex">看範例拆解</button><button class="btn solid" data-gpane="q">練習這個文法（${gx.q.length} 題）</button></div>` : ''}`;
   host.innerHTML = `<button class="gr-back" id="grBack">‹ 文法列表</button>
-    <div class="card"><div class="gr-head"><h2>${esc(p.title)}</h2><span class="lv">${esc(p.tag)}</span></div><div class="gbody scroll-x">${p.body}</div></div>
-    <div class="card"><div class="gp-title" style="margin-bottom:8px">App 裡用到的例句（${exs.length}）</div><p class="meta" style="margin:0 0 6px">黃色是這個文法點，點任何一個字可以查意思。</p>
+    <div class="card"><div class="gr-head"><h2>${esc(p.title)}</h2><span class="lv">${esc(p.tag)}</span></div>${seg}${pane}</div>
+    ${gramPane !== 'body' ? '' : `<div class="card"><div class="gp-title" style="margin-bottom:8px">App 裡用到的例句（${exs.length}）</div><p class="meta" style="margin:0 0 6px">黃色是這個文法點，點任何一個字可以查意思。</p>
       ${exs.length ? `<div class="gr-exs">${exs.slice(0, gramShow).map(x => `<div class="gr-ex"><div class="ex-row"><div class="sent" lang="${LC.id}">${sentHTML(x.s, { ranges: x.r })}</div>${iconPlay(x.s, '播放例句')}</div><div class="zhline">${esc(x.zh)}</div>${x.w ? `<div class="from">出自單字：<span lang="${LC.id}">${esc(x.w.title)}</span>（${esc(meanPlain(x.w))}）</div>` : ''}</div>`).join('')}</div>${exs.length > gramShow ? `<button class="btn quiet gr-more" id="grMore">再顯示 ${Math.min(8, exs.length - gramShow)} 句（共 ${exs.length} 句）</button>` : ''}` : '<p class="meta">目前的例句裡還沒有用到這個文法。</p>'}
-    </div>`;
+    </div>`}`;
   $('#grBack', host).onclick = back;
+  $$('[data-gpane]', host).forEach(b => b.onclick = () => { gramPane = b.dataset.gpane; renderGram(); const c = $('.gr-head', host); if (c && c.getBoundingClientRect().top < 0) c.scrollIntoView({ block: 'start' }); });
+  if (gramPane === 'q') startGxQuiz($('#gxQuiz', host), gx);
   const m = $('#grMore', host); if (m) m.onclick = () => { gramShow += 8; renderGram(); };
 }
 document.addEventListener('click', e => {
