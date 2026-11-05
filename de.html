@@ -2805,6 +2805,450 @@ window.LANGCFG = {
 })(typeof window !== 'undefined' ? window : globalThis);
 
 ;
+/* 德文文法的範例拆解與練習題（1）：開口說、名詞冠詞、現在式、問句否定、受格、情態動詞
+   DE.GX[文法點 id] = {
+     ex: [[句子, 中文, [[字, 意思], …], [逐字說明…], 白話總結]],
+     q:  [[題目（___ 是空格）, 答案, [錯的選項…], 中文, 為什麼]]
+   }
+   每一關的句子只用到「這一關和前面關卡」教過的文法（關卡在 gxpath.js） */
+(function (G) {
+  const DE = G.DE || (G.DE = {});
+  DE.GX = Object.assign(DE.GX || {}, {
+    // ---------- 第 1 關：開口說 ----------
+    'pron': {
+      ex: [['Ich bin Howard. Er ist Max.', '我是 Howard。他是 Max。', [['Ich', '我'], ['bin', '是'], ['Howard', 'Howard'], ['.', ''], ['Er', '他'], ['ist', '是'], ['Max', 'Max']],
+        ['ich＝我（小寫，句首才大寫），er＝他，sie＝她。', '德文的主詞不能省略，一定要說出來。'],
+        '人稱代名詞：ich 我、du 你、er 他、sie 她、es 它、wir 我們、ihr 你們、sie 他們、Sie 您。']],
+      q: [['___ bin müde.', 'Ich', ['Mich', 'Mir'], '我很累。', '主詞「我」是 ich。'],
+        ['Das ist Anna. ___ ist nett.', 'Sie', ['Er', 'Es'], '這是 Anna。她人很好。', 'Anna 是女生，用 sie。'],
+        ['___ sind Freunde.', 'Wir', ['Ihr', 'Uns'], '我們是朋友。', '「我們」是 wir，動詞 sind。']]
+    },
+    'sein': {
+      ex: [['Ich bin Student, du bist Lehrer.', '我是學生，你是老師。', [['Ich', '我'], ['bin', '是'], ['Student', '學生'], [',', ''], ['du', '你'], ['bist', '是'], ['Lehrer', '老師']],
+        ['sein（是）每個人稱都不一樣：bin、bist、ist、sind、seid、sind。', '說職業時不加「一個」：Ich bin Student。'],
+        'sein 就是英文的 be，要整組背。']],
+      q: [['Du ___ sehr nett.', 'bist', ['ist', 'bin'], '你人很好。', 'du 配 bist。'],
+        ['Wir ___ aus Taiwan.', 'sind', ['seid', 'ist'], '我們來自台灣。', 'wir 配 sind。'],
+        ['Ihr ___ Freunde.', 'seid', ['sind', 'seit'], '你們是朋友。', 'ihr 配 seid（seit 是「自從」）。']]
+    },
+    'intro': {
+      ex: [['Ich heiße Howard und komme aus Taiwan.', '我叫 Howard，來自台灣。', [['Ich', '我'], ['heiße', '叫'], ['Howard', 'Howard'], ['und', '和'], ['komme', '來'], ['aus', '從'], ['Taiwan', '台灣']],
+        ['heißen＝叫（名字）：ich heiße。', 'kommen aus ＋ 地方＝來自哪裡。'],
+        '自我介紹三句：Ich heiße…（我叫）、Ich komme aus…（我來自）、Ich wohne in…（我住在）。']],
+      q: [['Ich ___ Anna.', 'heiße', ['heißt', 'heißen'], '我叫 Anna。', 'ich 的形是 heiße。'],
+        ['Ich komme ___ Japan.', 'aus', ['in', 'von'], '我來自日本。', '來自哪裡用 aus。'],
+        ['Ich wohne ___ Berlin.', 'in', ['aus', 'nach'], '我住在柏林。', '住在城市用 in。']]
+    },
+    'sie': {
+      ex: [['Wie heißen Sie?', '您叫什麼名字？', [['Wie', '怎樣'], ['heißen', '叫'], ['Sie', '您']],
+        ['Sie（大寫）＝您，動詞用跟 sie（他們）一樣的形：heißen。'],
+        '對不熟的人、店員、長輩用 Sie；朋友、家人、小孩用 du。']],
+      q: [['Woher kommen ___ , Frau Müller?', 'Sie', ['du', 'sie'], 'Müller 女士，您來自哪裡？', '稱呼「女士」用敬稱 Sie，要大寫。'],
+        ['Wie heißt ___ ? — Ich bin Tom.', 'du', ['Sie', 'ihr'], '你叫什麼？——我是 Tom。', 'heißt 是 du 的形。'],
+        ['Sind ___ Herr Schmidt?', 'Sie', ['du', 'Ihr'], '您是 Schmidt 先生嗎？', 'Herr（先生）用 Sie。']]
+    },
+    // ---------- 第 2 關：名詞和冠詞 ----------
+    'noun-gender': {
+      ex: [['Die Zeitung und das Mädchen.', '報紙和女孩。', [['Die', '那份'], ['Zeitung', '報紙'], ['und', '和'], ['das', '那個'], ['Mädchen', '女孩']],
+        ['-ung 結尾一定是陰性 die。', '-chen 結尾一定是中性 das，連「女孩」也是。'],
+        '德文名詞有三個性別，大部分要背；但有些字尾很準：-ung、-heit、-keit 是陰性，-chen 是中性。']],
+      q: [['___ Freiheit', 'die', ['der', 'das'], '自由', '-heit 結尾是陰性。'],
+        ['___ Brötchen', 'das', ['der', 'die'], '小麵包', '-chen 結尾是中性。'],
+        ['___ Lehrer', 'der', ['die', 'das'], '老師（男）', '-er 結尾的人多半是陽性。']]
+    },
+    'art-def': {
+      ex: [['Der Mann, die Frau und das Kind.', '男人、女人和小孩。', [['Der', '那個'], ['Mann', '男人'], [',', ''], ['die', '那個'], ['Frau', '女人'], ['und', '和'], ['das', '那個'], ['Kind', '小孩']],
+        ['陽性 der、陰性 die、中性 das。', '名詞第一個字母一定大寫。'],
+        '背單字的時候一定要連冠詞一起背：der Tisch、die Lampe、das Buch。']],
+      q: [['___ Tisch ist groß.', 'Der', ['Die', 'Das'], '那張桌子很大。', 'Tisch 是陽性。'],
+        ['___ Lampe ist neu.', 'Die', ['Der', 'Das'], '那盞燈是新的。', 'Lampe 是陰性。'],
+        ['___ Buch ist gut.', 'Das', ['Der', 'Die'], '那本書很好。', 'Buch 是中性。']]
+    },
+    'art-indef': {
+      ex: [['Das ist ein Hund und eine Katze.', '這是一隻狗和一隻貓。', [['Das', '這'], ['ist', '是'], ['ein', '一隻'], ['Hund', '狗'], ['und', '和'], ['eine', '一隻'], ['Katze', '貓']],
+        ['陽性和中性用 ein，陰性用 eine。'],
+        '「一個」：der／das → ein，die → eine。複數沒有「一個」。']],
+      q: [['Das ist ___ Auto.', 'ein', ['eine', 'einen'], '這是一台車。', 'Auto 是中性，用 ein。'],
+        ['Das ist ___ Tasche.', 'eine', ['ein', 'einer'], '這是一個包包。', 'Tasche 是陰性，用 eine。'],
+        ['Das ist ___ Stuhl.', 'ein', ['eine', 'eines'], '這是一張椅子。', 'Stuhl 是陽性，主格用 ein。']]
+    },
+    'noun-plural': {
+      ex: [['Die Bücher und die Lampen.', '那些書和那些燈。', [['Die', '那些'], ['Bücher', '書（複數）'], ['und', '和'], ['die', '那些'], ['Lampen', '燈（複數）']],
+        ['複數的冠詞全部都是 die。', 'Buch → Bücher（加 -er、母音變 ü）；Lampe → Lampen（加 -n）。'],
+        '德文的複數有好幾種做法，要跟單字一起背；好消息是複數冠詞一律 die。']],
+      q: [['der Tisch → die ___', 'Tische', ['Tischen', 'Tischs'], '桌子 → 桌子們', 'Tisch 的複數加 -e。'],
+        ['die Frau → die ___', 'Frauen', ['Fraue', 'Fraus'], '女人 → 女人們', '陰性名詞的複數常加 -en。'],
+        ['das Auto → die ___', 'Autos', ['Autoen', 'Autoer'], '車 → 車子們', '外來字常加 -s。']]
+    },
+    'adj-pred': {
+      ex: [['Das Haus ist alt, aber schön.', '那間房子很舊，但很漂亮。', [['Das', '那間'], ['Haus', '房子'], ['ist', '是'], ['alt', '舊的'], [',', ''], ['aber', '但是'], ['schön', '漂亮的']],
+        ['形容詞放在 sein 後面時，完全不變。'],
+        '「…很…」：名詞 ＋ ist ＋ 形容詞原形，不用管性別和格。']],
+      q: [['Die Suppe ist ___ .', 'heiß', ['heiße', 'heißes'], '湯很燙。', '放在 ist 後面的形容詞不加詞尾。'],
+        ['Die Kinder sind ___ .', 'müde', ['müden', 'müdes'], '孩子們很累。', '複數也一樣不變。'],
+        ['Der Film ist ___ .', 'gut', ['guter', 'gute'], '電影很好看。', 'ist 後面用原形。']]
+    },
+    // ---------- 第 3 關：動詞現在式 ----------
+    'pres-reg': {
+      ex: [['Ich lerne Deutsch.', '我學德文。', [['Ich', '我'], ['lerne', '學'], ['Deutsch', '德文']],
+        ['lernen 去掉 -en，剩 lern-，ich 加 -e → lerne。'],
+        '規則動詞：去掉 -en，接詞尾 -e、-st、-t、-en、-t、-en。'],
+        ['Wir spielen, ihr arbeitet.', '我們在玩，你們在工作。', [['Wir', '我們'], ['spielen', '玩'], [',', ''], ['ihr', '你們'], ['arbeitet', '工作']],
+        ['wir 跟原形一樣：spielen。', 'arbeiten 的詞幹是 t 結尾，前面要多一個 e：arbeitet。'],
+        '同一個動詞，主詞不同，字尾就不同。']],
+      q: [['Du ___ gut. (spielen)', 'spielst', ['spielt', 'spiele'], '你玩得很好。', 'du 的詞尾是 -st。'],
+        ['Er ___ viel. (arbeiten)', 'arbeitet', ['arbeit', 'arbeitst'], '他工作很多。', '詞幹 t 結尾，加 -et。'],
+        ['Sie ___ Musik. (hören, 他們)', 'hören', ['hört', 'hörst'], '他們在聽音樂。', 'sie（他們）跟原形一樣。']]
+    },
+    'haben': {
+      ex: [['Ich habe Zeit, du hast Hunger.', '我有空，你餓了。', [['Ich', '我'], ['habe', '有'], ['Zeit', '時間'], [',', ''], ['du', '你'], ['hast', '有'], ['Hunger', '飢餓']],
+        ['haben＝有：habe、hast、hat、haben、habt、haben。', '「餓了」德文說「有飢餓」：Hunger haben。'],
+        'haben 很常用，du hast、er hat 要特別記。']],
+      q: [['Du ___ Zeit.', 'hast', ['habst', 'hat'], '你有時間。', 'du 的形是 hast。'],
+        ['Er ___ Hunger.', 'hat', ['habt', 'hast'], '他餓了。', 'er 的形是 hat。'],
+        ['Wir ___ Glück.', 'haben', ['habt', 'hat'], '我們運氣很好。', 'wir 的形是 haben。']]
+    },
+    'stem': {
+      ex: [['Ich fahre, du fährst.', '我開車，你開車。', [['Ich', '我'], ['fahre', '開車'], [',', ''], ['du', '你'], ['fährst', '開車']],
+        ['fahren 的 du、er 形，a 變成 ä。'],
+        '有些動詞只在 du 和 er／sie／es 換母音：a → ä、e → i、e → ie。']],
+      q: [['Er ___ ein Buch. (lesen)', 'liest', ['lest', 'lesst'], '他在讀一本書。', 'lesen：e → ie，er liest。'],
+        ['Du ___ Pizza. (essen)', 'isst', ['esst', 'esst du'], '你吃披薩。', 'essen：e → i，du isst。'],
+        ['Sie ___ gut. (schlafen, 她)', 'schläft', ['schlaft', 'schläfst'], '她睡得很好。', 'schlafen：a → ä。']]
+    },
+    'v2': {
+      ex: [['Heute lerne ich Deutsch.', '我今天學德文。', [['Heute', '今天'], ['lerne', '學'], ['ich', '我'], ['Deutsch', '德文']],
+        ['heute 放第一位，動詞 lerne 一定要放在第二位，主詞 ich 只好跑到後面。'],
+        '德文最重要的規則：動詞永遠是第二個位置。第一個位置放什麼都可以。']],
+      q: [['Morgen ___ ich Tennis.', 'spiele', ['ich spiele', 'spielen'], '我明天打網球。', 'Morgen 在第一位，動詞馬上放第二位。'],
+        ['Jetzt ___ wir.', 'arbeiten', ['wir arbeiten', 'arbeitet'], '我們現在要工作。', '時間在第一位，動詞第二位，主詞在後面。'],
+        ['Deutsch ___ ich jeden Tag.', 'lerne', ['ich lerne', 'lernt'], '德文我每天學。', '受詞放第一位，動詞還是第二位。']]
+    },
+    'num': {
+      ex: [['Ich bin einundzwanzig Jahre alt.', '我二十一歲。', [['Ich', '我'], ['bin', '是'], ['einundzwanzig', '二十一'], ['Jahre', '年'], ['alt', '老的']],
+        ['21 是「一和二十」：ein ＋ und ＋ zwanzig。', '說年齡：Ich bin … Jahre alt（我是…年老）。'],
+        '德文的二位數先唸個位數，再唸十位數，中間加 und。']],
+      q: [['Ich bin ___ Jahre alt. (25)', 'fünfundzwanzig', ['zwanzigfünf', 'fünfzwanzig'], '我二十五歲。', '25＝fünf ＋ und ＋ zwanzig。'],
+        ['Das kostet ___ Euro. (13)', 'dreizehn', ['dreißig', 'zehndrei'], '這個十三歐元。', '13＝dreizehn；30 是 dreißig。'],
+        ['Wir sind ___ . (100)', 'hundert', ['tausend', 'zehnzig'], '我們有一百個人。', '100＝hundert。']]
+    },
+    // ---------- 第 4 關：問句和否定 ----------
+    'wfrage': {
+      ex: [['Wo wohnst du?', '你住在哪裡？', [['Wo', '哪裡'], ['wohnst', '住'], ['du', '你']],
+        ['疑問詞在第一位，動詞第二位，主詞在後面。'],
+        'W 問句：W 字 ＋ 動詞 ＋ 主詞。疑問詞幾乎都是 W 開頭：wer、was、wo、wie、wann、warum。']],
+      q: [['___ heißt du?', 'Wie', ['Was', 'Wer'], '你叫什麼名字？', '字面是「你怎麼叫」，用 wie。'],
+        ['___ ist das? — Das ist Tom.', 'Wer', ['Was', 'Wo'], '這是誰？——這是 Tom。', '問人用 wer。'],
+        ['___ kommst du? — Aus Taiwan.', 'Woher', ['Wo', 'Wohin'], '你從哪裡來？——台灣。', '「從哪裡」是 woher。']]
+    },
+    'janein': {
+      ex: [['Kommst du aus Taiwan?', '你來自台灣嗎？', [['Kommst', '來'], ['du', '你'], ['aus', '從'], ['Taiwan', '台灣']],
+        ['是非問句把動詞放到最前面，主詞放第二。'],
+        '不用加「嗎」，只要把動詞搬到第一個位置。']],
+      q: [['___ du Deutsch?', 'Sprichst', ['Du sprichst', 'Sprechen'], '你會說德文嗎？', '是非問句：動詞放最前面。'],
+        ['___ Sie Herr Weber?', 'Sind', ['Ist', 'Bist'], '您是 Weber 先生嗎？', 'Sie（您）配 sind，放最前面。'],
+        ['Hast du Zeit? — ___ , ich habe Zeit.', 'Ja', ['Nein', 'Doch'], '你有空嗎？——有，我有空。', '肯定回答用 ja。']]
+    },
+    'kein': {
+      ex: [['Ich habe kein Auto.', '我沒有車。', [['Ich', '我'], ['habe', '有'], ['kein', '沒有'], ['Auto', '車']],
+        ['名詞的否定用 kein（＝不＋一個）。'],
+        '否定名詞用 kein，否定動詞或形容詞用 nicht。'],
+        ['Ich komme nicht.', '我不來。', [['Ich', '我'], ['komme', '來'], ['nicht', '不']],
+        ['nicht 否定整個動作，放在句尾。'],
+        'nicht 通常放在後面，不像中文放在動詞前。']],
+      q: [['Das ist ___ Problem.', 'kein', ['nicht', 'keine'], '這不是問題。', 'Problem 是名詞（中性），用 kein。'],
+        ['Ich habe ___ Zeit.', 'keine', ['nicht', 'kein'], '我沒有時間。', 'Zeit 是陰性名詞，用 keine。'],
+        ['Das Wetter ist ___ gut.', 'nicht', ['kein', 'keine'], '天氣不好。', '否定形容詞用 nicht。']]
+    },
+    'konj': {
+      ex: [['Ich trinke Tee, aber er trinkt Kaffee.', '我喝茶，但他喝咖啡。', [['Ich', '我'], ['trinke', '喝'], ['Tee', '茶'], [',', ''], ['aber', '但是'], ['er', '他'], ['trinkt', '喝'], ['Kaffee', '咖啡']],
+        ['und、aber、oder、denn 後面的句子順序不變，動詞還是第二位。'],
+        '這五個小連接詞（und、aber、oder、denn、sondern）不佔位置，後面照常說。']],
+      q: [['Ich bin müde, ___ ich arbeite viel.', 'denn', ['weil', 'oder'], '我很累，因為我工作很多。', 'denn（因為）後面順序不變。'],
+        ['Trinkst du Tee ___ Kaffee?', 'oder', ['aber', 'und'], '你喝茶還是咖啡？', '選擇用 oder。'],
+        ['Das ist nicht rot, ___ blau.', 'sondern', ['aber', 'oder'], '這不是紅色，而是藍色。', '「不是 A 而是 B」用 sondern。']]
+    },
+    // ---------- 第 5 關：受格 ----------
+    'cases': {
+      ex: [['Der Mann sieht den Hund.', '男人看到狗。', [['Der', '那個'], ['Mann', '男人'], ['sieht', '看到'], ['den', '那隻'], ['Hund', '狗']],
+        ['der Mann 是做動作的人（主格）。', 'den Hund 是被看的（受格）：der 變 den。'],
+        '德文靠冠詞的變化看誰做什麼：der → den 就表示「被做的那個」。']],
+      q: [['___ Hund sieht den Mann.', 'Der', ['Den', 'Dem'], '狗看到男人。', '做動作的是主格 der。'],
+        ['Ich sehe ___ Mann.', 'den', ['der', 'dem'], '我看到那個男人。', '被看的是受格 den。'],
+        ['___ Frau sieht das Kind.', 'Die', ['Der', 'Den'], '女人看到小孩。', '陰性主格 die。']]
+    },
+    'akk': {
+      ex: [['Ich kaufe einen Apfel.', '我買一顆蘋果。', [['Ich', '我'], ['kaufe', '買'], ['einen', '一顆'], ['Apfel', '蘋果']],
+        ['Apfel 是陽性，被買 → 受格：ein → einen。'],
+        '受格只有陽性會變：der → den、ein → einen。陰性、中性、複數都不變。']],
+      q: [['Ich habe ___ Bruder.', 'einen', ['ein', 'einem'], '我有一個哥哥。', 'Bruder 陽性，受格 einen。'],
+        ['Er trinkt ___ Kaffee.', 'den', ['der', 'dem'], '他喝那杯咖啡。', 'Kaffee 陽性，受格 den。'],
+        ['Wir kaufen ___ Lampe.', 'eine', ['einen', 'einer'], '我們買一盞燈。', 'Lampe 陰性，受格不變。']]
+    },
+    'esgibt': {
+      ex: [['Hier gibt es einen Park.', '這裡有一座公園。', [['Hier', '這裡'], ['gibt', '給'], ['es', '它'], ['einen', '一座'], ['Park', '公園']],
+        ['es gibt＝「有、存在」，字面是「它給出」。', '後面接受格：ein Park → einen Park。'],
+        '說「某地方有什麼」：Es gibt ＋ 受格。']],
+      q: [['___ gibt viele Touristen.', 'Es', ['Er', 'Das'], '有很多觀光客。', '固定說法 es gibt。'],
+        ['Gibt es hier ___ Bank?', 'eine', ['einen', 'ein'], '這裡有銀行嗎？', 'Bank 陰性，受格 eine。'],
+        ['Es gibt ___ Problem.', 'kein', ['keinen', 'nicht'], '沒有問題。', 'Problem 中性，受格 kein。']]
+    },
+    'gern': {
+      ex: [['Ich spiele gern Fußball.', '我喜歡踢足球。', [['Ich', '我'], ['spiele', '踢'], ['gern', '喜歡地'], ['Fußball', '足球']],
+        ['gern 放在動詞後面＝喜歡做這件事。'],
+        '「喜歡做…」：動詞 ＋ gern；更喜歡 lieber，最喜歡 am liebsten。']],
+      q: [['Ich lese ___ .', 'gern', ['gerne gern', 'lieb'], '我喜歡閱讀。', '喜歡做某事：動詞 ＋ gern。'],
+        ['Ich trinke ___ Tee als Kaffee.', 'lieber', ['gerner', 'mehr gern'], '比起咖啡我更喜歡喝茶。', 'gern 的比較級是 lieber。'],
+        ['Am ___ esse ich Pizza.', 'liebsten', ['gernsten', 'lieber'], '我最喜歡吃披薩。', '最喜歡：am liebsten。']]
+    },
+    'moechte': {
+      ex: [['Ich möchte einen Kaffee, bitte.', '我想要一杯咖啡，麻煩了。', [['Ich', '我'], ['möchte', '想要'], ['einen', '一杯'], ['Kaffee', '咖啡'], [',', ''], ['bitte', '請']],
+        ['möchte＝想要（客氣），比 will 有禮貌。', 'Kaffee 陽性受格：einen。'],
+        '點餐、請求的時候說 Ich möchte…。']],
+      q: [['Ich ___ ein Wasser, bitte.', 'möchte', ['möchtest', 'mag'], '我想要一杯水，麻煩了。', 'ich 的形是 möchte。'],
+        ['___ du einen Tee?', 'Möchtest', ['Möchte', 'Möchten'], '你想喝茶嗎？', 'du 的形是 möchtest。'],
+        ['Wir möchten ___ Tisch für zwei.', 'einen', ['ein', 'eine'], '我們想要一張兩人桌。', 'Tisch 陽性受格 einen。']]
+    },
+    // ---------- 第 6 關：能、想、得，句框 ----------
+    'modal': {
+      ex: [['Ich kann gut schwimmen.', '我很會游泳。', [['Ich', '我'], ['kann', '會'], ['gut', '很好'], ['schwimmen', '游泳']],
+        ['kann：können（能、會）的 ich 形，放第二位。', 'schwimmen 用原形，放到句子最後。'],
+        '情態動詞放第二位照人稱變，真正的動作用原形放句尾。']],
+      q: [['Du ___ heute arbeiten. (müssen)', 'musst', ['müsst', 'muss'], '你今天得工作。', 'müssen 的 du 形是 musst。'],
+        ['Ich will Deutsch ___ .', 'lernen', ['lerne', 'lernt'], '我想學德文。', '情態動詞後面的動詞用原形，放句尾。'],
+        ['___ ich hier rauchen?', 'Darf', ['Kann ich', 'Dürfen'], '我可以在這裡抽菸嗎？', '「允許」用 dürfen，ich → darf。']]
+    },
+    'satzklammer': {
+      ex: [['Ich muss heute lange arbeiten.', '我今天得工作很久。', [['Ich', '我'], ['muss', '必須'], ['heute', '今天'], ['lange', '很久'], ['arbeiten', '工作']],
+        ['muss 在第二位，arbeiten 在最後，中間夾著其他東西。'],
+        '德文的句子像一個框：第一個動詞放第二位，第二個動詞放最後，其他東西都夾在中間。']],
+      q: [['Ich kann heute nicht ___ .', 'kommen', ['komme', 'kommt'], '我今天不能來。', '第二個動詞放句尾，用原形。'],
+        ['Wir wollen morgen Tennis ___ .', 'spielen', ['spielen wollen', 'spielt'], '我們明天想打網球。', '原形 spielen 放最後。'],
+        ['Du musst ___ machen.', 'die Hausaufgaben', ['machen die Hausaufgaben', 'Hausaufgaben machst'], '你得寫功課。', '受詞夾在中間，動詞在最後。']]
+    },
+    'sep': {
+      ex: [['Ich stehe früh auf.', '我很早起床。', [['Ich', '我'], ['stehe', '站'], ['früh', '早'], ['auf', '起來']],
+        ['aufstehen 是分離動詞：stehe 放第二位，auf 跑到句尾。'],
+        '分離動詞的前綴（auf、an、ein、mit…）會被拆開，丟到句子最後面。']],
+      q: [['Der Zug ___ jetzt an. (ankommen)', 'kommt', ['ankommt', 'kommen'], '火車現在到站。', '動詞部分 kommt 放第二位，an 放最後。'],
+        ['Ich kaufe heute ___ . (einkaufen)', 'ein', ['auf', 'an'], '我今天去買東西。', 'einkaufen 的 ein 放句尾。'],
+        ['Wann ___ du auf?', 'stehst', ['aufstehst', 'stehen'], '你幾點起床？', '前綴 auf 已經在最後，第二位只放 stehst。']]
+    },
+    'imper': {
+      ex: [['Komm her! Kommen Sie bitte!', '過來！請您過來！', [['Komm', '來'], ['her', '這邊'], ['Kommen', '來'], ['Sie', '您'], ['bitte', '請']],
+        ['對 du 的命令：去掉 -st 和 du：du kommst → Komm!', '對 Sie 的命令：動詞 ＋ Sie。'],
+        '命令句動詞放最前面。對朋友說 Komm!，對不熟的人說 Kommen Sie!']],
+      q: [['___ mal! (sehen, du)', 'Sieh', ['Siehst', 'Sehen'], '你看！', 'du siehst → 去掉 -st：Sieh!'],
+        ['___ Sie bitte langsam!', 'Sprechen', ['Sprich', 'Sprecht'], '請您說慢一點！', '對 Sie：Sprechen Sie!'],
+        ['Mach bitte das Fenster ___ ! (aufmachen)', 'auf', ['an', 'zu machen'], '請打開窗戶！', '分離動詞的前綴一樣放最後。']]
+    },
+    'man': {
+      ex: [['Hier spricht man Deutsch.', '這裡說德文。', [['Hier', '這裡'], ['spricht', '說'], ['man', '人們'], ['Deutsch', '德文']],
+        ['man＝人們、大家，動詞用 er 的形：spricht。'],
+        'man 不指特定的人，像中文「（大家）在這裡說德文」。']],
+      q: [['Wie sagt ___ das auf Deutsch?', 'man', ['Mann', 'men'], '這個德文怎麼說？', '「一般人」用 man（一個 n）。'],
+        ['Hier ___ man nicht rauchen.', 'darf', ['dürfen', 'darfst'], '這裡不准抽菸。', 'man 用第三人稱單數：darf。'],
+        ['Man ___ viel Wasser trinken.', 'soll', ['sollen', 'sollst'], '應該多喝水。', 'man 配 soll。']]
+    }
+  });
+})(typeof window !== 'undefined' ? window : globalThis);
+
+;
+/* 德文文法的範例拆解與練習題（2）：與格、介係詞、時間、過去、形容詞詞尾、長句子 */
+(function (G) {
+  const DE = G.DE || (G.DE = {});
+  DE.GX = Object.assign(DE.GX || {}, {
+    // ---------- 第 7 關：與格、代名詞、我的 ----------
+    'dat': {
+      ex: [['Ich gebe dem Kind einen Apfel.', '我給小孩一顆蘋果。', [['Ich', '我'], ['gebe', '給'], ['dem', '（給）那個'], ['Kind', '小孩'], ['einen', '一顆'], ['Apfel', '蘋果']],
+        ['dem Kind：收到東西的人用與格，das → dem。', 'einen Apfel：被給的東西用受格。'],
+        '「給誰」用與格：der／das → dem，die → der，複數 → den（名詞加 -n）。']],
+      q: [['Ich schenke ___ Frau Blumen.', 'der', ['die', 'dem'], '我送那位女士花。', '陰性的與格是 der。'],
+        ['Er hilft ___ Mann.', 'dem', ['den', 'der'], '他幫那個男人。', 'helfen 接與格，陽性 → dem。'],
+        ['Ich gebe ___ Kindern Geld.', 'den', ['die', 'dem'], '我給孩子們錢。', '複數的與格是 den，名詞加 -n。']]
+    },
+    'pron-obj': {
+      ex: [['Ich liebe dich.', '我愛你。', [['Ich', '我'], ['liebe', '愛'], ['dich', '你']],
+        ['du 當受詞（被愛的人）變成 dich。'],
+        '代名詞也會變格：ich → mich／mir，du → dich／dir。'],
+        ['Kannst du mir helfen?', '你可以幫我嗎？', [['Kannst', '可以'], ['du', '你'], ['mir', '（給）我'], ['helfen', '幫忙']],
+        ['helfen 接與格，所以是 mir 不是 mich。'],
+        '受格：mich、dich、ihn、sie、es；與格：mir、dir、ihm、ihr、ihm。']],
+      q: [['Ich sehe ___ . (du)', 'dich', ['dir', 'du'], '我看到你了。', 'sehen 接受格：du → dich。'],
+        ['Das gehört ___ . (ich)', 'mir', ['mich', 'mein'], '這是我的。', 'gehören 接與格：ich → mir。'],
+        ['Ich rufe ___ an. (er)', 'ihn', ['ihm', 'er'], '我打電話給他。', 'anrufen 接受格：er → ihn。']]
+    },
+    'gefallen': {
+      ex: [['Das Buch gefällt mir.', '我喜歡這本書。', [['Das', '那本'], ['Buch', '書'], ['gefällt', '讓…喜歡'], ['mir', '（對）我']],
+        ['字面是「這本書讓我喜歡」，書才是主詞。', '喜歡的人用與格 mir。'],
+        'gefallen、schmecken、helfen、gehören 這些動詞，後面的人要用與格。']],
+      q: [['Der Kuchen schmeckt ___ .', 'mir', ['mich', 'ich'], '這個蛋糕很好吃（我覺得）。', 'schmecken 接與格。'],
+        ['Die Stadt gefällt ___ . (er)', 'ihm', ['ihn', 'er'], '他喜歡這座城市。', 'er 的與格是 ihm。'],
+        ['Die Schuhe ___ mir.', 'gefallen', ['gefällt', 'gefallt'], '我喜歡這雙鞋。', 'Schuhe 是複數主詞，用 gefallen。']]
+    },
+    'poss': {
+      ex: [['Mein Bruder und meine Schwester.', '我哥哥和我姊姊。', [['Mein', '我的'], ['Bruder', '哥哥'], ['und', '和'], ['meine', '我的'], ['Schwester', '姊姊']],
+        ['mein 的詞尾跟 ein 一樣：陽性／中性 mein，陰性 meine。'],
+        '「我的」就像「一個」：ein → mein，eine → meine，受格陽性 meinen。']],
+      q: [['Das ist ___ Mutter.', 'meine', ['mein', 'meinen'], '這是我媽媽。', 'Mutter 陰性，用 meine。'],
+        ['Ich suche ___ Schlüssel.', 'meinen', ['mein', 'meine'], '我在找我的鑰匙。', 'Schlüssel 陽性受格，用 meinen。'],
+        ['Wie ist ___ Name? (Sie)', 'Ihr', ['Sie', 'Ihre'], '您貴姓大名？', '「您的」是 Ihr（大寫），Name 陽性主格。']]
+    },
+    'demo': {
+      ex: [['Dieser Film ist gut, diese Serie nicht.', '這部電影很好看，這部影集不好看。', [['Dieser', '這部'], ['Film', '電影'], ['ist', '是'], ['gut', '好的'], [',', ''], ['diese', '這部'], ['Serie', '影集'], ['nicht', '不']],
+        ['dieser 的詞尾跟 der 一樣：der → dieser、die → diese、das → dieses。'],
+        '「這個」：把 der／die／das 的尾巴接在 dies- 後面。']],
+      q: [['___ Buch ist neu.', 'Dieses', ['Dieser', 'Diese'], '這本書是新的。', 'Buch 中性，das → dieses。'],
+        ['Ich kaufe ___ Tisch.', 'diesen', ['dieser', 'dieses'], '我買這張桌子。', 'Tisch 陽性受格，den → diesen。'],
+        ['___ Frau ist meine Lehrerin.', 'Diese', ['Dieser', 'Dieses'], '這位女士是我的老師。', 'Frau 陰性，die → diese。']]
+    },
+    // ---------- 第 8 關：介係詞 ----------
+    'prep-akk': {
+      ex: [['Das Geschenk ist für dich.', '這個禮物是給你的。', [['Das', '這個'], ['Geschenk', '禮物'], ['ist', '是'], ['für', '給'], ['dich', '你']],
+        ['für 後面一定接受格：du → dich。'],
+        'für、ohne、durch、gegen、um 這五個後面一定接受格。']],
+      q: [['Ich trinke Kaffee ohne ___ Zucker.', '—', ['den', 'dem'], '我喝咖啡不加糖。', 'ohne Zucker 不加冠詞。'],
+        ['Das ist für ___ Vater.', 'meinen', ['meinem', 'mein'], '這是給我爸爸的。', 'für 接受格：Vater 陽性 → meinen。'],
+        ['Wir gehen durch ___ Park.', 'den', ['dem', 'der'], '我們穿過公園。', 'durch 接受格：der → den。']]
+    },
+    'prep-dat': {
+      ex: [['Ich fahre mit dem Bus.', '我搭公車。', [['Ich', '我'], ['fahre', '搭車'], ['mit', '用、和'], ['dem', '那台'], ['Bus', '公車']],
+        ['mit 後面一定接與格：der Bus → dem Bus。'],
+        'mit、nach、aus、zu、von、bei、seit 後面一定接與格。']],
+      q: [['Ich wohne bei ___ Eltern.', 'meinen', ['meine', 'meiner'], '我住在爸媽家。', 'bei 接與格，複數 → meinen。'],
+        ['Er kommt aus ___ Schweiz.', 'der', ['die', 'dem'], '他來自瑞士。', 'aus 接與格，die Schweiz → der Schweiz。'],
+        ['Ich gehe mit ___ Freund.', 'meinem', ['meinen', 'mein'], '我和我的朋友去。', 'mit 接與格，陽性 → meinem。']]
+    },
+    'prep-wechsel': {
+      ex: [['Das Buch liegt auf dem Tisch.', '書在桌上。', [['Das', '那本'], ['Buch', '書'], ['liegt', '躺著、放著'], ['auf', '在…上'], ['dem', '那張'], ['Tisch', '桌子']],
+        ['問 Wo?（在哪裡）→ 與格 dem Tisch。'],
+        'in、auf、an、unter… 這些介係詞：「在哪裡」用與格，「去哪裡」用受格。'],
+        ['Ich lege das Buch auf den Tisch.', '我把書放到桌上。', [['Ich', '我'], ['lege', '放'], ['das', '那本'], ['Buch', '書'], ['auf', '到…上'], ['den', '那張'], ['Tisch', '桌子']],
+        ['問 Wohin?（放到哪裡）→ 受格 den Tisch。'],
+        '有移動到某處 → 受格；停在某處 → 與格。']],
+      q: [['Die Katze schläft auf ___ Sofa.', 'dem', ['das', 'den'], '貓在沙發上睡覺。', '停在那裡（Wo?）→ 與格。'],
+        ['Ich hänge das Bild an ___ Wand.', 'die', ['der', 'dem'], '我把畫掛到牆上。', '移動到那裡（Wohin?）→ 受格 die。'],
+        ['Das Bild hängt an ___ Wand.', 'der', ['die', 'den'], '畫掛在牆上。', '停在那裡 → 與格，die → der。']]
+    },
+    'contract': {
+      ex: [['Ich bin im Kino.', '我在電影院。', [['Ich', '我'], ['bin', '在'], ['im', '在那個…裡'], ['Kino', '電影院']],
+        ['im ＝ in ＋ dem。'],
+        '介係詞和冠詞常常縮寫：in dem → im、in das → ins、zu dem → zum、zu der → zur、an dem → am。'],
+        ['Ich gehe ins Kino.', '我去電影院。', [['Ich', '我'], ['gehe', '去'], ['ins', '到那個…裡'], ['Kino', '電影院']],
+        ['ins ＝ in ＋ das（去哪裡 → 受格）。'],
+        '在裡面 im，進去 ins。']],
+      q: [['Ich gehe ___ Arzt. (zu + dem)', 'zum', ['zur', 'zu'], '我去看醫生。', 'zu ＋ dem ＝ zum。'],
+        ['Wir fahren ___ Schule. (zu + der)', 'zur', ['zum', 'zu die'], '我們去學校。', 'zu ＋ der ＝ zur。'],
+        ['Er ist ___ Büro. (in + dem)', 'im', ['ins', 'in'], '他在辦公室。', 'in ＋ dem ＝ im。']]
+    },
+    'zuhause': {
+      ex: [['Ich bin zu Hause, dann gehe ich nach Hause.', '我在家，然後我回家。', [['Ich', '我'], ['bin', '在'], ['zu', '在'], ['Hause', '家'], [',', ''], ['dann', '然後'], ['gehe', '去'], ['ich', '我'], ['nach', '往'], ['Hause', '家']],
+        ['zu Hause＝在家（不動）。', 'nach Hause＝回家（移動）。'],
+        '在家 zu Hause，回家 nach Hause，Hause 多一個 e 是固定寫法。']],
+      q: [['Heute bleibe ich ___ Hause.', 'zu', ['nach', 'in'], '我今天待在家。', '待在家：zu Hause。'],
+        ['Wann kommst du ___ Hause?', 'nach', ['zu', 'bei'], '你什麼時候回家？', '回家：nach Hause。'],
+        ['Ist Anna ___ Hause?', 'zu', ['nach', 'im'], 'Anna 在家嗎？', '在家：zu Hause。']]
+    },
+    // ---------- 第 9 關：時間 ----------
+    'time': {
+      ex: [['Es ist halb neun.', '現在八點半。', [['Es', '它'], ['ist', '是'], ['halb', '一半（到）'], ['neun', '九']],
+        ['halb neun＝「到九點還差一半」＝ 8:30，不是 9:30！'],
+        '德文的「半」是往下一個小時算：halb drei＝2:30。'],
+        ['Der Kurs beginnt um acht Uhr.', '課八點開始。', [['Der', '那堂'], ['Kurs', '課'], ['beginnt', '開始'], ['um', '在'], ['acht', '八'], ['Uhr', '點']],
+        ['「在幾點」用 um。'],
+        '問：Wie spät ist es? 答：Es ist… ；在幾點：um … Uhr。']],
+      q: [['Der Film beginnt ___ zehn Uhr.', 'um', ['am', 'im'], '電影十點開始。', '在幾點用 um。'],
+        ['Es ist ___ sieben. (6:30)', 'halb', ['halb nach', 'nach halb'], '現在六點半。', '6:30＝halb sieben。'],
+        ['Es ist Viertel ___ drei. (3:15)', 'nach', ['vor', 'halb'], '現在三點十五分。', '過 15 分＝Viertel nach。']]
+    },
+    'days': {
+      ex: [['Am Montag arbeite ich, im Mai fahre ich nach Italien.', '我星期一上班，五月要去義大利。', [['Am', '在'], ['Montag', '星期一'], ['arbeite', '工作'], ['ich', '我'], [',', ''], ['im', '在'], ['Mai', '五月'], ['fahre', '去'], ['ich', '我'], ['nach', '往'], ['Italien', '義大利']],
+        ['星期用 am（＝an dem）。', '月份、季節用 im（＝in dem）。'],
+        '星期 am Montag，月份 im Mai，季節 im Sommer。']],
+      q: [['___ Sonntag schlafe ich lange.', 'Am', ['Im', 'Um'], '星期天我睡很久。', '星期前用 am。'],
+        ['___ Winter ist es kalt.', 'Im', ['Am', 'Um'], '冬天很冷。', '季節前用 im。'],
+        ['Mein Geburtstag ist ___ Juli.', 'im', ['am', 'um'], '我的生日在七月。', '月份前用 im。']]
+    },
+    // ---------- 第 10 關：過去 ----------
+    'perf-haben': {
+      ex: [['Ich habe Pizza gegessen.', '我吃了披薩。', [['Ich', '我'], ['habe', '有（助動詞）'], ['Pizza', '披薩'], ['gegessen', '吃了']],
+        ['habe 放第二位，過去分詞 gegessen 放句尾（句框）。', '過去分詞常是 ge- … -t 或 ge- … -en。'],
+        '口語說過去的事，用 haben ＋ 過去分詞：Ich habe gespielt、Ich habe gegessen。']],
+      q: [['Ich habe Deutsch ___ . (lernen)', 'gelernt', ['gelernen', 'lernt'], '我學了德文。', '規則動詞：ge- ＋ 詞幹 ＋ -t。'],
+        ['Hast du schon ___ ? (essen)', 'gegessen', ['geesst', 'gegesst'], '你吃過了嗎？', 'essen 的過去分詞是 gegessen。'],
+        ['Wir ___ Fußball gespielt.', 'haben', ['sind', 'hat'], '我們踢了足球。', 'spielen 用 haben 當助動詞。']]
+    },
+    'perf-sein': {
+      ex: [['Ich bin nach Berlin gefahren.', '我去了柏林。', [['Ich', '我'], ['bin', '是（助動詞）'], ['nach', '往'], ['Berlin', '柏林'], ['gefahren', '去了（坐車）']],
+        ['移動（去、來、開車）或狀態改變的動詞，用 sein 當助動詞。'],
+        '大部分動詞用 haben，「移動」類的用 sein：ich bin gegangen、ich bin gekommen。']],
+      q: [['Er ___ nach Hause gegangen.', 'ist', ['hat', 'sind'], '他回家了。', 'gehen 是移動，用 sein。'],
+        ['Wir sind spät ___ . (kommen)', 'gekommen', ['gekommt', 'kommen'], '我們很晚到。', 'kommen 的過去分詞是 gekommen。'],
+        ['___ du gut geschlafen?', 'Hast', ['Bist', 'Hat'], '你睡得好嗎？', 'schlafen 不是移動，用 haben。']]
+    },
+    'praet': {
+      ex: [['Gestern war ich krank und hatte Fieber.', '我昨天生病，發燒了。', [['Gestern', '昨天'], ['war', '是（過去）'], ['ich', '我'], ['krank', '生病的'], ['und', '和'], ['hatte', '有（過去）'], ['Fieber', '發燒']],
+        ['sein 和 haben 說過去，常用 war、hatte，不用完成式。'],
+        'war＝was（是），hatte＝had（有），口語也很常用。']],
+      q: [['Gestern ___ ich müde.', 'war', ['bin', 'hatte'], '我昨天很累。', 'sein 的過去式 war。'],
+        ['Wir ___ keine Zeit.', 'hatten', ['hatte', 'waren'], '我們（那時）沒時間。', 'haben 的過去式，wir → hatten。'],
+        ['Wo ___ du gestern?', 'warst', ['war', 'wart'], '你昨天在哪裡？', 'du 的過去式是 warst。']]
+    },
+    'refl': {
+      ex: [['Ich freue mich.', '我很高興。', [['Ich', '我'], ['freue', '使高興'], ['mich', '我自己']],
+        ['sich freuen 字面是「讓自己高興」，要加 mich。'],
+        '反身動詞要帶一個「自己」：mich、dich、sich、uns、euch、sich。']],
+      q: [['Du freust ___ .', 'dich', ['dir', 'sich'], '你很高興。', 'du 的反身代名詞是 dich。'],
+        ['Er wäscht ___ .', 'sich', ['ihn', 'mich'], '他在洗澡（洗自己）。', '「他自己」是 sich。'],
+        ['Wir treffen ___ morgen.', 'uns', ['sich', 'wir'], '我們明天見面。', 'wir 的反身代名詞是 uns。']]
+    },
+    // ---------- 第 11 關：形容詞和長句子 ----------
+    'adj-end': {
+      ex: [['Ich habe einen neuen Laptop.', '我有一台新筆電。', [['Ich', '我'], ['habe', '有'], ['einen', '一台'], ['neuen', '新的'], ['Laptop', '筆電']],
+        ['形容詞放在名詞前面就要加詞尾。', 'einen（陽性受格）後面的形容詞加 -en。'],
+        '形容詞在名詞前要加詞尾；最常見的是 -e 和 -en。看前面的冠詞和格決定。']],
+      q: [['Das ist ein ___ Auto.', 'neues', ['neue', 'neuen'], '這是一台新車。', 'ein ＋ 中性主格：形容詞加 -es。'],
+        ['Der ___ Mann ist mein Vater.', 'alte', ['alter', 'alten'], '那個老先生是我爸爸。', 'der 後面主格加 -e。'],
+        ['Ich trinke ___ Kaffee.', 'schwarzen', ['schwarze', 'schwarzer'], '我喝黑咖啡。', '沒冠詞＋陽性受格：-en。']]
+    },
+    'compar': {
+      ex: [['Berlin ist größer als München.', '柏林比慕尼黑大。', [['Berlin', '柏林'], ['ist', '是'], ['größer', '更大'], ['als', '比'], ['München', '慕尼黑']],
+        ['比較級：形容詞 ＋ -er，短字常加變音：groß → größer。', 'als＝比。'],
+        '「A 比 B 更…」：A ist ＋ 形容詞-er ＋ als B。最高級：am ＋ 形容詞-sten。']],
+      q: [['Der Zug ist schneller ___ das Auto.', 'als', ['wie', 'dann'], '火車比汽車快。', '比較用 als。'],
+        ['Im Sommer ist es ___ als im Winter.', 'wärmer', ['warmer', 'mehr warm'], '夏天比冬天暖和。', 'warm → wärmer（加變音）。'],
+        ['Er läuft am ___ .', 'schnellsten', ['schnellste', 'schneller'], '他跑得最快。', '最高級：am ＋ -sten。']]
+    },
+    'subord': {
+      ex: [['Ich lerne Deutsch, weil ich in Berlin studieren will.', '我學德文，因為我想在柏林念書。', [['Ich', '我'], ['lerne', '學'], ['Deutsch', '德文'], [',', ''], ['weil', '因為'], ['ich', '我'], ['in', '在'], ['Berlin', '柏林'], ['studieren', '念書'], ['will', '想']],
+        ['weil 後面的子句，動詞要跑到最後：will 在句尾。'],
+        'weil、dass、wenn 這類連接詞會把動詞踢到子句最後面（跟 denn 不一樣）。']],
+      q: [['Ich bleibe zu Hause, weil ich krank ___ .', 'bin', ['bin ich', 'sein'], '我待在家，因為我生病了。', 'weil 子句的動詞放最後。'],
+        ['Ich weiß, dass er Deutsch ___ .', 'spricht', ['spricht er', 'sprechen'], '我知道他會說德文。', 'dass 子句的動詞放最後。'],
+        ['___ es regnet, bleibe ich zu Hause.', 'Wenn', ['Denn', 'Aber'], '如果下雨，我就待在家。', 'wenn＝如果；子句在前時，主句動詞緊接在逗號後。']]
+    }
+  });
+})(typeof window !== 'undefined' ? window : globalThis);
+
+;
+(function (G) { const DE = G.DE || (G.DE = {});
+/* 德文文法關卡：由淺到深，後面的關卡會用到前面學過的東西 */
+DE.GX_PATH = [
+  ['開口說', '我、你、他，「我是…」「我叫…」', ['pron', 'sein', 'intro']],
+  ['名詞和冠詞', '三個性別、der／die／das、ein／eine、複數，「…很…」', ['noun-gender', 'art-def', 'art-indef', 'noun-plural', 'adj-pred']],
+  ['動詞現在式', '動詞換字尾、haben、會變母音的動詞、動詞放第二位、數字', ['pres-reg', 'haben', 'stem', 'v2', 'num']],
+  ['問句和否定', '疑問詞、是非問句、du 和 Sie、kein 和 nicht、und／aber／denn', ['wfrage', 'janein', 'sie', 'kein', 'konj']],
+  ['受格', '「做什麼」的對象 den／einen、es gibt、喜歡做、我想要', ['cases', 'akk', 'esgibt', 'gern', 'moechte']],
+  ['能、想、得，句框', '情態動詞、第二個動詞放句尾、分離動詞、命令、man', ['modal', 'satzklammer', 'sep', 'imper', 'man']],
+  ['與格和「我的」', '給誰 dem／der、代名詞 mich／mir、gefallen、mein、dieser', ['dat', 'pron-obj', 'gefallen', 'poss', 'demo']],
+  ['介係詞', '接受格、接與格、在哪裡和去哪裡、im／ins、在家和回家', ['prep-akk', 'prep-dat', 'prep-wechsel', 'contract', 'zuhause']],
+  ['時間', '幾點、星期、月份', ['time', 'days']],
+  ['過去', '完成式 haben／sein、war 和 hatte、反身動詞', ['perf-haben', 'perf-sein', 'praet', 'refl']],
+  ['形容詞和長句子', '形容詞詞尾、比較級、weil／dass 子句', ['adj-end', 'compar', 'subord']]
+];
+})(typeof window !== 'undefined' ? window : globalThis);
+
+;
 /* 語言頁（義大利文、西班牙文、德文、俄文…）：放在日文 N5 App 裡
    語言專屬的文字和設定放在 window.LANGCFG，資料和變化引擎放在 window.LX
    - 介面、音效、下拉選單、間隔複習規則都跟日文頁一樣
