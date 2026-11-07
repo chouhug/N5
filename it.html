@@ -2,7 +2,7 @@
 <title>義大利文 A1</title>
 <script>(function(){try{var s=JSON.parse(localStorage.getItem('n5:settings')||'{}');var t=s.theme==='dark'||s.theme==='light'?s.theme:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t)}catch(e){}})();</script>
 <script src="lang.js" data-lang="it"></script>
-<script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script><script src="sync.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script><script src="sync.js"></script><script src="core.js"></script>
 <script>window.N5_FIREBASE={apiKey:"AIzaSyBbBF9JRFQPli5NeyH2cB1CvYMTeByMIng",authDomain:"n5-learning-453eb.firebaseapp.com",projectId:"n5-learning-453eb",storageBucket:"n5-learning-453eb.firebasestorage.app",messagingSenderId:"1076998873386",appId:"1:1076998873386:web:1b485881481292af84be53"};</script>
 <style>
 /* 版面：單欄手機 app，頂部細條（今日進度）＋底部固定分頁；練習帳風格的方格只用在大字 */
@@ -3265,13 +3265,6 @@ const store = {
   get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* 存不了也能用 */ } }
 };
-function ymd(d = new Date()) {
-  const y = d.getFullYear(), m = String(d.getMonth() + 1).padStart(2, '0'), dd = String(d.getDate()).padStart(2, '0');
-  return `${y}-${m}-${dd}`;
-}
-function addDays(dateStr, n) { const [y, m, d] = dateStr.split('-').map(Number); return ymd(new Date(y, m - 1, d + n, 12)); }
-const today = () => ymd();
-const SRS = [1, 3, 7, 14, 30, 60];
 const GOAL = 20;
 const ICON = {
   play: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 4V5L7 9H3z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
@@ -3327,7 +3320,6 @@ const saveLocal = () => store.set('n5:progress', S);
 // 別的分頁（日文頁）改了進度時，先合併再寫，不會互相覆蓋
 function reloadShared() { const cur = store.get('n5:progress', null); if (cur && cur.items) S = mergeState(S, cur); }
 
-function blankRec() { return { s: 'new', n: 0, w: {}, lv: 0, due: '', st: 0, t: 0 }; }
 const getRec = id => S.items[id] || blankRec();
 function putRec(id, rec) { reloadShared(); S.items[id] = rec; saveLocal(); Cloud.schedule(); }
 function touch(id, patch) {
@@ -3337,34 +3329,7 @@ function touch(id, patch) {
   else if (!r.q && (old.s === 'queued' || old.s === 'learned') && old.t) r.q = old.t;
   putRec(id, r);
 }
-// 和日文頁相同的作答規則：填空答對才算學會；到期複習答對才延長間隔
-// 間隔加一點隨機（7 天以上 ±15%），同一天學的字之後才不會全部擠在同一天到期
-const spread = n => n < 7 ? n : Math.max(1, n + Math.round((Math.random() * 0.3 - 0.15) * n));
-function applyAnswer(rec, mode, correct, source, today, now) {
-  rec = JSON.parse(JSON.stringify(rec || blankRec()));
-  rec.w = rec.w || {};
-  rec.n = (rec.n || 0) + 1;
-  rec.t = now;
-  // w：1＝錯題（現在還不會）、2＝以前錯過（錯題複習會輪流抽）
-  // 答錯 → 錯題；在任何地方答對一次 → 離開錯題，留在錯題複習；錯題複習答錯 → 回到錯題
-  const w = rec.w[mode] || 0;
-  if (!correct) rec.w[mode] = 1;
-  else if (w === 1) rec.w[mode] = 2;
-  if (!rec.w[mode]) delete rec.w[mode];
-  if (source === 'review') { rec.rv = rec.rv || {}; rec.rv[mode] = now; }   // 上次在錯題複習出現的時間，用來輪流抽
-  if (source === 'due') rec.dd = today;                                    // 今天做過到期複習（算每日上限）
-  const learn = () => { rec.s = 'learned'; rec.lv = 0; rec.due = addDays(today, SRS[0]); };
-  // 學會的字答錯：降兩級（不是直接打回第一級），避免複習量一下子爆掉
-  const reset = () => { rec.lv = Math.max(0, (rec.lv || 0) - 2); rec.due = addDays(today, SRS[rec.lv]); };
-  if (mode === 'fill') {
-    if (correct) {
-      if (rec.s === 'learned') {
-        if (source === 'due' && rec.due && rec.due <= today) { rec.lv = Math.min((rec.lv || 0) + 1, SRS.length - 1); rec.due = addDays(today, spread(SRS[rec.lv])); }
-      } else if (rec.s !== 'excluded') learn();
-    } else if (rec.s === 'learned') reset();
-  }
-  return rec;
-}
+// 作答規則 applyAnswer、複習間隔、出題 pickRound、合併 mergeState、備份碼：在 core.js（和日文頁共用）
 function bumpDay() {
   reloadShared();
   const d = today();
@@ -3380,82 +3345,6 @@ function record(w, mode, correct, source) {
   S.items[w.id] = rec;
   bumpDay();
   Cloud.schedule();
-}
-function mergeState(a, b) {
-  const out = { items: {}, days: {} };
-  const ia = (a && a.items) || {}, ib = (b && b.items) || {};
-  for (const id of new Set([...Object.keys(ia), ...Object.keys(ib)])) { const x = ia[id], y = ib[id]; out.items[id] = !x ? y : !y ? x : ((y.t || 0) > (x.t || 0) ? y : x); }
-  return SyncDays.merge(out, a, b);   // 每日題數：各裝置加總（sync.js）
-}
-function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
-function pickRound(items, mode, size, randomOnly) {
-  if (randomOnly) {
-    const last = it => (((getRec(it.id) || {}).rv) || {})[mode] || 0;
-    return shuffle(shuffle(items).sort((a, b) => last(a) - last(b)).slice(0, size));
-  }
-  const scored = items.map(it => { const r = getRec(it.id); return { it, wrong: (r.w && r.w[mode]) ? 0 : 1, n: r.n || 0, rnd: Math.random() }; });
-  scored.sort((a, b) => a.wrong - b.wrong || a.n - b.n || a.rnd - b.rnd);
-  return shuffle(scored.slice(0, size).map(x => x.it));
-}
-
-// ---- 備份碼：和日文頁同一種格式，同一串碼兩邊都能匯入（各自只取自己的字） ----
-const PACK_EPOCH = Date.UTC(2026, 0, 1);
-const ST2C = { new: 'n', queued: 'q', learned: 'l', excluded: 'x' }, C2ST = { n: 'new', q: 'queued', l: 'learned', x: 'excluded' };
-function shortKey(id) { let h = 0x811c9dc5; for (const ch of id) { h ^= ch.codePointAt(0); h = Math.imul(h, 0x01000193) >>> 0; } return (h % 1679616).toString(36).padStart(4, '0'); }
-function dayNum(d) { const [y, m, dd] = d.split('-').map(Number); return Math.round((Date.UTC(y, m - 1, dd) - PACK_EPOCH) / 864e5); }
-function numDay(n) { const d = new Date(PACK_EPOCH + n * 864e5); return d.getUTCFullYear() + '-' + String(d.getUTCMonth() + 1).padStart(2, '0') + '-' + String(d.getUTCDate()).padStart(2, '0'); }
-function packState(st, todayStr) {
-  const b36 = n => (n ? Math.max(0, Math.round(n)).toString(36) : '');
-  const days = Object.keys(st.days || {}).filter(d => d > addDays(todayStr, -7) && st.days[d] > 0).sort().map(d => b36(dayNum(d)) + ':' + b36(st.days[d])).join(',');
-  const recs = [];
-  for (const id in st.items || {}) {
-    const r = st.items[id]; if (!r) continue;
-    const w = r.w || {};
-    const blank = (r.s || 'new') === 'new' && !r.n && !w.mc && !w.fill && !w.kana;
-    if (blank && !r.t) continue;
-    const wc = (w.mc || 0) + 3 * (w.fill || 0) + 9 * (w.kana || 0);
-    const f = [b36(r.n), wc ? wc.toString(36) : '', b36(r.lv), r.due ? b36(dayNum(r.due) + 1) : '', b36(r.st), b36((r.t || 0) - PACK_EPOCH > 0 ? ((r.t - PACK_EPOCH) / 6e4) : 0), b36((r.q || 0) - PACK_EPOCH > 0 ? ((r.q - PACK_EPOCH) / 6e4) : 0)];
-    while (f.length && f[f.length - 1] === '') f.pop();
-    recs.push(shortKey(id) + (ST2C[r.s] || 'n') + f.join(','));
-  }
-  return 'N5.' + days + '~' + recs.join(';');
-}
-function unpackState(code, allIds) {
-  code = String(code).replace(/\s+/g, '');
-  const m = code.match(/^N5\.([^~]*)~(.*)$/);
-  if (!m) return null;
-  const byKey = {}; for (const id of allIds) byKey[shortKey(id)] = id;
-  const p = x => (x ? parseInt(x, 36) : 0);
-  const days = {};
-  if (m[1]) for (const part of m[1].split(',')) { const [d, n] = part.split(':'); days[numDay(p(d))] = p(n); }
-  const items = {};
-  if (m[2]) for (const rec of m[2].split(';')) {
-    const id = byKey[rec.slice(0, 4)];
-    if (!id || !C2ST[rec[4]]) continue;
-    const [n, wc, lv, due, st, t, q] = rec.slice(5).split(',');
-    const wv = p(wc), w = {};
-    if (wv % 3) w.mc = wv % 3; if (Math.floor(wv / 3) % 3) w.fill = Math.floor(wv / 3) % 3;
-    items[id] = { s: C2ST[rec[4]], n: p(n), w, lv: p(lv), due: due ? numDay(p(due) - 1) : '', st: p(st), t: t ? PACK_EPOCH + p(t) * 6e4 : 0 };
-    if (q) items[id].q = PACK_EPOCH + p(q) * 6e4;
-  }
-  return { items, days };
-}
-async function zipCode(code) {
-  try {
-    if (typeof CompressionStream === 'undefined') return code;
-    const buf = await new Response(new Blob([code]).stream().pipeThrough(new CompressionStream('deflate-raw'))).arrayBuffer();
-    let bin = ''; const u8 = new Uint8Array(buf);
-    for (let i = 0; i < u8.length; i++) bin += String.fromCharCode(u8[i]);
-    const z = 'N5Z.' + btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-    return z.length < code.length ? z : code;
-  } catch (e) { return code; }
-}
-async function unzipCode(z) {
-  if (typeof DecompressionStream === 'undefined') throw new Error('nozip');
-  let b = z.slice(4).replace(/-/g, '+').replace(/_/g, '/'); while (b.length % 4) b += '=';
-  const bin = atob(b), u8 = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
-  return await new Response(new Blob([u8]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text();
 }
 
 // ================= 語音 =================
@@ -4068,7 +3957,7 @@ function startPron() {
 }
 function boldPart(w, part) { const i = w.toLowerCase().indexOf(part.toLowerCase()); if (i < 0) return esc(w); return esc(w.slice(0, i)) + `<u style="text-decoration-thickness:3px;text-underline-offset:6px;color:var(--pri)">${esc(w.slice(i, i + part.length))}</u>` + esc(w.slice(i + part.length)); }
 function nextPronQ() {
-  const R = pronRound, host = $('#prq'); if (!host) return;
+  const R = pronRound, host = $('#prq'); if (!R || !host) return;   // 自動跳下一題前範圍被換掉了（R 已清空）
   if (R.idx >= R.queue.length) return roundDone(host, R, () => { pronRound = null; renderPron(); });
   const q = R.queue[R.idx];
   const prompt = R.mode === 'listen'
@@ -4118,7 +4007,7 @@ function renderMC() {
       return emptyWords($('#mcq'), UI.mcSrc);
     }
     const isRev = UI.mcSrc === 'mcReview';
-    const queue = UI.mcSrc === 'recent' ? shuffle(pool) : pickRound(pool, 'mc', isRev ? REVIEW_ROUND : roundSize(), isRev);
+    const queue = UI.mcSrc === 'recent' ? shuffle(pool) : pickRound(pool, getRec, 'mc', isRev ? REVIEW_ROUND : roundSize(), isRev);
     mcRound = { mode: UI.mcMode, queue, idx: 0, total: pool.length, src: UI.mcSrc, pos: UI.pos, right: 0 };
   }
   nextMCQ();
@@ -4130,7 +4019,7 @@ function artHint(x) {
   return `${x.answer}：${(IT.INDEF_INFO || { un: '陽性', uno: '陽性（s+子音、z 前）', una: '陰性', "un'": '陰性（母音前）' })[x.answer] || ''}`;
 }
 function nextMCQ() {
-  const R = mcRound, host = $('#mcq'); if (!host) return;
+  const R = mcRound, host = $('#mcq'); if (!R || !host) return;   // 自動跳下一題前範圍被換掉了（R 已清空）
   if (R.idx >= R.queue.length) return roundDone(host, R, () => { mcRound = null; renderMC(); });
   const item = R.queue[R.idx];
   const src = { mcWrong: 'wrong', mcReview: 'review' }[R.src] || (R.src === 'learned' ? 'learned' : 'learn');
@@ -4198,7 +4087,7 @@ function renderCard() {
       return;
     }
     const isRev = /Review$/.test(UI.cardSrc);
-    const cards = UI.cardSrc === 'new' ? pool.slice(0, roundSize()) : pickRound(pool, /^fill/.test(UI.cardSrc) ? 'fill' : 'mc', isRev ? REVIEW_ROUND : roundSize(), isRev);
+    const cards = UI.cardSrc === 'new' ? pool.slice(0, roundSize()) : pickRound(pool, getRec, /^fill/.test(UI.cardSrc) ? 'fill' : 'mc', isRev ? REVIEW_ROUND : roundSize(), isRev);
     deck = { src: UI.cardSrc, pos: UI.pos, cards, total: pool.length };
   }
   showFlash();
@@ -4268,7 +4157,7 @@ function renderFill() {
     const pool = srcPool(UI.fillSrc);
     if (!pool.length) return emptyWords($('#fq'), UI.fillSrc);
     const isRev = UI.fillSrc === 'fillReview';
-    fillRound = { queue: UI.fillSrc === 'recent' ? shuffle(pool) : pickRound(pool, 'fill', isRev ? REVIEW_ROUND : roundSize(), isRev), idx: 0, total: pool.length, src: UI.fillSrc, pos: UI.pos, right: 0 };
+    fillRound = { queue: UI.fillSrc === 'recent' ? shuffle(pool) : pickRound(pool, getRec, 'fill', isRev ? REVIEW_ROUND : roundSize(), isRev), idx: 0, total: pool.length, src: UI.fillSrc, pos: UI.pos, right: 0 };
   }
   nextFillQ();
 }
@@ -4285,7 +4174,7 @@ function answerSpan(w) {
 }
 const letterCount = s => s.replace(/[^\p{L}]/gu, '').length;
 function nextFillQ(keepFocus) {
-  const R = fillRound, host = $('#fq'); if (!host) return;
+  const R = fillRound, host = $('#fq'); if (!R || !host) return;   // 自動跳下一題前範圍被換掉了（R 已清空）
   if (R.idx >= R.queue.length) { document.body.classList.remove('typing'); return roundDone(host, R, () => { fillRound = null; renderFill(); }); }
   const w = R.queue[R.idx];
   const src = { fillWrong: 'wrong', fillReview: 'review', due: 'due' }[R.src] || 'learn';
