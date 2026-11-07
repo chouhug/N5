@@ -20,12 +20,12 @@ jobs:
   site:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 22
       - name: 這次有沒有改 n5-src.zip
         id: zip
         env:
