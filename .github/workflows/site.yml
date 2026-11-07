@@ -1,0 +1,67 @@
+# 檢查並更新網站
+# 每次推到 main：解開 n5-src.zip → 跑全部測試 → 用原始檔產生所有頁面 → 和網站上的檔案比對
+#   - 一樣：什麼都不做（Claude 一起改了 zip 和網站檔案時就是這樣）
+#   - 這次有改 zip（例如從 iPad 只上傳了新的 n5-src.zip）：自動更新網站檔案、快取版本號加一、commit、請 GitHub Pages 部署
+#   - 這次沒改 zip 但網站檔案不一樣（有人直接改了網站上的檔案）：失敗並列出檔案，不會蓋掉那些改動
+#   - 測試沒過：失敗，不更新網站
+# 在 Actions 頁面手動按「Run workflow」：一律用 zip 的內容更新網站
+name: 檢查並更新網站
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+concurrency:
+  group: site
+  cancel-in-progress: false
+jobs:
+  site:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: 這次有沒有改 n5-src.zip
+        id: zip
+        env:
+          BEFORE: ${{ github.event.before }}
+          EVENT: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT" != "push" ] || [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ] || ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            CH=1
+          elif git diff --name-only "$BEFORE" "$GITHUB_SHA" | grep -qx 'n5-src.zip'; then
+            CH=1
+          else
+            CH=0
+          fi
+          echo "changed=$CH" >> "$GITHUB_OUTPUT"
+          echo "這次有改 zip：$CH"
+      - name: 解開 n5-src.zip
+        run: mkdir _src && unzip -q n5-src.zip -d _src
+      - name: 跑全部測試
+        run: node _src/n5src/test-all.js _src/n5work
+      - name: 產生頁面並和網站比對
+        id: sync
+        run: node _src/n5src/deploy.js _src . ${{ steps.zip.outputs.changed }}
+      - name: commit 更新後的網站和 zip
+        if: steps.sync.outputs.changed == 'true'
+        env:
+          SUMMARY: ${{ steps.sync.outputs.summary }}
+        run: |
+          python3 _src/n5src/pack.py _src n5-src.zip
+          rm -rf _src
+          git config user.name "github-actions[bot]"
+          git config user.email "41898900+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "自動更新網站：$SUMMARY [skip ci]"
+          git push
+      - name: 請 GitHub Pages 部署
+        if: steps.sync.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X POST "repos/$GITHUB_REPOSITORY/pages/builds" || echo "沒辦法要求部署；GitHub Pages 通常會自己部署"

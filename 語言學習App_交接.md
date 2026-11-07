@@ -13,11 +13,18 @@
 
 - **所有頁面（包括日文頁 index.html）都是 `n5src/build.js` 產生的**，不要直接改網站上的 .html。改 `n5src` 裡的原始檔，然後：
   1. `node n5src/build.js n5work`（產生全部頁面；只做某幾頁：`node n5src/build.js n5work ja it`）
-  2. 跑測試：五個語言的 `node n5src/<代碼>/test.js`、`node n5src/core-test.js n5work`、`node n5src/sync-test.js n5work/sync.js`
+  2. 跑測試：`node n5src/test-all.js n5work`（五個語言、core.js、sync.js 全部）
   3. `node n5src/build.js n5work --check`：確認網站上的檔案和原始檔一致（有人直接改了 .html 時會列出來）
   4. 把 n5src 和 n5work 重新打包成 n5-src.zip，連同改過的網站檔案一起 commit。
 - 網站上的檔案全部平放在 repo 根目錄（GitHub Pages）。原始碼在 repo 根目錄的 `n5-src.zip`（使用者用 iPad 的 GitHub 網頁版上傳時不能上傳資料夾，所以原始碼用 zip 放）。
 - 2026-11 起 Claude 可以直接 commit／push 到 `chouhug/N5` 的 main（使用者要求的）；推完要用 `git ls-remote` 確認 main 真的是新的 commit，並看 GitHub Pages 有沒有部署成功。
+- **GitHub Actions**（`.github/workflows/site.yml`「檢查並更新網站」）：每次推到 main 都會解開 n5-src.zip、跑 test-all.js、用 n5src/deploy.js 產生頁面並和網站檔案比對：
+  - 一樣 → 不動作（Claude 同時改了 zip 和網站檔案時）。
+  - 這次有改 zip、網站檔案不一樣 → 把 zip 產生的檔案複製到根目錄、sw.js 快取版本號加一、用 n5src/pack.py 重新打包 zip（中文檔名用 UTF-8）、commit「自動更新網站：…」、請 GitHub Pages 部署。
+  - 這次沒改 zip、網站檔案卻不一樣 → 失敗並列出檔案（有人直接改了網站檔案；不會蓋掉）。
+  - 測試沒過 → 失敗，不更新。
+  - Actions 頁面手動「Run workflow」→ 一律用 zip 更新網站。
+  - 所以**使用者從 iPad 只要上傳新的 n5-src.zip** 就好，網站會自動更新。
 
 ## 網站上的檔案（repo 根目錄）
 
@@ -116,6 +123,8 @@ n5work/               目前網站上的所有檔案（build.js 的輸出）
 - 日文頁（index.html）和語言頁（lang-app.js）用同一套規則（core.js）；新欄位 `rv`、`dd` 會跟著 Firestore 同步，但備份碼不含（匯入備份只會少了輪流的順序）。
 
 ## 最近做過的改動
+
+- **GitHub Actions 自動檢查和部署**：新增 .github/workflows/site.yml，以及 n5src/test-all.js（全部測試）、deploy.js（zip → 網站）、pack.py（打包 zip）。在本機用 git repo 模擬過：只上傳 zip → 自動更新 it.html 和快取版本並 commit，再跑一次判斷一致；直接改網站檔案 → 失敗不覆蓋；測試失敗 → 擋下。
 
 - **日文頁改由 build.js 產生（第二項完成）**：index.html 拆成 n5src/ja/（page.html 樣板＋10 個程式檔），版面樣式抽成 n5src/base.css 給所有頁共用。拆完重新產生的 6 個頁面和拆之前逐位元組相同；之後每頁最上面多一行「這個檔是 build.js 產生的」註解。build.js 新增 `--check`。
 
