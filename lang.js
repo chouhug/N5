@@ -20,6 +20,12 @@
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
   };
   const ready = LANGS.filter(l => l.ready).map(l => l.id);
+  // 第一次用：新使用者只開「現在這個語言」（以前預設日語＋義大利文，朋友直接打開俄文頁會先被問要暫停哪個）；
+  // 已經在用的人（有 langs:last 或學習紀錄）維持以前的預設，並存起來，之後不會再變
+  if (store.get('langs:v1', null) == null) {
+    const old = store.get('langs:last', null) != null || store.get('n5:progress', null) != null;
+    store.set('langs:v1', { active: old ? ready.slice(0, 2) : [CUR], max: 2, lock: true, note: '' });
+  }
   const cfg = () => {
     const c = Object.assign({ active: ready.slice(0, 2), max: 2, lock: true, note: '' }, store.get('langs:v1', {}));
     c.active = c.active.filter(id => BY[id] && BY[id].ready);

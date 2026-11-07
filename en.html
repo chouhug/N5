@@ -2,7 +2,7 @@
 <title>英文 B2</title>
 <script>(function(){try{var s=JSON.parse(localStorage.getItem('n5:settings')||'{}');var t=s.theme==='dark'||s.theme==='light'?s.theme:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t)}catch(e){}})();</script>
 <script src="lang.js" data-lang="en"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script><script src="sync.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script><script src="sync.js"></script>
 <script>window.N5_FIREBASE={apiKey:"AIzaSyBbBF9JRFQPli5NeyH2cB1CvYMTeByMIng",authDomain:"n5-learning-453eb.firebaseapp.com",projectId:"n5-learning-453eb",storageBucket:"n5-learning-453eb.firebasestorage.app",messagingSenderId:"1076998873386",appId:"1:1076998873386:web:1b485881481292af84be53"};</script>
 <style>
 /* 版面：單欄手機 app，頂部細條（今日進度）＋底部固定分頁；練習帳風格的方格只用在大字 */
@@ -3778,10 +3778,8 @@ function applyAnswer(rec, mode, correct, source, today, now) {
 function bumpDay() {
   reloadShared();
   const d = today();
-  S.days[d] = (S.days[d] || 0) + 1;
-  const keys = Object.keys(S.days).sort();
-  while (keys.length > 90) delete S.days[keys.shift()];
-  saveLocal(); renderGoal();
+  SyncDays.bump(S, d);   // 加一題（只留最近 90 天）
+  saveLocal(); Cloud.schedule();   // 只有題數變了（五十音、詞性變化、文法練習）也要同步 renderGoal();
   if (S.days[d] === GOAL) toast(`今天的 ${GOAL} 題完成了！`, true);
 }
 function record(w, mode, correct, source) {
@@ -3797,9 +3795,7 @@ function mergeState(a, b) {
   const out = { items: {}, days: {} };
   const ia = (a && a.items) || {}, ib = (b && b.items) || {};
   for (const id of new Set([...Object.keys(ia), ...Object.keys(ib)])) { const x = ia[id], y = ib[id]; out.items[id] = !x ? y : !y ? x : ((y.t || 0) > (x.t || 0) ? y : x); }
-  const da = (a && a.days) || {}, db = (b && b.days) || {};
-  for (const d of new Set([...Object.keys(da), ...Object.keys(db)])) out.days[d] = Math.max(da[d] || 0, db[d] || 0);
-  return out;
+  return SyncDays.merge(out, a, b);   // 每日題數：各裝置加總（sync.js）
 }
 function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 function pickRound(items, mode, size, randomOnly) {

@@ -23,8 +23,8 @@
 | it.html / es.html / de.html / ru.html / en.html | 由 build.js 產生的義大利文、西班牙文、德文、俄文、英文頁 |
 | lang.js | 所有頁共用：語言選單、語言鎖定（最多幾個語言＋自己寫的理由）、記住上次的語言並自動跳轉、換頁用 location.replace（返回鍵不會跳回上個語言）、鍵盤收起時恢復底部分頁、`html{touch-action:manipulation}`（防止連點放大） |
 | sync.js | 所有頁共用的雲端同步（`makeCloud(hooks)`，各頁用 `const Cloud = makeCloud({...})` 建立）。index.html 和 lang-template.html 都在 Firebase 程式庫後面載入 |
-| sw.js | 離線快取。自己網站的檔案「網路優先、3 秒逾時用快取」；字體和 Firebase 程式庫「快取優先」。目前 `CACHE = 'n5-v82'`（CORE 含 sync.js） |
-| manifest.json | 名稱「語言學習」 |
+| sw.js | 離線快取。自己網站的檔案「網路優先、3 秒逾時用快取」；字體和 Firebase 程式庫「快取優先」。目前 `CACHE = 'n5-v83'`（CORE 含 sync.js、apple-touch-icon.png） |
+| manifest.json | 名稱「語言學習」，`id: ./index.html`（和 start_url 一樣，改了會被當成另一個 App）；圖示 any 和 maskable 分開寫（圖案在安全區內，同一張圖可以兩用） |
 | icon-192.png、icon-512.png、apple-touch-icon.png | 藍底＋白色對話框「A」＋黃色對話框「文」 |
 
 ## 原始碼（n5-src.zip 解開後）
@@ -75,7 +75,7 @@ n5work/               目前網站上的所有檔案（含 index.html）
 ## 資料與同步
 
 - 進度存在 localStorage `n5:progress`，Google 登入後同步到 Firestore（程式在 sync.js）：
-  - `users/{uid}`：`days`（每天題數）、`v: 2`、`updated`。
+  - `users/{uid}`：`days`（每天題數）、`dv`（每台裝置每天的題數）、`v: 2`、`updated`。
   - `users/{uid}/p/{語言}-{0~3}`：該語言的單字紀錄 `items`。每個語言分 4 份（id 的 FNV 雜湊 % 4；日文和沒有語言前綴的 id 放 `ja-*`），一份大約只有幾十 KB，離 1 MB 上限很遠。
   - 每次只寫有改到的字（`batch.set(..., { mergeFields: [FieldPath('items', id)] })`，整筆換掉），不再先 get 再整份 set。
   - 舊格式（v1，所有紀錄放在 `users/{uid}.items`）：新版連上時會把它收進分開的文件，再刪掉 `items`；舊版頁面之後又寫回來，也會再搬一次。
@@ -83,7 +83,8 @@ n5work/               目前網站上的所有檔案（含 index.html）
   - 測試：sync 的模擬測試在 n5src/sync-test.js（`node n5src/sync-test.js ../n5work/sync.js`）。
 - 各語言的 id 有前綴（`it:`、`es:`），日語沒有前綴。
 - 設定在 `n5:settings`（共用），語言頁自己的語音設定在 `it:settings`、`es:settings`。
-- 語言鎖定設定在 `langs:v1`，上次使用的語言在 `langs:last`。
+- 語言鎖定設定在 `langs:v1`，上次使用的語言在 `langs:last`。第一次使用時 lang.js 會建立 `langs:v1`：新使用者只開目前這個語言；已經有 `langs:last` 或學習紀錄的人維持以前的預設（日語＋義大利文）。
+- 每日題數：`SyncDays`（sync.js）。每台裝置有自己的代號 `n5:dev`，`S.dv[日期][裝置]` 各記各的，`S.days[日期]`＝各裝置加總（和舊數字取大），兩台裝置同一天練不會再算少。`bumpDay()` 用 `SyncDays.bump`，並且會 `Cloud.schedule()`（以前只有題數變動時不會同步）。
 - 複習間隔：1／3／7／14／30／60 天（7 天以上加 ±15% 隨機，避免同一天到期的字擠在一起）。只有填空答對才算「學會」。學會的字答錯降兩級（不是打回第一級）。
 - 錯題（`w[mode]`）：1＝錯題、2＝以前錯過。答錯 → 1；在任何地方答對一次 → 2（離開錯題）；錯題複習答錯 → 回到 1。錯題複習（w＝2）每輪 10 題，依 `rv[mode]`（上次在錯題複習出現的時間）由舊到新抽，同時間的隨機，所以抽過的要等其他字都出過才會再出現。
 - 到期複習每天有上限 `SET.dueCap`（預設 30，可選 10／20／30／50／不限，設定頁「練習」）。到期最久、等級最低的先出；今天做過的（`dd`＝今天）也算在上限內，沒做完的明天接著出。單字庫「今天到期」顯示的是今天要做的數量。
@@ -91,6 +92,8 @@ n5work/               目前網站上的所有檔案（含 index.html）
 - 日文頁（index.html）和語言頁（lang-app.js）用同一套規則；新欄位 `rv`、`dd` 會跟著 Firestore 同步，但備份碼不含（匯入備份只會少了輪流的順序）。
 
 ## 最近做過的改動
+
+- **小修正一批**：index.html 的 `<title>`、字體連結搬回 `<head>`，拿掉 claude.ai 預覽留下的 meta；三個 Firebase 程式庫加 `defer`（不擋住畫面，sync.js 會等到 DOMContentLoaded 再連線）；manifest 加 `id`、圖示 any／maskable 分開；sw.js 快取加 apple-touch-icon；每日題數改成各裝置加總；只做五十音／詞性變化／文法練習時題數也會同步；新使用者第一次打開不會先被問要暫停哪個語言。
 
 - **雲端同步改成每個語言分開存**（sync.js）：原本所有語言擠在一份 Firestore 文件，約 5,000 個字就會碰到 1 MB 上限，而且每答幾題就整份下載再整份上傳。現在每個語言分 4 份文件、只寫有改到的字；舊資料自動搬家；規則不允許時退回舊格式。index.html 和 lang-app.js 原本各有一份幾乎一樣的 Cloud 程式，現在共用 sync.js。
 

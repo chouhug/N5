@@ -1,6 +1,6 @@
 /* 雲端同步（所有語言頁共用）
    進度存在 Firestore：
-   - users/{uid}            每天的題數 days、版本 v、更新時間 updated
+   - users/{uid}            每天的題數 days、每台裝置每天的題數 dv、版本 v、更新時間 updated
    - users/{uid}/p/{語言-0..3}  各語言的單字紀錄 items，每個語言分成 4 份（日文是 ja-0…ja-3）
    一份文件最多 1 MB，以前所有語言擠在 users/{uid} 一份裡，字一多就會存不進去；
    分開之後每份只有一兩百 KB，而且每次只寫有改到的字，不再整份重傳。
@@ -16,6 +16,42 @@
   const tOf = r => (r && r.t) || 0;
   const clone = o => JSON.parse(JSON.stringify(o));
   const isEmpty = o => { for (const k in o) return false; return true; };
+
+  // ---- 每日題數：每台裝置各記各的，合併時相加 ----
+  // days[日期] 是畫面上用的總數；dv[日期][裝置] 是那台裝置那天做的題數。
+  // 以前兩台裝置同一天都有練，合併時取比較大的那個，題數會算少；現在 days＝各裝置加總（和舊的數字取大）。
+  const DEV = (() => {
+    try {
+      let d = localStorage.getItem('n5:dev');
+      if (!d) { d = Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-3); localStorage.setItem('n5:dev', d); }
+      return d;
+    } catch (e) { return 'x'; }
+  })();
+  const sum = o => { let n = 0; for (const k in o) n += o[k] || 0; return n; };
+  window.SyncDays = {
+    dev: DEV,
+    // 合併 a、b 的 days 和 dv，寫進 out
+    merge(out, a, b) {
+      const da = (a && a.days) || {}, db = (b && b.days) || {}, va = (a && a.dv) || {}, vb = (b && b.dv) || {};
+      out.days = {}; out.dv = {};
+      for (const d of new Set([...Object.keys(va), ...Object.keys(vb)])) {
+        const x = va[d] || {}, y = vb[d] || {}, m = {};
+        for (const k of new Set([...Object.keys(x), ...Object.keys(y)])) m[k] = Math.max(x[k] || 0, y[k] || 0);
+        out.dv[d] = m;
+      }
+      for (const d of new Set([...Object.keys(da), ...Object.keys(db), ...Object.keys(out.dv)])) out.days[d] = Math.max(da[d] || 0, db[d] || 0, sum(out.dv[d] || {}));
+      return out;
+    },
+    // 這台裝置今天多做一題
+    bump(S, d) {
+      S.days = S.days || {}; S.dv = S.dv || {};
+      const m = S.dv[d] = S.dv[d] || {};
+      m[DEV] = (m[DEV] || 0) + 1;
+      S.days[d] = Math.max((S.days[d] || 0) + 1, sum(m));
+      // 只留最近 90 天
+      for (const k of ['days', 'dv']) { const keys = Object.keys(S[k]).sort(); while (keys.length > 90) delete S[k][keys.shift()]; }
+    }
+  };
 
   window.makeCloud = function (h) {
     const $ = (sel, root) => (root || document).querySelector(sel);
@@ -47,6 +83,8 @@
       },
       async init() {
         if (await this.initClaude()) return;
+        // Firebase 程式庫用 defer 載入（不擋住畫面）：還沒載好就等到 DOMContentLoaded，那時 defer 的程式一定已經跑完
+        if (!window.firebase && document.readyState === 'loading') await new Promise(r => document.addEventListener('DOMContentLoaded', r, { once: true }));
         this.initFirebase();
       },
       // 在 claude.ai 裡預覽時用 claude 的資料庫（舊的整份格式）
@@ -116,7 +154,7 @@
         reload();
         const S = h.getS();
         const merged = h.merge(S, remote);
-        if (JSON.stringify(merged) === JSON.stringify({ items: S.items, days: S.days })) return;
+        if (JSON.stringify(merged) === JSON.stringify({ items: S.items, days: S.days, dv: S.dv || {} })) return;
         h.setS(merged); h.saveLocal(); if (h.refresh) h.refresh();
       },
       schedule(ms = 2500) { if (!this.ref) return; clearTimeout(this.timer); this.timer = setTimeout(() => this.upload(), ms); },
@@ -134,7 +172,7 @@
         this.set('connecting');
         this.unsubs.push(root.onSnapshot(snap => {
           const d = snap && snap.exists ? (snap.data() || {}) : {};
-          this.rootRemote = { items: d.items || {}, days: d.days || {} };
+          this.rootRemote = { items: d.items || {}, days: d.days || {}, dv: d.dv || {} };
           this.rootReady = true; this.onRemote();
         }, () => this.set('error')));
         this.unsubs.push(root.collection('p').onSnapshot(qs => {
@@ -158,7 +196,7 @@
         for (const b in this.buckets) Object.assign(items, this.buckets[b]);
         const old = (this.rootRemote && this.rootRemote.items) || {};
         for (const id in old) if (tOf(old[id]) > tOf(items[id])) items[id] = old[id];
-        return { items, days: (this.rootRemote && this.rootRemote.days) || {} };
+        return { items, days: (this.rootRemote && this.rootRemote.days) || {}, dv: (this.rootRemote && this.rootRemote.dv) || {} };
       },
       onRemote() {
         if (!this.rootReady || !this.bucketsReady) return;
@@ -180,8 +218,10 @@
         }
         const rd = rr.days || {}, days = {};
         for (const d in S.days) if ((S.days[d] || 0) > (rd[d] || 0)) days[d] = S.days[d];
+        const rv = rr.dv = rr.dv || {}, dv = [];
+        for (const d in S.dv || {}) for (const k in S.dv[d]) if ((S.dv[d][k] || 0) > ((rv[d] || {})[k] || 0)) dv.push([d, k, S.dv[d][k]]);
         const legacy = !isEmpty(this.rootRemote.items || {});
-        if (!n && isEmpty(days) && !legacy) return;
+        if (!n && isEmpty(days) && !dv.length && !legacy) return;
         this.writing = true; this.set('saving');
         try {
           const FS = firebase.firestore, FP = FS.FieldPath;
@@ -191,14 +231,16 @@
             // mergeFields：只換掉有改的字（整筆換掉，不會留下舊欄位），其他字不動
             batch.set(root.collection('p').doc(b), { items }, { mergeFields: Object.keys(items).map(id => new FP('items', id)) });
           }
-          const rootData = { days: clone(days), v: 2, updated: Date.now() };
+          const rootData = { days: clone(days), dv: {}, v: 2, updated: Date.now() };
           const fields = Object.keys(days).map(d => new FP('days', d)).concat(['v', 'updated']);
+          for (const [d, k, x] of dv) { (rootData.dv[d] = rootData.dv[d] || {})[k] = x; fields.push(new FP('dv', d, k)); }
           // 舊格式的紀錄都已經寫進分開的文件了，從 users/{uid} 拿掉
           if (legacy) { rootData.items = FS.FieldValue.delete(); fields.push('items'); }
           batch.set(root, rootData, { mergeFields: fields });
           await batch.commit();
           for (const b in byB) buckets[b] = Object.assign(buckets[b] || {}, clone(byB[b]));
           Object.assign(rd, days);
+          for (const [d, k, x] of dv) (rv[d] = rv[d] || {})[k] = x;
           if (legacy) rr.items = {};
           if (this.root === root) this.set('synced');
         } catch (e) {
@@ -218,7 +260,7 @@
         this.set('connecting');
         this.unsubs.push(ref.onSnapshot(snap => {
           const d = snap && snap.exists ? (snap.data() || {}) : {};
-          this.remote = { items: d.items || {}, days: d.days || {} };
+          this.remote = { items: d.items || {}, days: d.days || {}, dv: d.dv || {} };
           this.absorb(this.remote);
           if (this.state === 'connecting' || this.state === 'error') this.set('synced');
           this.schedule(300);
@@ -230,6 +272,8 @@
         const S = h.getS(), ri = this.remote.items, rd = this.remote.days;
         for (const id in S.items) { const a = S.items[id], b = ri[id]; if (!b || tOf(a) > tOf(b)) return true; }
         for (const d in S.days) if ((S.days[d] || 0) > (rd[d] || 0)) return true;
+        const rv = this.remote.dv || {};
+        for (const d in S.dv || {}) for (const k in S.dv[d]) if ((S.dv[d][k] || 0) > ((rv[d] || {})[k] || 0)) return true;
         return false;
       },
       async uploadSingle() {
@@ -241,10 +285,10 @@
           const snap = await this.ref.get();
           const d = snap && snap.exists ? (snap.data() || {}) : {};
           reload();
-          const S = h.merge(h.getS(), { items: d.items || {}, days: d.days || {} });
+          const S = h.merge(h.getS(), { items: d.items || {}, days: d.days || {}, dv: d.dv || {} });
           h.setS(S); h.saveLocal();
-          await this.ref.set({ items: S.items, days: S.days, v: 1, updated: Date.now() });
-          this.remote = clone({ items: S.items, days: S.days });
+          await this.ref.set({ items: S.items, days: S.days, dv: S.dv || {}, v: 1, updated: Date.now() });
+          this.remote = clone({ items: S.items, days: S.days, dv: S.dv || {} });
           this.set('synced');
         } catch (e) { this.writeFailed(e); }
         finally {

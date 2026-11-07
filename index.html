@@ -1,5 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#1d4e96"><script src="lang.js" data-lang="ja"></script><link rel="manifest" href="manifest.json"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script><script src="sync.js"></script><script>window.N5_FIREBASE={apiKey:"AIzaSyBbBF9JRFQPli5NeyH2cB1CvYMTeByMIng",authDomain:"n5-learning-453eb.firebaseapp.com",projectId:"n5-learning-453eb",storageBucket:"n5-learning-453eb.firebasestorage.app",messagingSenderId:"1076998873386",appId:"1:1076998873386:web:1b485881481292af84be53"};</script></head><body><title>日語 N5 學習</title>
-<meta name="claude:viewport-fit-sides" content="cover">
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#1d4e96"><script src="lang.js" data-lang="ja"></script><link rel="manifest" href="manifest.json"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style><script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script><script src="sync.js"></script><script>window.N5_FIREBASE={apiKey:"AIzaSyBbBF9JRFQPli5NeyH2cB1CvYMTeByMIng",authDomain:"n5-learning-453eb.firebaseapp.com",projectId:"n5-learning-453eb",storageBucket:"n5-learning-453eb.firebasestorage.app",messagingSenderId:"1076998873386",appId:"1:1076998873386:web:1b485881481292af84be53"};</script><title>日語 N5 學習</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Noto+Sans+JP:wght@400;500;700&display=swap">
@@ -618,7 +617,7 @@ body.hide-furi #gloss rt,body.hide-furi .furibtn rt{visibility:visible}
 .tour-lang{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .tour-art{display:block;width:100%;height:auto;max-height:110px}
 </style>
-
+</head><body>
 <header class="top"><div class="wrap">
   <div class="brand"><b>あ</b><span class="full">日語 </span>N5</div>
   <div class="goal" aria-live="polite"><span id="goalText">今日 0/20 題</span><div class="bar"><i id="goalBar"></i></div></div>
@@ -1779,9 +1778,7 @@ function mergeState(a, b) {
     const x = ia[id], y = ib[id];
     out.items[id] = !x ? y : !y ? x : ((y.t || 0) > (x.t || 0) ? y : x);
   }
-  const da = (a && a.days) || {}, db = (b && b.days) || {};
-  for (const d of new Set([...Object.keys(da), ...Object.keys(db)])) out.days[d] = Math.max(da[d] || 0, db[d] || 0);
-  return out;
+  return SyncDays.merge(out, a, b);   // 每日題數：各裝置加總（sync.js）
 }
 
 
@@ -4127,11 +4124,8 @@ function touch(id, patch) {
 
 function bumpDay() {
   const d = today();
-  S.days[d] = (S.days[d] || 0) + 1;
-  // 只留最近 90 天
-  const keys = Object.keys(S.days).sort();
-  while (keys.length > 90) delete S.days[keys.shift()];
-  saveLocal();
+  SyncDays.bump(S, d);   // 加一題（只留最近 90 天）
+  saveLocal(); Cloud.schedule();   // 只有題數變了（五十音、詞性變化、文法練習）也要同步
   renderGoal();
   if (S.days[d] === GOAL) toast(`今天的 ${GOAL} 題完成了！`, true);
 }
