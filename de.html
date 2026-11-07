@@ -4085,13 +4085,29 @@ function nextMCQ() {
 }
 
 // ================= 字卡 =================
+function formsLine(w) {
+  if (IT.formsLine) { const h = IT.formsLine(w.e); if (h != null) return h ? `<span lang="${LC.id}">${esc(h)}</span>` : ''; }
+  if (w.pos === 'n') { const f = IT.nounForms(w.e); return f.pl ? `複數：<span lang="${LC.id}">${esc(f.pl)}</span>` : (f.plOnly ? '只用複數' : ''); }
+  if (w.pos === 'adj') return `<span lang="${LC.id}">${esc(IT.adjForms(w.e).join(' / '))}</span>`;
+  if (isVerbPos(w.pos)) { const c = IT.conjugate(w.word, w.pos); return `<span lang="${LC.id}">${esc(c.presentFull.slice(0, 3).join('、'))}…</span>`; }
+  return '';
+}
+// ================= 字卡（日文頁和語言頁共用：n5src/shared/card-tab.js） =================
+// build.js 會把這個檔複製進兩邊的頁面（見 lib-tab.js 開頭的說明）。
+// 各頁不一樣的地方由 PAGE.card 提供：
+//   pos(w) 左上角的詞性（日文：可以點開看變化；語言頁：詞性標籤）、
+//   headRight(w) 右上角（日文：文法按鈕）、afterHead(w) 標題下面（日文：文法說明）、
+//   word(w) 單字那一行（日文：振り仮名＋羅馬拼音；語言頁：單字，太長會縮小）、
+//   afterMean(w) 意思下面（語言頁：變化形）、bind(host) 綁定上面這些的按鈕
 let deck = null;
 const CARD_SRCS = [['new', '新字'], ['queued', '待考'], ['mcWrong', '單選錯題'], ['fillWrong', '填空錯題'], ['mcReview', '單選錯題複習'], ['fillReview', '填空錯題複習'], ['learned', '複習已學會']];
 function renderCard() {
   const host = $('#tab-card');
   Quiz.active = null;
   const counts = Object.fromEntries(CARD_SRCS.map(([k]) => [k, filtered(k).length]));
-  host.innerHTML = `<div class="ctl">${pillSelect('cardSrc', '字卡來源', CARD_SRCS.map(([k, l]) => [k, `${l} ${counts[k]}`]), UI.cardSrc)}${posChips()}</div><div id="fcHost"></div>`;
+  host.innerHTML = `
+    <div class="ctl">${pillSelect('cardSrc', '字卡來源', CARD_SRCS.map(([k, l]) => [k, `${l} ${counts[k]}`]), UI.cardSrc)}${posChips()}</div>
+    <div id="fcHost"></div>`;
   $('#cardSrc', host).onchange = e => { UI.cardSrc = e.target.value; saveUI(); deck = null; renderCard(); };
   bindPos(host, () => { deck = null; renderCard(); });
   const valid = deck && deck.src === UI.cardSrc && deck.pos === UI.pos;
@@ -4109,17 +4125,11 @@ function renderCard() {
   }
   showFlash();
 }
-function formsLine(w) {
-  if (IT.formsLine) { const h = IT.formsLine(w.e); if (h != null) return h ? `<span lang="${LC.id}">${esc(h)}</span>` : ''; }
-  if (w.pos === 'n') { const f = IT.nounForms(w.e); return f.pl ? `複數：<span lang="${LC.id}">${esc(f.pl)}</span>` : (f.plOnly ? '只用複數' : ''); }
-  if (w.pos === 'adj') return `<span lang="${LC.id}">${esc(IT.adjForms(w.e).join(' / '))}</span>`;
-  if (isVerbPos(w.pos)) { const c = IT.conjugate(w.word, w.pos); return `<span lang="${LC.id}">${esc(c.presentFull.slice(0, 3).join('、'))}…</span>`; }
-  return '';
-}
 function showFlash() {
+  const P = PAGE.card;
   const host = $('#fcHost');
   if (!deck.cards.length) {
-    host.innerHTML = '<div class="card empty"><p style="color:var(--fg);font-weight:700">這一疊看完了</p><button class="btn solid" id="moreCards">再拿一疊</button></div>';
+    host.innerHTML = `<div class="card empty"><p style="color:var(--fg);font-weight:700">這一疊看完了</p><button class="btn solid" id="moreCards">再拿一疊</button></div>`;
     $('#moreCards').onclick = () => { deck = null; renderCard(); };
     return;
   }
@@ -4131,21 +4141,23 @@ function showFlash() {
   if (r.w && r.w.fill) tags.push(`填空${r.w.fill === 1 ? '答錯' : '錯題複習中'}`);
   const btns = deck.src === 'new'
     ? `<button class="btn known" data-a="known">${ICON.ok}已經會了</button><button class="btn solid" data-a="queue">列入考題</button>`
-    : '<button class="btn solid wide" data-a="next">下一張</button>';
-  const fl = formsLine(w);
+    : `<button class="btn solid wide" data-a="next">下一張</button>`;
   host.innerHTML = `<div class="card fc">
-    <div class="qhead"><div class="qh-l">${posBadge(w)}<span class="meta">剩 ${deck.cards.length} · 共 ${deck.total}</span></div></div>
-    ${isWrong && tags.length ? `<div class="row">${tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>` : ''}
-    <div class="word-row"><div class="word${lenCls(w.title)}" lang="${LC.id}">${esc(w.title)}</div>${iconPlay(w.title, '播放單字')}</div>
+    <div class="qhead"><div class="qh-l">${P.pos(w)}<span class="meta" aria-label="這疊還剩 ${deck.cards.length} 張，此分類共 ${deck.total} 張">剩 ${deck.cards.length} · 共 ${deck.total}</span></div>${P.headRight(w)}</div>
+    ${P.afterHead(w)}
+    ${isWrong && tags.length ? `<div class="row">${tags.map(t => `<span class="tag">${ICON.ng.replace('<svg', '<svg width="14" height="14"')}${t}</span>`).join('')}</div>` : ''}
+    ${P.word(w)}
     <div class="zh">${meanW(w)}</div>
-    ${fl ? `<div class="forms">${fl}</div>` : ''}
+    ${P.afterMean(w)}
     ${exampleBlock(w)}
     <div class="fcbtns">${btns}</div>
   </div>`;
+  P.bind(host);
   $$('[data-a]', host).forEach(b => b.onclick = () => {
     const a = b.dataset.a;
     deck.cards.shift();
     if (a === 'queue') { touch(w.id, { s: 'queued' }); toast('已列入考題'); }
+    // 已經會了：直接算學會，3 天後出現在「到期複習」確認一次
     if (a === 'known') { const gap = SRS[1] + Math.floor(Math.random() * 8); touch(w.id, { s: 'learned', lv: 1, due: addDays(today(), gap) }); toast(`已標記為學會，${gap} 天後會再考一次`); }
     showFlash();
     if (a !== 'next') updateCardCounts();
@@ -4489,6 +4501,14 @@ document.addEventListener('click', e => {
 // ================= 單字庫 =================
 // 這一頁和日文頁不一樣的地方（共用的分頁程式用 PAGE.…）
 const PAGE = {
+  card: {
+    pos: w => posBadge(w),
+    headRight: () => '',
+    afterHead: () => '',
+    word: w => `<div class="word-row"><div class="word${lenCls(w.title)}" lang="${LC.id}">${esc(w.title)}</div>${iconPlay(w.title, '播放單字')}</div>`,
+    afterMean: w => { const fl = formsLine(w); return fl ? `<div class="forms">${fl}</div>` : ''; },
+    bind: () => {}
+  },
   lib: {
     searchPh: `搜尋：${LC.name}、中文或英文`,
     voiceTitle: `${LC.name}發音`,

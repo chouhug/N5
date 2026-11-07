@@ -4830,6 +4830,14 @@ function nextConjQ() {
 }
 
 // ================= 字卡 =================
+// @include shared/card-tab.js（這一段由 build.js 從 n5src/shared/card-tab.js 複製過來，要改請改那個檔再跑 build.js）
+// ================= 字卡（日文頁和語言頁共用：n5src/shared/card-tab.js） =================
+// build.js 會把這個檔複製進兩邊的頁面（見 lib-tab.js 開頭的說明）。
+// 各頁不一樣的地方由 PAGE.card 提供：
+//   pos(w) 左上角的詞性（日文：可以點開看變化；語言頁：詞性標籤）、
+//   headRight(w) 右上角（日文：文法按鈕）、afterHead(w) 標題下面（日文：文法說明）、
+//   word(w) 單字那一行（日文：振り仮名＋羅馬拼音；語言頁：單字，太長會縮小）、
+//   afterMean(w) 意思下面（語言頁：變化形）、bind(host) 綁定上面這些的按鈕
 let deck = null;
 const CARD_SRCS = [['new', '新字'], ['queued', '待考'], ['mcWrong', '單選錯題'], ['fillWrong', '填空錯題'], ['mcReview', '單選錯題複習'], ['fillReview', '填空錯題複習'], ['learned', '複習已學會']];
 function renderCard() {
@@ -4857,6 +4865,7 @@ function renderCard() {
   showFlash();
 }
 function showFlash() {
+  const P = PAGE.card;
   const host = $('#fcHost');
   if (!deck.cards.length) {
     host.innerHTML = `<div class="card empty"><p style="color:var(--fg);font-weight:700">這一疊看完了</p><button class="btn solid" id="moreCards">再拿一疊</button></div>`;
@@ -4873,16 +4882,16 @@ function showFlash() {
     ? `<button class="btn known" data-a="known">${ICON.ok}已經會了</button><button class="btn solid" data-a="queue">列入考題</button>`
     : `<button class="btn solid wide" data-a="next">下一張</button>`;
   host.innerHTML = `<div class="card fc">
-    <div class="qhead"><div class="qh-l"><button class="posbtn" data-forms="${esc(w.id)}" aria-label="看「${esc(w.word)}」的詞性和變化形">${esc(w.pos)}<span aria-hidden="true">›</span></button><span class="meta" aria-label="這疊還剩 ${deck.cards.length} 張，此分類共 ${deck.total} 張">剩 ${deck.cards.length} · 共 ${deck.total}</span></div>${grammarButton(w)}</div>
-    ${grammarPanel(w)}
+    <div class="qhead"><div class="qh-l">${P.pos(w)}<span class="meta" aria-label="這疊還剩 ${deck.cards.length} 張，此分類共 ${deck.total} 張">剩 ${deck.cards.length} · 共 ${deck.total}</span></div>${P.headRight(w)}</div>
+    ${P.afterHead(w)}
     ${isWrong && tags.length ? `<div class="row">${tags.map(t => `<span class="tag">${ICON.ng.replace('<svg', '<svg width="14" height="14"')}${t}</span>`).join('')}</div>` : ''}
-    <div class="word-row"><div class="word" lang="ja">${wordHTML(w)}</div>${iconPlay(w.reading, '播放單字')}</div>
-    <div class="sub">${romajiLine(w.romaji)}</div>
+    ${P.word(w)}
     <div class="zh">${meanW(w)}</div>
+    ${P.afterMean(w)}
     ${exampleBlock(w)}
     <div class="fcbtns">${btns}</div>
   </div>`;
-  bindGrammar(host);
+  P.bind(host);
   $$('[data-a]', host).forEach(b => b.onclick = () => {
     const a = b.dataset.a;
     deck.cards.shift();
@@ -4890,13 +4899,14 @@ function showFlash() {
     // 已經會了：直接算學會，3 天後出現在「到期複習」確認一次
     if (a === 'known') { const gap = SRS[1] + Math.floor(Math.random() * 8); touch(w.id, { s: 'learned', lv: 1, due: addDays(today(), gap) }); toast(`已標記為學會，${gap} 天後會再考一次`); }
     showFlash();
-    if (a === 'queue' || a === 'known') updateCardCounts();
+    if (a !== 'next') updateCardCounts();
   });
 }
 function updateCardCounts() {
   const sel = $('#cardSrc'); if (!sel) return;
   [...sel.options].forEach(o => { const l = CARD_SRCS.find(x => x[0] === o.value); if (l) o.textContent = `${l[1]} ${filtered(o.value).length}`; });
 }
+// @end shared/card-tab.js
 
 // ================= 填空 =================
 let fillRound = null;
@@ -5109,6 +5119,15 @@ function nextDictQ(keepFocus) {
 // ================= 單字庫 =================
 // 這一頁和語言頁不一樣的地方（共用的分頁程式用 PAGE.…）
 const PAGE = {
+  card: {
+    pos: w => `<button class="posbtn" data-forms="${esc(w.id)}" aria-label="看「${esc(w.word)}」的詞性和變化形">${esc(w.pos)}<span aria-hidden="true">›</span></button>`,
+    headRight: w => grammarButton(w),
+    afterHead: w => grammarPanel(w),
+    word: w => `<div class="word-row"><div class="word" lang="ja">${wordHTML(w)}</div>${iconPlay(w.reading, '播放單字')}</div>
+    <div class="sub">${romajiLine(w.romaji)}</div>`,
+    afterMean: () => '',
+    bind: host => bindGrammar(host)
+  },
   lib: {
     searchPh: '搜尋：日文、假名、拼音或中文',
     voiceTitle: '發音',
