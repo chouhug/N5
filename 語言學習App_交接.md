@@ -22,7 +22,8 @@
 | index.html | 日語 N5 頁（使用者原本的檔案，約 523KB），開頭有 `<script src="lang.js" data-lang="ja">` |
 | it.html / es.html / de.html / ru.html / en.html | 由 build.js 產生的義大利文、西班牙文、德文、俄文、英文頁 |
 | lang.js | 所有頁共用：語言選單、語言鎖定（最多幾個語言＋自己寫的理由）、記住上次的語言並自動跳轉、換頁用 location.replace（返回鍵不會跳回上個語言）、鍵盤收起時恢復底部分頁、`html{touch-action:manipulation}`（防止連點放大） |
-| sw.js | 離線快取。自己網站的檔案「網路優先、3 秒逾時用快取」；字體和 Firebase 程式庫「快取優先」。目前 `CACHE = 'n5-v63'`（CORE 已加入 de.html、ru.html、en.html） |
+| sync.js | 所有頁共用的雲端同步（`makeCloud(hooks)`，各頁用 `const Cloud = makeCloud({...})` 建立）。index.html 和 lang-template.html 都在 Firebase 程式庫後面載入 |
+| sw.js | 離線快取。自己網站的檔案「網路優先、3 秒逾時用快取」；字體和 Firebase 程式庫「快取優先」。目前 `CACHE = 'n5-v82'`（CORE 含 sync.js） |
 | manifest.json | 名稱「語言學習」 |
 | icon-192.png、icon-512.png、apple-touch-icon.png | 藍底＋白色對話框「A」＋黃色對話框「文」 |
 
@@ -73,7 +74,13 @@ n5work/               目前網站上的所有檔案（含 index.html）
 
 ## 資料與同步
 
-- 進度存在 localStorage `n5:progress`，Google 登入後同步到 Firestore `users/{uid}`。
+- 進度存在 localStorage `n5:progress`，Google 登入後同步到 Firestore（程式在 sync.js）：
+  - `users/{uid}`：`days`（每天題數）、`v: 2`、`updated`。
+  - `users/{uid}/p/{語言}-{0~3}`：該語言的單字紀錄 `items`。每個語言分 4 份（id 的 FNV 雜湊 % 4；日文和沒有語言前綴的 id 放 `ja-*`），一份大約只有幾十 KB，離 1 MB 上限很遠。
+  - 每次只寫有改到的字（`batch.set(..., { mergeFields: [FieldPath('items', id)] })`，整筆換掉），不再先 get 再整份 set。
+  - 舊格式（v1，所有紀錄放在 `users/{uid}.items`）：新版連上時會把它收進分開的文件，再刪掉 `items`；舊版頁面之後又寫回來，也會再搬一次。
+  - Firestore 規則如果不允許讀寫 `users/{uid}/p/…`，會自動退回舊的整份格式（console 會出現 `[sync]` 警告）。需要的規則：`match /users/{uid}/{document=**} { allow read, write: if request.auth != null && request.auth.uid == uid; }`（rules_version = '2'）。
+  - 測試：sync 的模擬測試在 n5src/sync-test.js（`node n5src/sync-test.js ../n5work/sync.js`）。
 - 各語言的 id 有前綴（`it:`、`es:`），日語沒有前綴。
 - 設定在 `n5:settings`（共用），語言頁自己的語音設定在 `it:settings`、`es:settings`。
 - 語言鎖定設定在 `langs:v1`，上次使用的語言在 `langs:last`。
@@ -84,6 +91,8 @@ n5work/               目前網站上的所有檔案（含 index.html）
 - 日文頁（index.html）和語言頁（lang-app.js）用同一套規則；新欄位 `rv`、`dd` 會跟著 Firestore 同步，但備份碼不含（匯入備份只會少了輪流的順序）。
 
 ## 最近做過的改動
+
+- **雲端同步改成每個語言分開存**（sync.js）：原本所有語言擠在一份 Firestore 文件，約 5,000 個字就會碰到 1 MB 上限，而且每答幾題就整份下載再整份上傳。現在每個語言分 4 份文件、只寫有改到的字；舊資料自動搬家；規則不允許時退回舊格式。index.html 和 lang-app.js 原本各有一份幾乎一樣的 Cloud 程式，現在共用 sync.js。
 
 - **練習題的「看變化表」提示**（語言頁）：練習題上方有可展開的「不知道要用哪個？看變化表」，內容是那個文法點說明裡的所有表格（`gxHintHTML`），展開狀態在同一輪會記住。義大利文 stare 的說明補上變化表。
 - **動詞變化表標清楚**：義、西的人稱變化表（3 列 × 2 欄）改成 `table.conj`：上面有「一個人／好幾個人」，每格上面小字是人稱和中文（io 我），下面大字是動詞。德文 sein／haben／möchte 用 grammar.js 的 `CONJ()` 產生同樣的表；德、義、西、俄其他表格的人稱欄加上中文（`<span class="zg">`，換行小字）。

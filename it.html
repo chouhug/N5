@@ -2,7 +2,7 @@
 <title>義大利文 A1</title>
 <script>(function(){try{var s=JSON.parse(localStorage.getItem('n5:settings')||'{}');var t=s.theme==='dark'||s.theme==='light'?s.theme:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t)}catch(e){}})();</script>
 <script src="lang.js" data-lang="it"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script><script src="sync.js"></script>
 <script>window.N5_FIREBASE={apiKey:"AIzaSyBbBF9JRFQPli5NeyH2cB1CvYMTeByMIng",authDomain:"n5-learning-453eb.firebaseapp.com",projectId:"n5-learning-453eb",storageBucket:"n5-learning-453eb.firebasestorage.app",messagingSenderId:"1076998873386",appId:"1:1076998873386:web:1b485881481292af84be53"};</script>
 <style>
 /* 版面：單欄手機 app，頂部細條（今日進度）＋底部固定分頁；練習帳風格的方格只用在大字 */
@@ -4797,104 +4797,7 @@ function renderVoiceBox() {
 }
 
 // ================= 帳號同步（和日文頁同一份資料） =================
-const Cloud = {
-  ref: null, remote: null, state: 'local', timer: 0, writing: false, again: false, mode: 'local', user: null, unsub: null, fb: null,
-  label() {
-    return {
-      local: '進度只存在這台裝置',
-      signedout: '還沒登入。登入 Google 後，進度會存到雲端，換手機也能接著練。',
-      connecting: '正在連線帳號…',
-      synced: this.mode === 'google' ? `已同步到 Google 帳號${this.user && this.user.email ? `（${this.user.email}）` : ''}` : '已同步到你的帳號',
-      saving: '正在同步…',
-      error: '暫時無法同步，進度仍存在這台裝置',
-      readonly: '這個連結無法寫入你的帳號，進度只存在這台裝置'
-    }[this.state];
-  },
-  chip() { return this.ref ? (this.mode === 'google' ? '已登入' : '已連帳號') : (this.mode === 'google' ? '未登入' : '只存本機'); },
-  set(st) {
-    this.state = st;
-    const el = $('#syncState');
-    if (el) { el.className = 'n sync' + (this.ref ? ' on' : ''); $('span', el).textContent = this.chip(); }
-    const lg = $('#syncLong'); if (lg) lg.textContent = this.label();
-    renderAuthBox();
-  },
-  init() {
-    try {
-      if (!window.firebase || !window.N5_FIREBASE) return;
-      if (!firebase.apps.length) firebase.initializeApp(window.N5_FIREBASE);
-      this.fb = { auth: firebase.auth(), db: firebase.firestore() };
-      this.mode = 'google';
-      this.set('signedout');
-      this.fb.auth.getRedirectResult().catch(e => this.authError(e));
-      this.fb.auth.onAuthStateChanged(u => {
-        if (u) { this.user = u; this.attach(this.fb.db.collection('users').doc(u.uid)); }
-        else { this.detach(); this.user = null; this.set('signedout'); }
-      });
-    } catch (e) { this.mode = 'local'; this.set('local'); }
-  },
-  async signIn() {
-    if (!this.fb) return;
-    const prov = new firebase.auth.GoogleAuthProvider();
-    prov.setCustomParameters({ prompt: 'select_account' });
-    try { await this.fb.auth.signInWithPopup(prov); }
-    catch (e) {
-      if (e && /popup-blocked|operation-not-supported/.test(e.code || '')) { try { await this.fb.auth.signInWithRedirect(prov); } catch (e2) { this.authError(e2); } }
-      else this.authError(e);
-    }
-  },
-  async signOut() { if (!this.fb) return; await this.upload(); await this.fb.auth.signOut(); toast('已登出，進度仍保留在這台裝置'); },
-  authError(e) {
-    const c = (e && e.code) || '';
-    if (/popup-closed|cancelled-popup/.test(c)) return;
-    toast(/unauthorized-domain/.test(c) ? '登入失敗：Firebase 還沒允許這個網址' : /network/.test(c) ? '登入失敗：請確認網路連線' : '登入失敗，請再試一次');
-  },
-  attach(ref) {
-    this.detach();
-    this.ref = ref; this.remote = null;
-    this.set('connecting');
-    this.unsub = ref.onSnapshot(snap => {
-      const d = snap && snap.exists ? (snap.data() || {}) : {};
-      this.remote = { items: d.items || {}, days: d.days || {} };
-      this.absorb(this.remote);
-      if (this.state === 'connecting' || this.state === 'error') this.set('synced');
-      this.schedule(300);
-    }, () => this.set('error'));
-  },
-  detach() { if (this.unsub) { try { this.unsub(); } catch (e) {} } this.unsub = null; this.ref = null; this.remote = null; },
-  absorb(remote) {
-    reloadShared();
-    const merged = mergeState(S, remote);
-    if (JSON.stringify(merged) === JSON.stringify({ items: S.items, days: S.days })) return;
-    S = merged; saveLocal(); refreshPassive();
-  },
-  needsUpload() {
-    if (!this.remote) return false;
-    const ri = this.remote.items, rd = this.remote.days;
-    for (const id in S.items) { const a = S.items[id], b = ri[id]; if (!b || (a.t || 0) > (b.t || 0)) return true; }
-    for (const d in S.days) if ((S.days[d] || 0) > (rd[d] || 0)) return true;
-    return false;
-  },
-  schedule(ms = 2500) { if (!this.ref) return; clearTimeout(this.timer); this.timer = setTimeout(() => this.upload(), ms); },
-  async upload() {
-    if (!this.ref || !this.remote || this.state === 'readonly') return;
-    if (this.writing) { this.again = true; return; }
-    reloadShared();
-    if (!this.needsUpload()) return;
-    this.writing = true; this.set('saving');
-    try {
-      const snap = await this.ref.get();
-      const d = snap && snap.exists ? (snap.data() || {}) : {};
-      S = mergeState(S, { items: d.items || {}, days: d.days || {} }); saveLocal();
-      await this.ref.set({ items: S.items, days: S.days, v: 1, updated: Date.now() });
-      this.remote = JSON.parse(JSON.stringify({ items: S.items, days: S.days }));
-      this.set('synced');
-    } catch (e) {
-      if (e && (e.code === 'invalid_argument' || e.code === 'permission-denied')) this.set('error');
-      else if (e && e.code === 'unavailable') { this.set('error'); setTimeout(() => this.schedule(500), 3000 + Math.random() * 2000); }
-      else this.set('error');
-    } finally { this.writing = false; if (this.again) { this.again = false; this.schedule(800); } }
-  }
-};
+const Cloud = makeCloud({ getS: () => S, setS: v => { S = v; }, saveLocal, merge: mergeState, refresh: refreshPassive, toast, renderAuth: renderAuthBox, reload: reloadShared });   // 程式在 sync.js（所有語言頁共用）
 const GOOGLE_G = '<svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
 function renderAuthBox() {
   const top = $('#authTop');
