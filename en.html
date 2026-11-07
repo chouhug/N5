@@ -4704,7 +4704,60 @@ document.addEventListener('click', e => {
 });
 
 // ================= 單字庫 =================
+// 這一頁和日文頁不一樣的地方（共用的分頁程式用 PAGE.…）
+const PAGE = {
+  lib: {
+    searchPh: `搜尋：${LC.name}、中文或英文`,
+    voiceTitle: `${LC.name}發音`,
+    hintUnit: '字母',
+    roundTabs: '發音練習、單選、字卡和填空',
+    mallet: '字母',
+    meanNote: '',
+    langHTML: () => `<section><h4>介面語言 Language</h4>
+          <label class="label" for="langSel">介面語言</label>
+          <select id="langSel"><option value="zh"${SET.lang !== 'en' ? ' selected' : ''}>中文（繁體）</option><option value="en"${SET.lang === 'en' ? ' selected' : ''}>English</option></select>
+          <div class="meta">${LC.name}頁目前只有中文介面；選 English 會套用到日語頁。</div>
+        </section>`,
+    extraHTML: () => '',
+    endHTML: () => `<section><h4>重設</h4>
+          <button class="btn quiet" id="resetIt" style="min-height:40px">清除${LC.name}的學習紀錄</button>
+          <div class="meta">只清${LC.name}，其他語言的進度不會動。</div>
+        </section>`,
+    syncNote: '各語言的進度存在同一個帳號裡；備份碼也是同一串，每個語言頁都能匯入。所有設定（外觀、音效、題數、意思、介面語言）各語言共用，在哪一頁改都一樣。',
+    expNote: n => `共 ${n} 字，包含所有語言。`,
+    impNote: `這裡只匯入${LC.name}；其他語言請在各自的頁面匯入同一串碼。`,
+    impKeep: id => WMAP[id] || id.startsWith(LP + 'gx:'),
+    impToast: n => `已匯入 ${n} 筆${LC.name}紀錄`,
+    wordCell: w => `<span class="w" lang="${LC.id}" data-word="${esc(w.id)}" style="cursor:pointer;font-family:var(--font-ui)">${esc(w.title)}</span>`,
+    onEntryMc: () => { if (UI.mcMode === 'art') UI.mcMode = 'it2zh'; },
+    bind() {
+      $('#langSel').onchange = e => { SET.lang = e.target.value; saveSet(); toast(SET.lang === 'en' ? '日語頁會換成英文介面' : '介面語言：中文'); };
+      $('#resetIt').onclick = () => {
+        const el = Sheet.open(`清除${LC.name}紀錄`, `<p style="margin:0">確定要清除${LC.name}的所有學習紀錄嗎？這個動作不能復原，可以先「匯出進度」備份。其他語言的進度不會動。</p><div class="btnrow"><button class="btn quiet" id="rsNo">取消</button><button class="btn solid" id="rsYes">清除</button></div>`);
+        $('#rsNo', el).onclick = () => Sheet.close();
+        $('#rsYes', el).onclick = () => {
+          reloadShared();
+          const now = Date.now();
+          // 留下空白紀錄（帶時間），同步時其他裝置也會一起清掉
+          for (const id in S.items) if (id.startsWith(LP)) S.items[id] = Object.assign(blankRec(), { t: now });
+          saveLocal(); Cloud.schedule(); Sheet.close(); deck = null; mcRound = null; fillRound = null; renderLib(); toast(`已清除${LC.name}的紀錄`);
+        };
+      };
+    }
+  }
+};
+// ================= 單字庫＋設定（日文頁和語言頁共用：n5src/shared/lib-tab.js） =================
+// build.js 會把這個檔複製進 lang-app.js 的 /*@include*/ 位置和 index.html 的 @include 區塊，
+// 所以這裡可以直接用頁面自己的變數（S、SET、UI、WORDS、getRec、touch、mcRound…）。
+// 各頁不一樣的地方由頁面的 PAGE.lib 提供：
+//   searchPh 搜尋框提示、voiceTitle 發音區標題、hintUnit 填空提示的單位（假名／字母）、
+//   roundTabs 每輪題數套用到哪些分頁、mallet 木琴音效的說明、meanNote 單字意思的補充說明、
+//   langHTML() 介面語言區、extraHTML() 單字意思後面的設定區（日文：文法補充）、endHTML() 最後面的設定區（語言頁：重設）、
+//   syncNote 同步說明、expNote(n) 匯出後的說明、impNote 匯入說明、impKeep(id) 匯入時要收的紀錄、
+//   impToast(n) 匯入完成訊息、wordCell(w) 清單裡的單字、bind(host) 綁定 langHTML／extraHTML 的按鈕、
+//   resetRounds() 換每輪題數時要清掉的其他回合、onEntryMc() 從入口進單選前要做的事
 let libList = 'queued';
+const entryBtn = (tab, src, title, n) => `<button data-go="${tab}:${src}"${n ? '' : ' class="zero"'}><span>${title}</span><b>${n}</b></button>`;
 function libCounts() {
   const t = today(), rset = recentIds();
   const c = { total: WORDS.length, learned: 0, queued: 0, excluded: 0, due: 0, dueAll: 0, mcW: 0, mcR: 0, fillW: 0, fillR: 0, recent: 0 };
@@ -4721,79 +4774,75 @@ function libCounts() {
   c.due = dueToday().size;
   return c;
 }
-// 切換語言選單裡的進度條（lang.js）
-if (window.AppLangs && AppLangs.stats) AppLangs.stats(() => { const c = libCounts(); return { l: c.learned, t: Math.max(1, c.total - c.excluded) }; });
-const entryBtn = (tab, src, title, n) => `<button data-go="${tab}:${src}"${n ? '' : ' class="zero"'}><span>${title}</span><b>${n}</b></button>`;
 function renderLib() {
   Quiz.active = null;
+  const P = PAGE.lib;
   const host = $('#tab-lib');
   const c = libCounts();
   const pct = Math.round(c.learned / Math.max(1, c.total - c.excluded) * 100);
   const ents = [['fill', 'due', '到期複習', c.due], ['mc', 'mcWrong', '單選錯題', c.mcW], ['fill', 'fillWrong', '填空錯題', c.fillW], ['mc', 'mcReview', '單選錯題複習', c.mcR], ['fill', 'fillReview', '填空錯題複習', c.fillR], ['mc', 'recent', '單選最近學過', c.recent], ['fill', 'recent', '填空最近學過', c.recent], ['mc', 'learned', '複習單選', c.learned], ['card', 'learned', '複習字卡', c.learned]].filter(x => x[3] > 0);
   host.innerHTML = `<div id="authTop"></div>
     <div class="stats">
-      <div class="stat"><b>${pct}%</b><span>已學會</span></div><div class="stat"><b>${c.due}</b><span>今天到期</span></div><div class="stat"><b>${c.queued}</b><span>待考</span></div><div class="stat"><b>${c.mcW}</b><span>單選錯題</span></div><div class="stat"><b>${c.fillW}</b><span>填空錯題</span></div>
+      <div class="stat"><b>${pct}%</b><span>已學會</span></div>
+      <div class="stat"><b>${c.due}</b><span>今天到期</span></div>
+      <div class="stat"><b>${c.queued}</b><span>待考</span></div>
+      <div class="stat"><b>${c.mcW}</b><span>單選錯題</span></div>
+      <div class="stat"><b>${c.fillW}</b><span>填空錯題</span></div>
     </div>
-    <div class="search"><input id="q" type="search" placeholder="搜尋：${LC.name}、中文或英文" aria-label="搜尋單字" autocomplete="off" autocapitalize="off" spellcheck="false" value="${esc(UI.libQ || '')}"></div>
+    <div class="search"><input id="q" type="search" placeholder="${esc(P.searchPh)}" aria-label="搜尋單字" autocomplete="off" autocapitalize="off" spellcheck="false" value="${esc(UI.libQ || '')}"></div>
     <div class="results" id="results"></div>
     ${ents.length ? `<div class="entry">${ents.map(x => entryBtn(...x)).join('')}</div>` : '<p class="meta" style="margin:0">目前沒有要複習的題目。練習時答錯的字、到期的字會出現在這裡。</p>'}
     <details class="lst" id="listBox"><summary>清單（待考、已學會、錯題）</summary>
-      <div class="chips lst-chips">${[['queued', '待考', c.queued], ['learned', '已學會', c.learned], ['mcWrong', '單選錯題', c.mcW], ['mcReview', '單選複習', c.mcR], ['fillWrong', '填空錯題', c.fillW], ['fillReview', '填空複習', c.fillR]].map(([k, l, n]) => `<button class="chip" data-list="${k}" aria-pressed="${libList === k}">${l}<span class="n">${n}</span></button>`).join('')}</div>
+      <div class="chips lst-chips">${[['queued', '待考', c.queued], ['learned', '已學會', c.learned], ['mcWrong', '單選錯題', c.mcW], ['mcReview', '單選複習', c.mcR], ['fillWrong', '填空錯題', c.fillW], ['fillReview', '填空複習', c.fillR], ['excluded', '已排除', c.excluded]].map(([k, l, n]) => `<button class="chip" data-list="${k}" aria-pressed="${libList === k}">${l}<span class="n">${n}</span></button>`).join('')}</div>
       <div class="lrows"></div>
     </details>
     <details class="lst"${Cloud.mode === 'google' && !Cloud.user ? ' open' : ''}><summary>設定<span class="n sync${Cloud.ref ? ' on' : ''}" id="syncState"><i></i><span>${esc(Cloud.chip())}</span></span></summary>
       <div class="setgrp">
-        <section><h4>${LC.name}發音</h4><div id="voiceBox"></div></section>
+        <section><h4>${esc(P.voiceTitle)}</h4><div id="voiceBox"></div></section>
         <section><h4>音效</h4>
           <label class="label" for="sfxSel">按鈕和答題音效</label>
           <select id="sfxSel">${[['on', '開'], ['low', '小聲'], ['off', '關']].map(([k, l]) => `<option value="${k}"${SET.sfx === k ? ' selected' : ''}>${l}</option>`).join('')}</select>
           <div class="meta">答對、答錯、按按鈕時的短音效。手機開靜音模式時通常不會出聲。</div>
           <label class="label" for="vibSel" style="margin-top:6px">答題震動</label>
           <select id="vibSel"${canVibrate ? '' : ' disabled'}>${[['on', '開'], ['off', '關']].map(([k, l]) => `<option value="${k}"${SET.vib === k ? ' selected' : ''}>${l}</option>`).join('')}</select>
-          <div class="meta">${canVibrate ? '答對短震一下，答錯震兩下。' : '這個瀏覽器不支援震動（iPhone 的網頁 App 目前都不支援）。'}</div>
+          <div class="meta">${canVibrate ? '答對短震一下，答錯震兩下。' : '這個瀏覽器不支援震動（iPhone 的網頁 App 目前都不支援）。'}${inFrame ? '<br>現在是在別的頁面裡預覽，手機通常不會震；用 Chrome 或主畫面上的 App 開才會震。' : ''}</div>
           <button class="btn quiet" id="vibTest" style="min-height:40px;margin-top:6px">測試震動</button>
           <div class="label" style="margin-top:6px">試聽（同一類按鈕用同一個聲音）</div>
-          <div class="sfx-try">${[['blue', '青軸：列入考題、下一題'], ['soft', '輕聲嘎：次要按鈕'], ['wood', '木魚：底部分頁'], ['toggle', '開關：上方按鈕'], ['slide', '滑動開關'], ['tick', '滴：篩選標籤'], ['mallet', '木琴：字母'], ['flip', '翻頁：文法、清單'], ['peek', '啾：點單字'], ['pop', '啵：打開選單'], ['ok', '答對'], ['ng', '答錯'], ['done', '一輪完成']].map(([k, l]) => `<button class="chip" data-sfx="${k}">${l}</button>`).join('')}</div>
+          <div class="sfx-try">${[['blue', '青軸：列入考題、下一題'], ['soft', '輕聲嘎：次要按鈕'], ['wood', '木魚：底部分頁'], ['toggle', '開關：上方按鈕'], ['slide', '滑動開關'], ['tick', '滴：篩選標籤'], ['mallet', '木琴：' + P.mallet], ['flip', '翻頁：文法、清單'], ['peek', '啾：點單字'], ['pop', '啵：打開選單'], ['unpop', '收起'], ['ok', '答對'], ['ng', '答錯'], ['done', '一輪完成']].map(([k, l]) => `<button class="chip" data-sfx="${k}">${l}</button>`).join('')}</div>
         </section>
         <section><h4>練習</h4>
           <label class="label" for="roundSel">每輪題數</label>
-          <select id="roundSel">${[10, 15, 20, 30, 50, 'all'].map(n => `<option value="${n}"${String(SET.round) === String(n) ? ' selected' : ''}>${n === 'all' ? '全部' : n + ' 題'}</option>`).join('')}</select>
+          <select id="roundSel">${[10, 15, 20, 30, 50, 'all'].map(n => `<option value="${n}"${String(SET.round) === String(n) || (n === 20 && !SET.round) ? ' selected' : ''}>${n === 'all' ? '全部' : n + ' 題'}</option>`).join('')}</select>
           <label class="label" for="recentSet">「最近學過」的範圍</label>
           <select id="recentSet">${RECENT_OPTS.map(([k, l]) => `<option value="${k}"${SET.recent === k ? ' selected' : ''}>${l}</option>`).join('')}</select>
-          <label class="label" for="hintSel">填空的提示（第一個字母、字母數）</label>
+          <label class="label" for="hintSel">填空的提示（第一個${P.hintUnit}、${P.hintUnit}數）</label>
           <select id="hintSel"><option value="tap"${SET.fillHint !== 'show' ? ' selected' : ''}>按「提示」才顯示</option><option value="show"${SET.fillHint === 'show' ? ' selected' : ''}>一開始就顯示</option></select>
-          <div class="meta">每輪題數會套用到發音練習、單選、字卡和填空。「最近學過」一輪會出完範圍內的全部字；錯題複習每輪 10 題，從以前錯過的字輪流抽，抽過的要等其他字都出過才會再出現。</div>
+          <div class="meta">每輪題數會套用到${P.roundTabs}。「最近學過」一輪會出完範圍內的全部字；錯題複習每輪 10 題，從以前錯過的字輪流抽，抽過的要等其他字都出過才會再出現。</div>
           <label class="label" for="dueCapSel">每天到期複習最多幾個字</label>
           <select id="dueCapSel">${DUE_CAPS.map(n => `<option value="${n}"${String(SET.dueCap || 30) === String(n) ? ' selected' : ''}>${n === 'all' ? '不限' : n + ' 個'}</option>`).join('')}</select>
           <div class="meta">到期的字很多時，先出到期最久的；今天沒做到的明天接著做。答錯一次只降兩級，不會整個重來。</div>
         </section>
-        <section><h4>介面語言 Language</h4>
-          <label class="label" for="langSel">介面語言</label>
-          <select id="langSel"><option value="zh"${SET.lang !== 'en' ? ' selected' : ''}>中文（繁體）</option><option value="en"${SET.lang === 'en' ? ' selected' : ''}>English</option></select>
-          <div class="meta">${LC.name}頁目前只有中文介面；選 English 會套用到日語頁。</div>
-        </section>
+        ${P.langHTML()}
         <section><h4>單字意思</h4>
           <label class="label" for="meanSel">顯示哪種語言的意思</label>
           <select id="meanSel"><option value="zh"${SET.mean === 'zh' ? ' selected' : ''}>中文</option><option value="en"${SET.mean === 'en' ? ' selected' : ''}>English</option><option value="both"${SET.mean === 'both' ? ' selected' : ''}>中文＋English</option></select>
-          <div class="meta">字卡、單選、單字庫和點字看意思都會跟著換。</div>
+          <div class="meta">字卡、單選、單字庫和點字看意思都會跟著換。${P.meanNote}</div>
         </section>
+        ${P.extraHTML()}
         <section><h4>同步與備份</h4>
           <div class="meta" id="syncLong">${esc(Cloud.label())}</div>
           <div id="authBox"></div>
           <div class="row"><button class="btn quiet" id="exp">匯出進度</button><button class="btn quiet" id="imp">匯入進度</button></div>
-          <div class="meta">各語言的進度存在同一個帳號裡；備份碼也是同一串，每個語言頁都能匯入。所有設定（外觀、音效、題數、意思、介面語言）各語言共用，在哪一頁改都一樣。</div>
+          ${P.syncNote ? `<div class="meta">${P.syncNote}</div>` : ''}
           <div id="bk"></div>
         </section>
-        <section><h4>重設</h4>
-          <button class="btn quiet" id="resetIt" style="min-height:40px">清除${LC.name}的學習紀錄</button>
-          <div class="meta">只清${LC.name}，其他語言的進度不會動。</div>
-        </section>
+        ${P.endHTML ? P.endHTML() : ''}
       </div>
     </details>`;
   $$('[data-go]', host).forEach(b => b.onclick = () => {
     const [tab, src] = b.dataset.go.split(':');
     UI.pos = 'all';
-    if (tab === 'mc') { UI.mcSrc = src; if (UI.mcMode === 'art') UI.mcMode = 'it2zh'; mcRound = null; }
+    if (tab === 'mc') { UI.mcSrc = src; if (P.onEntryMc) P.onEntryMc(); mcRound = null; }
     if (tab === 'fill') { UI.fillSrc = src; fillRound = null; }
     if (tab === 'card') { UI.cardSrc = src; deck = null; }
     saveUI(); showTab(tab);
@@ -4805,30 +4854,19 @@ function renderLib() {
   q.addEventListener('input', () => { UI.libQ = q.value; doSearch(q.value); });
   if (q.value) doSearch(q.value);
   renderVoiceBox(); renderAuthBox();
-  $('#roundSel').onchange = e => { SET.round = e.target.value === 'all' ? 'all' : Number(e.target.value); saveSet(); mcRound = null; fillRound = null; deck = null; toast(SET.round === 'all' ? '每輪：全部' : `每輪 ${SET.round} 題`); };
+  $('#roundSel').onchange = e => { SET.round = e.target.value === 'all' ? 'all' : Number(e.target.value); saveSet(); mcRound = null; fillRound = null; deck = null; if (P.resetRounds) P.resetRounds(); toast(SET.round === 'all' ? '每輪：全部' : `每輪 ${SET.round} 題`); };
+  $('#dueCapSel').onchange = e => { SET.dueCap = e.target.value === 'all' ? 'all' : Number(e.target.value); saveSet(); fillRound = null; toast(SET.dueCap === 'all' ? '到期複習：不限' : `到期複習：每天最多 ${SET.dueCap} 個`); };
+  $('#hintSel').onchange = e => { SET.fillHint = e.target.value; saveSet(); fillRound = null; toast(SET.fillHint === 'show' ? '填空提示：一開始就顯示' : '填空提示：按了才顯示'); };
   $('#recentSet').onchange = e => { SET.recent = e.target.value; saveSet(); mcRound = null; fillRound = null; toast(`最近學過：${recentLabel()}`); renderLib(); };
   $('#vibSel').onchange = e => { SET.vib = e.target.value; saveSet(); buzz(true); };
   $('#vibTest').onclick = testBuzz;
   $('#sfxSel').onchange = e => { SET.sfx = e.target.value; saveSet(); if (SET.sfx !== 'off') Sfx.ok(); };
-  $('#dueCapSel').onchange = e => { SET.dueCap = e.target.value === 'all' ? 'all' : Number(e.target.value); saveSet(); fillRound = null; toast(SET.dueCap === 'all' ? '到期複習：不限' : `到期複習：每天最多 ${SET.dueCap} 個`); };
-  $('#hintSel').onchange = e => { SET.fillHint = e.target.value; saveSet(); fillRound = null; toast(SET.fillHint === 'show' ? '填空提示：一開始就顯示' : '填空提示：按了才顯示'); };
-  $('#langSel').onchange = e => { SET.lang = e.target.value; saveSet(); toast(SET.lang === 'en' ? '日語頁會換成英文介面' : '介面語言：中文'); };
   $('#meanSel').onchange = e => { SET.mean = e.target.value; saveSet(); mcRound = null; toast({ zh: '單字意思：中文', en: '單字意思：English', both: '單字意思：中文＋English' }[SET.mean]); };
-  $('#resetIt').onclick = () => {
-    const el = Sheet.open(`清除${LC.name}紀錄`, `<p style="margin:0">確定要清除${LC.name}的所有學習紀錄嗎？這個動作不能復原，可以先「匯出進度」備份。其他語言的進度不會動。</p><div class="btnrow"><button class="btn quiet" id="rsNo">取消</button><button class="btn solid" id="rsYes">清除</button></div>`);
-    $('#rsNo', el).onclick = () => Sheet.close();
-    $('#rsYes', el).onclick = () => {
-      reloadShared();
-      const now = Date.now();
-      // 留下空白紀錄（帶時間），同步時其他裝置也會一起清掉
-      for (const id in S.items) if (id.startsWith(LP)) S.items[id] = Object.assign(blankRec(), { t: now });
-      saveLocal(); Cloud.schedule(); Sheet.close(); deck = null; mcRound = null; fillRound = null; renderLib(); toast(`已清除${LC.name}的紀錄`);
-    };
-  };
+  P.bind(host);
   $('#exp').onclick = async () => {
     reloadShared();
     const txt = await zipCode(packState(S, today()));
-    $('#bk').innerHTML = `<textarea id="bkText" readonly aria-label="備份碼" style="min-height:72px">${esc(txt)}</textarea><div class="row" style="margin-top:8px"><button class="btn solid" id="copyBk">複製</button><span class="meta">共 ${txt.length} 字，包含所有語言。</span></div>`;
+    $('#bk').innerHTML = `<textarea id="bkText" readonly aria-label="備份碼" style="min-height:72px">${esc(txt)}</textarea><div class="row" style="margin-top:8px"><button class="btn solid" id="copyBk">複製</button><span class="meta">${P.expNote(txt.length)}</span></div>`;
     $('#copyBk').onclick = () => {
       const ta = $('#bkText');
       const fallback = () => { ta.focus(); ta.select(); toast('已選取，請按複製'); };
@@ -4836,18 +4874,18 @@ function renderLib() {
     };
   };
   $('#imp').onclick = () => {
-    $('#bk').innerHTML = `<textarea id="impText" placeholder="貼上備份碼（N5 開頭）" aria-label="貼上備份碼"></textarea><div class="row" style="margin-top:8px"><button class="btn solid" id="doImp">合併匯入</button><span class="meta">這裡只匯入${LC.name}；其他語言請在各自的頁面匯入同一串碼。</span></div><div id="impMsg" class="meta"></div>`;
+    $('#bk').innerHTML = `<textarea id="impText" placeholder="貼上備份碼（N5 開頭）" aria-label="貼上備份碼"></textarea><div class="row" style="margin-top:8px"><button class="btn solid" id="doImp">合併匯入</button><span class="meta">${P.impNote}</span></div><div id="impMsg" class="meta"></div>`;
     $('#doImp').onclick = async () => {
       try {
         const raw = $('#impText').value.replace(/\s+/g, '');
         const d = raw.startsWith('N5Z.') ? unpackState(await unzipCode(raw), ALL_IDS) : raw.startsWith('N5.') ? unpackState(raw, ALL_IDS) : JSON.parse(raw);
         if (!d || typeof d.items !== 'object') throw new Error('bad');
         const clean = {};
-        for (const id in d.items) if (WMAP[id] || id.startsWith(LP + 'gx:')) clean[id] = d.items[id];
+        for (const id in d.items) if (P.impKeep(id)) clean[id] = d.items[id];
         reloadShared();
         S = mergeState(S, { items: clean, days: d.days || {} });
         saveLocal(); Cloud.schedule(); renderGoal(); renderLib();
-        toast(`已匯入 ${Object.keys(clean).length} 筆${LC.name}紀錄`);
+        toast(P.impToast(Object.keys(clean).length));
       } catch (e) { $('#impMsg').textContent = '無法讀取：請貼上完整的備份碼（以 N5 開頭）。'; }
     };
   };
@@ -4858,21 +4896,24 @@ function fillList(d) {
   if (key === 'learned') arr = arr.slice().sort((a, b) => (getRec(a.id).due || '').localeCompare(getRec(b.id).due || ''));
   const box = $('.lrows', d);
   if (!arr.length) { box.innerHTML = '<div class="lrow"><span class="z">目前是空的</span></div>'; return; }
-  const act = { queued: '移除', learned: '移回未學', mcWrong: '移除', mcReview: '移除', fillWrong: '移除', fillReview: '移除' }[key];
+  const act = { queued: '移除', learned: '移回未學', mcWrong: '移除', mcReview: '移除', fillWrong: '移除', fillReview: '移除', excluded: '恢復' }[key];
   box.innerHTML = arr.map(w => {
     const r = getRec(w.id);
     const dd = key === 'learned' ? `<span class="d">${r.due ? r.due.slice(5).replace('-', '/') : ''} · 第${(r.lv || 0) + 1}級</span>` : '';
-    return `<div class="lrow"><span class="w" lang="${LC.id}" data-word="${esc(w.id)}" style="cursor:pointer;font-family:var(--font-ui)">${esc(w.title)}</span><span class="z">${meanW(w)}</span>${dd}<button data-id="${esc(w.id)}">${act}</button></div>`;
+    return `<div class="lrow">${PAGE.lib.wordCell(w)}<span class="z">${meanW(w)}</span>${dd}<button data-id="${esc(w.id)}">${act}</button></div>`;
   }).join('');
   $$('button[data-id]', box).forEach(b => b.onclick = () => {
     const id = b.dataset.id, r = getRec(id);
     if (key === 'queued') touch(id, { s: 'new' });
     else if (key === 'learned') touch(id, { s: 'new', lv: 0, due: '' });
+    else if (key === 'excluded') touch(id, { s: 'new' });
     else { const w = Object.assign({}, r.w); delete w[/^mc/.test(key) ? 'mc' : 'fill']; touch(id, { w }); }
     b.closest('.lrow').remove();
     const n = $(`[data-list="${key}"] .n`, d); if (n) n.textContent = Math.max(0, +n.textContent - 1);
   });
 }
+// 切換語言選單裡的進度條（lang.js）
+if (window.AppLangs && AppLangs.stats) AppLangs.stats(() => { const c = libCounts(); return { l: c.learned, t: Math.max(1, c.total - c.excluded) }; });
 function doSearch(qs) {
   const box = $('#results');
   const q = qs.trim().toLowerCase();
