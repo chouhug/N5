@@ -23,8 +23,9 @@
 | it.html / es.html / de.html / ru.html / en.html | 由 build.js 產生的義大利文、西班牙文、德文、俄文、英文頁 |
 | lang.js | 所有頁共用：語言選單、語言鎖定（最多幾個語言＋自己寫的理由）、記住上次的語言並自動跳轉、換頁用 location.replace（返回鍵不會跳回上個語言）、鍵盤收起時恢復底部分頁、`html{touch-action:manipulation}`（防止連點放大） |
 | core.js | 所有頁共用的資料與複習規則：日期（ymd、today、addDays）、shuffle、SRS、spread、blankRec、applyAnswer、pickRound(items, getRec, mode, size, randomOnly)、mergeState、備份碼（packState、unpackState、zipCode、unzipCode）。都是全域函式，日文頁和 lang-app.js 直接用，**改規則只改這裡**。測試：`node n5src/core-test.js n5work` |
+| ui.js | 所有頁共用的介面零件：esc、store、ICON、playBtn、iconPlay、verdict(ok, extra, warn)、toast、pillSelect、Sfx（音效）、buzz／testBuzz（震動）、Picker（下拉選單面板）、滑動開關動畫。放在 `<body>` 裡、主程式前面載入；頁面用 `UIKit.bind({ SET, t })` 接上設定（音效 sfx、震動 vib）和介面翻譯（日文頁傳 L，語言頁不傳） |
 | sync.js | 所有頁共用的雲端同步（`makeCloud(hooks)`，各頁用 `const Cloud = makeCloud({...})` 建立）。index.html 和 lang-template.html 都在 Firebase 程式庫後面載入 |
-| sw.js | 離線快取。自己網站的檔案「網路優先、3 秒逾時用快取」；字體和 Firebase 程式庫「快取優先」。目前 `CACHE = 'n5-v84'`（CORE 含 sync.js、core.js、apple-touch-icon.png） |
+| sw.js | 離線快取。自己網站的檔案「網路優先、3 秒逾時用快取」；字體和 Firebase 程式庫「快取優先」。目前 `CACHE = 'n5-v85'`（CORE 含 sync.js、core.js、ui.js、apple-touch-icon.png） |
 | manifest.json | 名稱「語言學習」，`id: ./index.html`（和 start_url 一樣，改了會被當成另一個 App）；圖示 any 和 maskable 分開寫（圖案在安全區內，同一張圖可以兩用） |
 | icon-192.png、icon-512.png、apple-touch-icon.png | 藍底＋白色對話框「A」＋黃色對話框「文」 |
 
@@ -94,6 +95,8 @@ n5work/               目前網站上的所有檔案（含 index.html）
 
 ## 最近做過的改動
 
+- **日文頁和語言頁共用程式：第二階段**（ui.js）：音效、震動、提示訊息、下拉選單面板、滑動開關、圖示、答對答錯標示從兩邊搬到 ui.js（約 13 KB × 2 → 一份）。用兩邊的聯集：日文頁的音效（多 tap）、語言頁的 verdict（多 warn）、語言頁的 esc（null 不會變成 "undefined"）、語言頁的滑動開關（aria-pressed 改變也會滑）。sfxKind 的選擇器合併。
+
 - **日文頁和語言頁共用程式：第一階段**（core.js）：作答規則、複習間隔、出題順序、合併、備份碼原本在 index.html 和 lang-app.js 各有一份，現在只有 core.js 一份（日文頁的版本是超集合：多了假名題的規則和備份碼的 kana 錯題）。順便加了 core-test.js（45 項）。各個 next…Q() 開頭加上 `if (!R || !host) return;`，避免自動跳下一題時範圍剛好被換掉而出錯。
 
 - **小修正一批**：index.html 的 `<title>`、字體連結搬回 `<head>`，拿掉 claude.ai 預覽留下的 meta；三個 Firebase 程式庫加 `defer`（不擋住畫面，sync.js 會等到 DOMContentLoaded 再連線）；manifest 加 `id`、圖示 any／maskable 分開；sw.js 快取加 apple-touch-icon；每日題數改成各裝置加總；只做五十音／詞性變化／文法練習時題數也會同步；新使用者第一次打開不會先被問要暫停哪個語言。
@@ -126,7 +129,7 @@ n5work/               目前網站上的所有檔案（含 index.html）
 ## 待辦和點子
 
 0. **日文頁和語言頁共用程式（接續第一階段）**：還有 57 個函式兩邊各一份、內容大同小異（renderMC、renderCard、renderFill、renderLib、Voice、Sfx、Picker、startGxQuiz、renderGram…），以及日文頁獨有的功能（五十音、振り仮名、詞性變化、聽寫、導覽、English 介面）。建議順序：
-   - 第二階段：共用的介面零件（Sfx、buzz、Picker、Voice、esc、ICON、verdict、segPrev）搬進 ui.js。
+   - ~~第二階段：共用的介面零件搬進 ui.js~~（已完成；Voice 兩邊差比較多，留到第三階段）。
    - 第三階段：單字庫、字卡、填空、單選、文法頁逐一合併，日文的差異用 LX 掛勾（像 LX.formsTable 那樣）。
    - 最後：把 index.html 拆成 n5src/ja/（資料、引擎、日文專屬功能），由 build.js 產生。
    每一步都要跑：五個語言的 test.js、core-test.js、sync-test.js，並在手機寬度實際點過日文頁和至少一個語言頁。
