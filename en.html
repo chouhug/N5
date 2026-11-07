@@ -3746,37 +3746,67 @@ function record(w, mode, correct, source) {
 }
 
 // ================= 語音 =================
+// ================= 語音（日文頁和語言頁共用：n5src/shared/voice.js） =================
+// build.js 會把這個檔複製進兩邊的頁面（見 lib-tab.js 開頭的說明）。
+// 用瀏覽器內建的語音（speechSynthesis）念單字和句子。各語言怎麼挑聲音由 PAGE.voice 提供：
+//   GOOD 比較自然的語音名稱、match(v) 這個語言的語音、score(v) 越高越好、robotic(v) 聽起來很機械（可省略）、
+//   saved()／save(uri) 使用者選的語音、text(t) 念之前整理文字（可省略）、uLang(v) 要念的語言代碼、
+//   label 設定裡的標題、none 沒有語音時的說明、help(opts) 語音不好時的建議、note 設定說明、sample 試聽的句子
 const Voice = {
   list: [], ok: 'speechSynthesis' in window,
-  GOOD: /natural|neural|premium|enhanced|online|google|siri/i,
-  score(v) {
-    let s = 0; const n = (v.name + ' ' + v.voiceURI).toLowerCase();
-    if (v.lang.replace('_', '-').toLowerCase() === LC.tts.toLowerCase()) s += 10;
-    if (this.GOOD.test(n)) s += 40;
-    if (/google/.test(n)) s += 30;
-    if (LC.voiceNames && LC.voiceNames.test(n)) s += 8;
-    if (/compact|espeak/.test(n)) s -= 30;
-    return s;
+  get GOOD() { return PAGE.voice.GOOD; },
+  score(v) { return PAGE.voice.score(v); },
+  refresh() { if (!this.ok) return; try { this.list = speechSynthesis.getVoices().filter(v => PAGE.voice.match(v)); } catch (e) { this.list = []; } },
+  init() {
+    if (!this.ok) return;
+    const load = () => { this.refresh(); if (UI.tab === 'lib') renderVoiceBox(); };
+    load();
+    try { speechSynthesis.addEventListener('voiceschanged', load); } catch (e) { speechSynthesis.onvoiceschanged = load; }
   },
-  refresh() { if (this.ok) this.list = speechSynthesis.getVoices().filter(v => v.lang.toLowerCase().startsWith(LC.id)); },
   best() {
     if (!this.list.length) this.refresh();
-    if (ISET.voice) { const v = this.list.find(x => x.voiceURI === ISET.voice); if (v) return v; }
+    const saved = PAGE.voice.saved();
+    if (saved) { const v = this.list.find(x => x.voiceURI === saved || x.name === saved); if (v) return v; }
     return this.list.slice().sort((a, b) => this.score(b) - this.score(a))[0] || null;
   },
-  speak(text, rate) {
-    if (!this.ok) { toast('這個瀏覽器不支援語音播放'); return; }
+  allRobotic() { const R = PAGE.voice.robotic; return !!R && this.list.length > 0 && this.list.every(R); },
+  // voiceOverride：指定用哪個聲音；rate：指定速度（例如慢速播放），沒給就用設定
+  speak(text, voiceOverride, rate) {
+    if (!this.ok || !text) { if (!this.ok) toast('這個瀏覽器不支援語音播放'); return; }
+    const P = PAGE.voice;
     try {
       speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(String(text).replace(/_+/g, ' '));
-      const v = this.best(); if (v) u.voice = v;
-      u.lang = v ? v.lang : LC.tts;
+      const u = new SpeechSynthesisUtterance(P.text ? P.text(text) : text);
+      const v = voiceOverride || this.best();
+      if (v) u.voice = v;
+      u.lang = P.uLang(v);
       u.rate = rate || Number(SET.rate) || 0.9;
       speechSynthesis.speak(u);
-    } catch (e) { /* 忽略 */ }
-  },
-  init() { if (!this.ok) return; this.refresh(); speechSynthesis.onvoiceschanged = () => { this.refresh(); renderVoiceBox(); }; }
+    } catch (e) { toast('無法播放聲音'); }
+  }
 };
+// 設定裡的「發音」區：選語音、速度、試聽
+function renderVoiceBox() {
+  const P = PAGE.voice;
+  const box = $('#voiceBox'); if (!box) return;
+  if (!Voice.ok) { box.innerHTML = '<div class="warn">這個瀏覽器不支援語音播放。建議改用 Safari、Chrome 或 Edge。</div>'; return; }
+  Voice.refresh();
+  const best = Voice.best();
+  const opts = Voice.list.slice().sort((a, b) => Voice.score(b) - Voice.score(a));
+  box.innerHTML = `<div style="display:flex;flex-direction:column;gap:12px">
+    <label class="label" for="vsel">${P.label}</label>
+    ${opts.length ? `<select id="vsel">${opts.map(v => `<option value="${esc(v.voiceURI)}"${best && v.voiceURI === best.voiceURI ? ' selected' : ''}>${esc(v.name)}${Voice.GOOD.test(v.name) ? '（較自然）' : ''}</option>`).join('')}</select>` : `<div class="meta">${P.none}</div>`}
+    <div class="range"><label class="label" for="vrate">速度</label><input id="vrate" type="range" min="0.6" max="1.2" step="0.1" value="${SET.rate}"><span class="meta" id="vrateV">${Number(SET.rate).toFixed(1)} 倍</span></div>
+    <div class="row"><button class="play" id="vtest">${ICON.play}試聽</button></div>
+    ${P.help(opts)}
+    <div class="meta">${P.note}</div>
+  </div>`;
+  const sel = $('#vsel');
+  if (sel) sel.onchange = () => P.save(sel.value);
+  const rate = $('#vrate');
+  rate.oninput = () => { SET.rate = Number(rate.value); $('#vrateV').textContent = SET.rate.toFixed(1) + ' 倍'; saveSet(); };
+  $('#vtest').onclick = () => Voice.speak(P.sample);
+}
 
 // ================= 顯示工具 =================
 function revealAboveTabbar(el) {
@@ -4539,46 +4569,6 @@ function ruleDemo(R) {
 }
 // ================= 文法範例拆解＋練習題（IT.GX） =================
 // 關卡：IT.GX_PATH = [[關卡名, 說明, [文法id...]]...]；練習題答對八成（gxNeed）＝過關，紀錄存在 items 的 LP+'gx:'+id（跟著同步）
-const ICON_LOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
-const gxKey = id => LP + 'gx:' + id;
-const gxNeed = n => n >= 5 ? Math.ceil(n * 0.8) : n;   // 6 題要對 5 題
-const gxTotal = id => ((IT.GX && IT.GX[id]) || { q: [] }).q.length;
-const gxPassed = id => !!(S.items[gxKey(id)] || {}).p;
-function gxStages() {
-  let prevDone = true;
-  return (IT.GX_PATH || []).map(([title, desc, ids], i) => {
-    const done = ids.filter(gxPassed).length;
-    const st = done === ids.length ? 'done' : prevDone ? 'open' : 'locked';
-    prevDone = prevDone && done === ids.length;
-    return { i, title, desc, ids, done, st };
-  });
-}
-const gxStageOf = id => gxStages().find(x => x.ids.includes(id));
-function gxNext(after) {
-  const flat = (IT.GX_PATH || []).flatMap(x => x[2]);
-  const k = after ? flat.indexOf(after) : -1;
-  return flat.slice(k + 1).find(id => !gxPassed(id)) || flat.find(id => !gxPassed(id) && id !== after) || '';
-}
-function gxRecord(id, right, total) {
-  reloadShared();
-  const old = S.items[gxKey(id)] || {};
-  const r = { s: 'gx', b: Math.max(old.b || 0, right), n: total, t: Date.now() };
-  if (old.p || right >= gxNeed(total)) r.p = 1;
-  putRec(gxKey(id), r);
-}
-function gxPathHTML() {
-  const sts = gxStages(), GM = Object.fromEntries(IT.GRAMMAR.map(g => [g.id, g]));
-  const total = sts.reduce((a, x) => a + x.ids.length, 0), passed = sts.reduce((a, x) => a + x.done, 0);
-  const nx = gxNext(null), ng = nx && GM[nx];
-  return `<div class="card gp-top"><div class="gp-tt"><b>文法關卡</b><span>已過關 ${passed} / ${total}</span></div><div class="gp-bar"><i style="width:${(passed / total * 100).toFixed(1)}%"></i></div>
-      <p class="meta">照順序學，後面的文法會用到前面的。每個文法點看完說明和範例，練習題答對八成就過關（6 題要對 5 題）；一關全部過關，下一關就會打開。</p>
-      ${ng ? `<button class="btn solid block" data-gram="${nx}">繼續學：${esc(ng.title)}</button>` : '<p class="gp-all">全部過關了！</p>'}</div>` +
-    sts.map(x => `<section class="gp-stage ${x.st}">
-      <div class="gp-sh"><span class="gp-no">${x.st === 'done' ? ICON.ok : x.st === 'locked' ? ICON_LOCK : x.i + 1}</span><div class="gp-st"><b>第 ${x.i + 1} 關・${esc(x.title)}</b><span>${esc(x.desc)}</span></div><span class="gp-cnt">${x.done}/${x.ids.length}</span></div>
-      ${x.st === 'locked' ? `<details class="gp-peek"><summary>完成上一關就會打開・先偷看這關的 ${x.ids.length} 個文法</summary>` : ''}
-      ${x.ids.map(id => `<button class="gr-row gp-row${gxPassed(id) ? ' ok' : ''}${id === nx ? ' now' : ''}" data-gram="${id}"><b>${gxPassed(id) ? `<span class="gp-ck">${ICON.ok}</span>` : ''}${esc(GM[id].title)}</b><span class="gn">${id === nx ? '<span class="gp-nowt">下一個</span>' : ''}›</span></button>`).join('')}${x.st === 'locked' ? '</details>' : ''}
-    </section>`).join('');
-}
 // 說明裡的外文字標上 lang，字型和顏色跟中文分開
 function gxNote(t) {
   const re = LC.id === 'ru' ? /[Ѐ-ӿ́]+(?:[ -‑][Ѐ-ӿ́]+)*/g : /[A-Za-zÀ-ÿ̀-ͯ'’]+(?:[ -][A-Za-zÀ-ÿ̀-ͯ'’]+)*/g;
@@ -4594,54 +4584,12 @@ function gxExamplesHTML(gx) {
     <div class="gx-plain"><b>白話</b><span>${gxNote(pl)}</span></div>
   </div>`).join('') + `<button class="btn solid block gx-go" data-gpane="q">看懂了，來練習（${gx.q.length} 題）</button>`;
 }
-function gxWhere(id) {
-  const x = gxStageOf(id); if (!x) return '';
-  const need = x.st === 'locked' ? gxStages().find(y => y.st !== 'done') : null;
-  return `<div class="gp-where ${x.st}"><span>第 ${x.i + 1} 關・${esc(x.title)}</span>${gxPassed(id) ? `<b class="gp-pass">${ICON.ok}已過關</b>` : `<span class="gp-need">練習題答對 ${gxNeed(gxTotal(id))} 題就過關</span>`}${need ? `<p>這關還沒打開，建議先完成第 ${need.i + 1} 關「${esc(need.title)}」，內容一樣可以先看。</p>` : ''}</div>`;
-}
 // 練習題上方的「看變化表」：把這個文法點說明裡的表格拿來當提示，開關狀態會記住
 let gxHintOpen = false;
 function gxHintHTML(id) {
   const g = id && IT.GRAMMAR.find(x => x.id === id);
   const t = g ? (g.body.match(/<table[\s\S]*?<\/table>/g) || []).join('') : '';
   return t ? `<details class="gx-hint"${gxHintOpen ? ' open' : ''}><summary>不知道要用哪個？看變化表</summary><div class="gbody scroll-x">${t}</div></details>` : '';
-}
-function startGxQuiz(box, gx, id) {
-  if (!box) return;
-  const qs = shuffle(gx.q); let i = 0, right = 0;
-  const next = () => {
-    if (!box.isConnected) return;
-    if (i >= qs.length) {
-      const all = right >= gxNeed(qs.length), perfect = right === qs.length;
-      let nx = '', nt = '';
-      if (id && IT.GX_PATH) {
-        const before = gxStageOf(id);
-        gxRecord(id, right, qs.length);
-        const after = gxStageOf(id);
-        if (before && after && before.st !== 'done' && after.st === 'done') toast(`第 ${after.i + 1} 關完成！${IT.GX_PATH[after.i + 1] ? `第 ${after.i + 2} 關打開了` : '全部關卡都過了'}`, true);
-        nx = gxNext(id); const ng = nx && IT.GRAMMAR.find(g => g.id === nx); nt = ng ? ng.title : '';
-      }
-      const msg = all ? (perfect ? '全對，' : '') + (IT.GX_PATH ? '過關！' : '這個文法你會了。') : (IT.GX_PATH ? `答對 ${gxNeed(qs.length)} 題才算過關。` : '') + (right ? '差一點，看一下範例再練一次。' : '先看範例拆解，再回來試試。');
-      box.innerHTML = `<div class="gx-done"><div class="gx-score">${right} / ${qs.length}</div><p>${msg}</p><div class="btnrow">${all && nx ? `<button class="btn solid" data-gram="${nx}">下一個：${esc(nt)}</button><button class="btn quiet" id="gxAgain">再練一次</button>` : `<button class="btn solid" id="gxAgain">再練一次</button><button class="btn quiet" data-gpane="ex">看範例</button>`}</div></div>`;
-      $('#gxAgain', box).onclick = () => startGxQuiz(box, gx, id);
-      $$('[data-gpane]', box).forEach(b => b.onclick = () => { gramPane = b.dataset.gpane; renderGram(); });
-      const wh = $('.gp-where', box.closest('.card')); if (wh) wh.outerHTML = gxWhere(id);
-      return;
-    }
-    const [pr, ans, wr, zh, why] = qs[i++];
-    const hint = gxHintHTML(id);
-    const full = (/'$/.test(ans) ? pr.replace('___ ', ans) : pr).replace('___', ans).replace(/\s+([.,!?…])/g, '$1');
-    renderChoice(box, {
-      head: `<div class="qhead"><span class="meta">文法練習 ${i} / ${qs.length}</span></div>${hint}`,
-      promptHTML: `<div class="sent" lang="${LC.id}">${esc(pr).replace('___', '<span class="blank" id="blank">？</span>')}</div><div class="zhline">${esc(zh)}</div>`,
-      options: shuffle([ans].concat(wr)).map(o => ({ html: esc(o), correct: o === ans, lang: LC.id })),
-      onAnswer: ok => { if (ok) right++; bumpDay(); const b = $('#blank', box); if (b) { b.textContent = ans; b.classList.add(ok ? 'ok' : 'ng'); } },
-      explain: `<div class="gx-why"><div class="ex-row"><div class="sent" lang="${LC.id}">${esc(full)}</div>${iconPlay(full, '播放整句')}</div><p><b>為什麼：</b>${gxNote(why)}</p></div>`,
-      noAuto: true
-    }, next);
-    const hd = $('.gx-hint', box); if (hd) hd.addEventListener('toggle', () => { gxHintOpen = hd.open; });
-  };
-  next();
 }
 function renderGram() {
   const host = $('#tab-gram');
@@ -4678,30 +4626,178 @@ function renderGram() {
     inp.oninput = () => { UI.gramQ = inp.value; const pos = inp.selectionStart; renderGram(); const i = $('#grQ'); i.focus(); try { i.setSelectionRange(pos, pos); } catch (e) {} };
     return;
   }
-  const exs = idx[p.id] || [];
-  const gx = IT.GX && IT.GX[p.id];
+  renderGramPoint(host, p, idx[p.id] || []);
+}
+// ================= 文法關卡、練習題、文法點頁（日文頁和語言頁共用：n5src/shared/gram-tab.js） =================
+// build.js 會把這個檔複製進兩邊的頁面（見 lib-tab.js 開頭的說明）。
+// 共用的是關卡（怎麼打開、過關條件、下一個、過關紀錄）、關卡列表、練習題流程、文法點頁的骨架。
+// 文法列表、變化規則頁、範例拆解（gxExamplesHTML）各頁自己畫。各頁不同的地方由 PAGE.gram 提供：
+//   prefix 過關紀錄 id 的前綴（日文 'ja:gx:'、語言頁 'it:gx:'…）、path 關卡 [[名稱, 說明, [文法id…]]…]（沒有就不分關）、
+//   gx(id) 範例和練習題、title(id) 文法點名稱、
+//   quizQ(q, id) 一題練習題 → { head 題號下面的東西, prompt, options, ans, explain }、quizBound(box) 題目畫好之後、
+//   head(p) → [標題, 右上角小字（HTML）]、body(p) 說明、exCard(p, exs) 「例句」那張卡片
+// 過關紀錄存在 items 的 prefix+id（跟著同步）：{ s:'gx', b:最佳分數, n:題數, p:1 }
+const ICON_LOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+const gxKey = id => PAGE.gram.prefix + id;
+const gxNeed = n => n >= 5 ? Math.ceil(n * 0.8) : n;   // 6 題要對 5 題
+const gxTotal = id => (PAGE.gram.gx(id) || { q: [] }).q.length;
+const gxPassed = id => !!(S.items[gxKey(id)] || {}).p;
+function gxStages() {
+  let prevDone = true;
+  return (PAGE.gram.path || []).map(([title, desc, ids], i) => {
+    const done = ids.filter(gxPassed).length;
+    const st = done === ids.length ? 'done' : prevDone ? 'open' : 'locked';
+    prevDone = prevDone && done === ids.length;
+    return { i, title, desc, ids, done, st };
+  });
+}
+const gxStageOf = id => gxStages().find(x => x.ids.includes(id));
+function gxNext(after) {
+  const flat = (PAGE.gram.path || []).flatMap(x => x[2]);
+  const k = after ? flat.indexOf(after) : -1;
+  return flat.slice(k + 1).find(id => !gxPassed(id)) || flat.find(id => !gxPassed(id) && id !== after) || '';
+}
+function gxRecord(id, right, total) {
+  reloadShared();
+  const old = S.items[gxKey(id)] || {};
+  const r = { s: 'gx', b: Math.max(old.b || 0, right), n: total, t: Date.now() };
+  if (old.p || right >= gxNeed(total)) r.p = 1;
+  putRec(gxKey(id), r);
+}
+function gxPathHTML() {
+  const T = PAGE.gram.title;
+  const sts = gxStages();
+  const total = sts.reduce((a, x) => a + x.ids.length, 0), passed = sts.reduce((a, x) => a + x.done, 0);
+  const nx = gxNext(null), nt = nx && T(nx);
+  return `<div class="card gp-top"><div class="gp-tt"><b>文法關卡</b><span>已過關 ${passed} / ${total}</span></div><div class="gp-bar"><i style="width:${(passed / total * 100).toFixed(1)}%"></i></div>
+      <p class="meta">照順序學，後面的文法會用到前面的。每個文法點看完說明和範例，練習題答對八成就過關（6 題要對 5 題）；一關全部過關，下一關就會打開。</p>
+      ${nt ? `<button class="btn solid block" data-gram="${nx}">繼續學：${esc(nt)}</button>` : '<p class="gp-all">全部過關了！</p>'}</div>` +
+    sts.map(x => `<section class="gp-stage ${x.st}">
+      <div class="gp-sh"><span class="gp-no">${x.st === 'done' ? ICON.ok : x.st === 'locked' ? ICON_LOCK : x.i + 1}</span><div class="gp-st"><b>第 ${x.i + 1} 關・${esc(x.title)}</b><span>${esc(x.desc)}</span></div><span class="gp-cnt">${x.done}/${x.ids.length}</span></div>
+      ${x.st === 'locked' ? `<details class="gp-peek"><summary>完成上一關就會打開・先偷看這關的 ${x.ids.length} 個文法</summary>` : ''}
+      ${x.ids.map(id => `<button class="gr-row gp-row${gxPassed(id) ? ' ok' : ''}${id === nx ? ' now' : ''}" data-gram="${id}"><b>${gxPassed(id) ? `<span class="gp-ck">${ICON.ok}</span>` : ''}${esc(T(id))}</b><span class="gn">${id === nx ? '<span class="gp-nowt">下一個</span>' : ''}›</span></button>`).join('')}${x.st === 'locked' ? '</details>' : ''}
+    </section>`).join('');
+}
+function gxWhere(id) {
+  const x = gxStageOf(id); if (!x) return '';
+  const need = x.st === 'locked' ? gxStages().find(y => y.st !== 'done') : null;
+  return `<div class="gp-where ${x.st}"><span>第 ${x.i + 1} 關・${esc(x.title)}</span>${gxPassed(id) ? `<b class="gp-pass">${ICON.ok}已過關</b>` : `<span class="gp-need">練習題答對 ${gxNeed(gxTotal(id))} 題就過關</span>`}${need ? `<p>這關還沒打開，建議先完成第 ${need.i + 1} 關「${esc(need.title)}」，內容一樣可以先看。</p>` : ''}</div>`;
+}
+// 練習題：四選一，答完一定顯示整句和「為什麼」，不自動跳下一題；算進今日題數，不進錯題和複習
+function startGxQuiz(box, gx, id) {
+  if (!box) return;
+  const P = PAGE.gram;
+  const qs = shuffle(gx.q); let i = 0, right = 0;
+  const next = () => {
+    if (!box.isConnected) return;
+    if (i >= qs.length) {
+      const all = right >= gxNeed(qs.length), perfect = right === qs.length;
+      let nx = '', nt = '';
+      if (id && P.path) {
+        const before = gxStageOf(id);
+        gxRecord(id, right, qs.length);
+        const after = gxStageOf(id);
+        if (before && after && before.st !== 'done' && after.st === 'done') toast(`第 ${after.i + 1} 關完成！${P.path[after.i + 1] ? `第 ${after.i + 2} 關打開了` : '全部關卡都過了'}`, true);
+        nx = gxNext(id); nt = nx ? P.title(nx) : '';
+      }
+      const msg = all ? (perfect ? '全對，' : '') + (P.path ? '過關！' : '這個文法你會了。') : (P.path ? `答對 ${gxNeed(qs.length)} 題才算過關。` : '') + (right ? '差一點，看一下範例再練一次。' : '先看範例拆解，再回來試試。');
+      box.innerHTML = `<div class="gx-done"><div class="gx-score">${right} / ${qs.length}</div><p>${msg}</p><div class="btnrow">${all && nx ? `<button class="btn solid" data-gram="${nx}">下一個：${esc(nt)}</button><button class="btn quiet" id="gxAgain">再練一次</button>` : `<button class="btn solid" id="gxAgain">再練一次</button><button class="btn quiet" data-gpane="ex">看範例</button>`}</div></div>`;
+      $('#gxAgain', box).onclick = () => startGxQuiz(box, gx, id);
+      $$('[data-gpane]', box).forEach(b => b.onclick = () => { gramPane = b.dataset.gpane; renderGram(); });
+      const wh = $('.gp-where', box.closest('.card')); if (wh) wh.outerHTML = gxWhere(id);
+      return;
+    }
+    const q = P.quizQ(qs[i++], id);
+    renderChoice(box, {
+      head: `<div class="qhead"><span class="meta">文法練習 ${i} / ${qs.length}</span></div>${q.head || ''}`,
+      promptHTML: q.prompt,
+      options: q.options,
+      onAnswer: ok => { if (ok) right++; bumpDay(); const b = $('#blank', box); if (b) { b.textContent = q.ans; b.classList.add(ok ? 'ok' : 'ng'); } },
+      explain: q.explain,
+      noAuto: true
+    }, next);
+    if (P.quizBound) P.quizBound(box);
+  };
+  next();
+}
+// 文法點頁：說明／看範例／練習題三個分頁，說明下面是 App 裡用到這個文法的例句
+function renderGramPoint(host, p, exs) {
+  const P = PAGE.gram;
+  const gx = P.gx(p.id);
   if (gramPaneId !== p.id) { gramPane = 'body'; gramPaneId = p.id; }
   if (!gx) gramPane = 'body';
   const seg = gx ? `<div class="seg gx-seg" role="group" aria-label="文法分頁">${[['body', '說明'], ['ex', '看範例'], ['q', '練習題']].map(([k, l]) => `<button data-gpane="${k}" aria-pressed="${gramPane === k}">${l}</button>`).join('')}</div>` : '';
-  const pane = gramPane === 'ex' ? gxExamplesHTML(gx) : gramPane === 'q' ? '<div id="gxQuiz" class="gx-quiz"></div>' : `<div class="gbody scroll-x">${p.body}</div>${gx ? `<div class="btnrow gx-cta"><button class="btn quiet" data-gpane="ex">看範例拆解</button><button class="btn solid" data-gpane="q">練習題（${gx.q.length} 題）</button></div>` : ''}`;
+  const pane = gramPane === 'ex' ? gxExamplesHTML(gx) : gramPane === 'q' ? '<div id="gxQuiz" class="gx-quiz"></div>' : `${P.body(p)}${gx ? `<div class="btnrow gx-cta"><button class="btn quiet" data-gpane="ex">看範例拆解</button><button class="btn solid" data-gpane="q">練習題（${gx.q.length} 題）</button></div>` : ''}`;
+  const [title, lv] = P.head(p);
   host.innerHTML = `<button class="gr-back" id="grBack">‹ 文法列表</button>
-    <div class="card"><div class="gr-head"><h2>${esc(p.title)}</h2><span class="lv">${esc(p.tag)}</span></div>${gxWhere(p.id)}${seg}${pane}</div>
-    ${gramPane !== 'body' ? '' : `<div class="card"><div class="gp-title" style="margin-bottom:8px">App 裡用到的例句（${exs.length}）</div><p class="meta" style="margin:0 0 6px">黃色是這個文法點，點任何一個字可以查意思。</p>
-      ${exs.length ? `<div class="gr-exs">${exs.slice(0, gramShow).map(x => `<div class="gr-ex"><div class="ex-row"><div class="sent" lang="${LC.id}">${sentHTML(x.s, { ranges: x.r })}</div>${iconPlay(x.s, '播放例句')}</div><div class="zhline">${esc(x.zh)}</div>${x.w ? `<div class="from">出自單字：<span lang="${LC.id}">${esc(x.w.title)}</span>（${esc(meanPlain(x.w))}）</div>` : ''}</div>`).join('')}</div>${exs.length > gramShow ? `<button class="btn quiet gr-more" id="grMore">再顯示 ${Math.min(8, exs.length - gramShow)} 句（共 ${exs.length} 句）</button>` : ''}` : '<p class="meta">目前的例句裡還沒有用到這個文法。</p>'}
-    </div>`}`;
-  $('#grBack', host).onclick = back;
+    <div class="card">
+      <div class="gr-head"><h2>${esc(title)}</h2><span class="lv">${lv}</span></div>
+      ${gxWhere(p.id)}${seg}${pane}
+    </div>
+    ${gramPane !== 'body' ? '' : P.exCard(p, exs)}`;
+  $('#grBack', host).onclick = () => { UI.gramSel = ''; saveUI(); renderGram(); window.scrollTo(0, 0); };
+  const m = $('#grMore', host); if (m) m.onclick = () => { gramShow += 8; renderGram(); };
   $$('[data-gpane]', host).forEach(b => b.onclick = () => { gramPane = b.dataset.gpane; renderGram(); const c = $('.gr-head', host); if (c && c.getBoundingClientRect().top < 0) c.scrollIntoView({ block: 'start' }); });
   if (gramPane === 'q') startGxQuiz($('#gxQuiz', host), gx, p.id);
-  const m = $('#grMore', host); if (m) m.onclick = () => { gramShow += 8; renderGram(); };
+}
+// 點任何 data-gram 的東西（文法列表、字卡的文法標籤、練習題的「下一個」）就打開那個文法點
+function openGram(id) {
+  UI.gramSel = id; gramShow = 8; saveUI();
+  if (UI.tab !== 'gram') showTab('gram'); else { renderGram(); window.scrollTo(0, 0); }
 }
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-gram]');
-  if (b) { e.preventDefault(); UI.gramSel = b.dataset.gram; gramShow = 8; saveUI(); if (UI.tab !== 'gram') showTab('gram'); else { renderGram(); window.scrollTo(0, 0); } }
+  if (b) { e.preventDefault(); openGram(b.dataset.gram); }
 });
 
 // ================= 單字庫 =================
 // 這一頁和日文頁不一樣的地方（共用的分頁程式用 PAGE.…）
 const PAGE = {
+  voice: {
+    GOOD: /natural|neural|premium|enhanced|online|google|siri/i,
+    match: v => v.lang.toLowerCase().startsWith(LC.id),
+    score(v) {
+      let s = 0; const n = (v.name + ' ' + v.voiceURI).toLowerCase();
+      if (v.lang.replace('_', '-').toLowerCase() === LC.tts.toLowerCase()) s += 10;
+      if (PAGE.voice.GOOD.test(n)) s += 40;
+      if (/google/.test(n)) s += 30;
+      if (LC.voiceNames && LC.voiceNames.test(n)) s += 8;
+      if (/compact|espeak/.test(n)) s -= 30;
+      return s;
+    },
+    saved: () => ISET.voice,
+    save(uri) { ISET.voice = uri; saveISet(); },
+    text: t => String(t).replace(/_+/g, ' '),   // 練習題的 ___ 不要念出來
+    uLang: v => v ? v.lang : LC.tts,
+    get label() { return `${LC.name}語音（這台裝置）`; },
+    get none() { return `還沒有讀到${LC.name}語音，系統會用預設聲音。`; },
+    help: opts => !opts.length ? `<div class="warn">${LC.noVoiceHelp}</div>` : '',
+    note: '語音只存在這台裝置；速度和日文共用。',
+    get sample() { return LC.ttsSample; }
+  },
+  gram: {
+    prefix: LP + 'gx:',
+    get path() { return IT.GX_PATH; },
+    gx: id => IT.GX && IT.GX[id],
+    title: id => { const g = IT.GRAMMAR.find(x => x.id === id); return g ? g.title : ''; },
+    quizQ([pr, ans, wr, zh, why], id) {
+      // 句子結尾的撇號（l'）後面不留空格；標點前面的空格拿掉
+      const full = (/'$/.test(ans) ? pr.replace('___ ', ans) : pr).replace('___', ans).replace(/\s+([.,!?…])/g, '$1');
+      return {
+        ans,
+        head: gxHintHTML(id),
+        prompt: `<div class="sent" lang="${LC.id}">${esc(pr).replace('___', '<span class="blank" id="blank">？</span>')}</div><div class="zhline">${esc(zh)}</div>`,
+        options: shuffle([ans].concat(wr)).map(o => ({ html: esc(o), correct: o === ans, lang: LC.id })),
+        explain: `<div class="gx-why"><div class="ex-row"><div class="sent" lang="${LC.id}">${esc(full)}</div>${iconPlay(full, '播放整句')}</div><p><b>為什麼：</b>${gxNote(why)}</p></div>`
+      };
+    },
+    quizBound: box => { const hd = $('.gx-hint', box); if (hd) hd.addEventListener('toggle', () => { gxHintOpen = hd.open; }); },
+    head: p => [p.title, esc(p.tag)],
+    body: p => `<div class="gbody scroll-x">${p.body}</div>`,
+    exCard: (p, exs) => `<div class="card"><div class="gp-title" style="margin-bottom:8px">App 裡用到的例句（${exs.length}）</div><p class="meta" style="margin:0 0 6px">黃色是這個文法點，點任何一個字可以查意思。</p>
+      ${exs.length ? `<div class="gr-exs">${exs.slice(0, gramShow).map(x => `<div class="gr-ex"><div class="ex-row"><div class="sent" lang="${LC.id}">${sentHTML(x.s, { ranges: x.r })}</div>${iconPlay(x.s, '播放例句')}</div><div class="zhline">${esc(x.zh)}</div>${x.w ? `<div class="from">出自單字：<span lang="${LC.id}">${esc(x.w.title)}</span>（${esc(meanPlain(x.w))}）</div>` : ''}</div>`).join('')}</div>${exs.length > gramShow ? `<button class="btn quiet gr-more" id="grMore">再顯示 ${Math.min(8, exs.length - gramShow)} 句（共 ${exs.length} 句）</button>` : ''}` : '<p class="meta">目前的例句裡還沒有用到這個文法。</p>'}
+    </div>`
+  },
   mc: {
     get modes() { return MC_MODES; },
     resetOnMode: true,
@@ -5048,25 +5144,6 @@ function doSearch(qs) {
     </div>`;
   }).join('');
   $$('[data-q]', box).forEach(b => b.onclick = () => { touch(b.dataset.q, { s: 'queued' }); toast('已列入考題'); doSearch($('#q').value); });
-}
-function renderVoiceBox() {
-  const box = $('#voiceBox'); if (!box) return;
-  if (!Voice.ok) { box.innerHTML = '<div class="warn">這個瀏覽器不支援語音播放。建議改用 Safari、Chrome 或 Edge。</div>'; return; }
-  Voice.refresh();
-  const best = Voice.best();
-  const opts = Voice.list.slice().sort((a, b) => Voice.score(b) - Voice.score(a));
-  box.innerHTML = `<div style="display:flex;flex-direction:column;gap:12px">
-    <label class="label" for="vsel">${LC.name}語音（這台裝置）</label>
-    ${opts.length ? `<select id="vsel">${opts.map(v => `<option value="${esc(v.voiceURI)}"${best && v.voiceURI === best.voiceURI ? ' selected' : ''}>${esc(v.name)}${Voice.GOOD.test(v.name) ? '（較自然）' : ''}</option>`).join('')}</select>` : `<div class="meta">還沒有讀到${LC.name}語音，系統會用預設聲音。</div>`}
-    <div class="range"><label class="label" for="vrate">速度</label><input id="vrate" type="range" min="0.6" max="1.2" step="0.1" value="${SET.rate}"><span class="meta" id="vrateV">${Number(SET.rate).toFixed(1)} 倍</span></div>
-    <div class="row"><button class="play" id="vtest">${ICON.play}試聽</button></div>
-    ${!opts.length ? `<div class="warn">${LC.noVoiceHelp}</div>` : ''}
-    <div class="meta">語音只存在這台裝置；速度和日文共用。</div>
-  </div>`;
-  const sel = $('#vsel'); if (sel) sel.onchange = () => { ISET.voice = sel.value; saveISet(); };
-  const rate = $('#vrate');
-  rate.oninput = () => { SET.rate = Number(rate.value); $('#vrateV').textContent = SET.rate.toFixed(1) + ' 倍'; saveSet(); };
-  $('#vtest').onclick = () => Voice.speak(LC.ttsSample);
 }
 
 // ================= 帳號同步（和日文頁同一份資料） =================
