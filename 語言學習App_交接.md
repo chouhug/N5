@@ -9,17 +9,21 @@
 - 選單裡的語言全部都能用了。
 - 介面是繁體中文，外觀、音效、震動、每輪題數、單字意思、介面語言這些設定，各語言共用。
 
-## 上傳方式（重要）
+## 怎麼改（重要）
 
-- 使用者用 **iPad 的 GitHub 網頁版**上傳，**不能上傳資料夾、GitHub 不會解壓縮 zip**。
-- 所以網站上的檔案全部平放在根目錄，交付時直接傳單一檔案，請使用者「上傳覆蓋舊檔」。
-- Claude 沒有權限直接 push 到 repo。
+- **所有頁面（包括日文頁 index.html）都是 `n5src/build.js` 產生的**，不要直接改網站上的 .html。改 `n5src` 裡的原始檔，然後：
+  1. `node n5src/build.js n5work`（產生全部頁面；只做某幾頁：`node n5src/build.js n5work ja it`）
+  2. 跑測試：五個語言的 `node n5src/<代碼>/test.js`、`node n5src/core-test.js n5work`、`node n5src/sync-test.js n5work/sync.js`
+  3. `node n5src/build.js n5work --check`：確認網站上的檔案和原始檔一致（有人直接改了 .html 時會列出來）
+  4. 把 n5src 和 n5work 重新打包成 n5-src.zip，連同改過的網站檔案一起 commit。
+- 網站上的檔案全部平放在 repo 根目錄（GitHub Pages）。原始碼在 repo 根目錄的 `n5-src.zip`（使用者用 iPad 的 GitHub 網頁版上傳時不能上傳資料夾，所以原始碼用 zip 放）。
+- 2026-11 起 Claude 可以直接 commit／push 到 `chouhug/N5` 的 main（使用者要求的）；推完要用 `git ls-remote` 確認 main 真的是新的 commit，並看 GitHub Pages 有沒有部署成功。
 
 ## 網站上的檔案（repo 根目錄）
 
 | 檔案 | 說明 |
 |---|---|
-| index.html | 日語 N5 頁（使用者原本的檔案，約 523KB），開頭有 `<script src="lang.js" data-lang="ja">` |
+| index.html | 日語 N5 頁（build.js 用 n5src/ja/ 產生，約 430KB），開頭有 `<script src="lang.js" data-lang="ja">` |
 | it.html / es.html / de.html / ru.html / en.html | 由 build.js 產生的義大利文、西班牙文、德文、俄文、英文頁 |
 | lang.js | 所有頁共用：語言選單、語言鎖定（最多幾個語言＋自己寫的理由）、記住上次的語言並自動跳轉、換頁用 location.replace（返回鍵不會跳回上個語言）、鍵盤收起時恢復底部分頁、`html{touch-action:manipulation}`（防止連點放大） |
 | core.js | 所有頁共用的資料與複習規則：日期（ymd、today、addDays）、shuffle、SRS、spread、blankRec、applyAnswer、pickRound(items, getRec, mode, size, randomOnly)、mergeState、備份碼（packState、unpackState、zipCode、unzipCode）。都是全域函式，日文頁和 lang-app.js 直接用，**改規則只改這裡**。測試：`node n5src/core-test.js n5work` |
@@ -33,8 +37,15 @@
 
 ```
 n5src/
-  build.js            產生語言頁：node build.js <輸出資料夾> it es de ru en（同時更新 index.html 裡的共用段落）
+  build.js            產生所有頁面：node build.js <輸出資料夾> [ja it es de ru en]；加 --check 只檢查不寫檔
+  base.css            所有頁共用的版面和顏色（原本在 index.html 的 <style>）
   shared/             日文頁和語言頁共用的分頁程式（見下面「共用分頁程式」）
+  ja/                 日文頁：page.html（HTML 樣板，/*BASESTYLE*/ /*DATA*/ /*APP*/ 由 build.js 填入；Firebase 設定也寫在這裡）
+                      第一個 <script>（依序接起來）：kana.js 五十音、vocab1.js 單字、grammar-points.js 文法點、
+                        engine.js 核心邏輯（斷詞、假名、變化形、句型例句…）、vocab-en.js 英文意思、vocab2.js 第二批單字、
+                        i18n.js 英文介面對照和例句翻譯
+                      第二個 <script>（依序接起來，是一個大函式）：app.js App 本體、gx-data.js 文法範例和練習題（JA_GX、JA_GX_PATH、JA_GX_ADD）、
+                        app-end.js 文法頁和初始化。共用程式用 // @include shared/… 和 // @end 標出位置，中間由 build.js 填
   lang-template.html  語言頁的 HTML 樣板
   lang-app.js         語言頁的共用程式（約 1450 行），用 window.LANGCFG（設定）和 window.LX（各語言引擎與資料）
   lang-style.css      語言頁額外的樣式
@@ -43,14 +54,14 @@ n5src/
   de/  德文：config、engine、data1–5、grammar、quiz、gx1–2、gxpath、test
   en/  英文：config、engine、data1–5、basic（例句用到的基本字，只供點字查詢）、grammar、quiz、gx1–2、gxpath、test
   ru/  俄文：config、engine、data1–5、grammar、quiz、gx1–3（文法範例拆解和練習題）、gxpath（文法關卡順序）、test，另有 stress.js（把單字的大寫母音換成重音符號）
-n5work/               目前網站上的所有檔案（含 index.html）
+n5work/               目前網站上的所有檔案（build.js 的輸出）
 ```
 
-- build.js 會從 `n5work/index.html` 抽出日語頁的 CSS 和 Firebase 設定，所以語言頁外觀和日語頁一致。
+- 日文頁和語言頁都用 base.css，Firebase 設定從 ja/page.html 拿，所以外觀和帳號完全一致。
 - **共用分頁程式**（`n5src/shared/*.js`）：需要用到頁面自己變數的共用程式（例如單字庫分頁）放這裡。build.js 把它複製進：
   - lang-app.js 的 `/*@include shared/檔名*/` 位置（產生語言頁時）
-  - index.html 的 `// @include shared/檔名` 和 `// @end shared/檔名` 中間（直接改寫 index.html）
-  所以**這些段落不要直接在 index.html 或 lang-app.js 改**，改 shared 的檔再跑 build.js。各頁不一樣的地方放在頁面的 `PAGE` 物件（`PAGE.lib` 是單字庫的掛勾，說明在 lib-tab.js 開頭）。
+  - ja/app.js、ja/app-end.js 的 `// @include shared/檔名` 和 `// @end shared/檔名` 中間（產生日文頁時）
+  所以**這些段落不要直接在產生出來的 .html 改**，改 shared 的檔再跑 build.js。各頁不一樣的地方放在頁面的 `PAGE` 物件（`PAGE.lib` 是單字庫的掛勾，說明在 lib-tab.js 開頭）。
   - `shared/lib-tab.js`：單字庫＋設定分頁（libCounts、renderLib、fillList、entryBtn、libList）。搜尋 doSearch 兩邊差太多，還是各自的。
   - `shared/card-tab.js`：字卡分頁（deck、CARD_SRCS、renderCard、showFlash、updateCardCounts）。卡片上各頁不同的部分在 `PAGE.card`（詞性、文法按鈕和說明、單字那一行、變化形）；語言頁的 formsLine 留在 lang-app.js。
   - `shared/fill-tab.js`：填空分頁的流程（fillRound、FILL_SRCS、renderFill、nextFillQ、scrollFillTop）：選題、送出、判斷、記錄、音效、下一題、手機鍵盤。題目本身由 `PAGE.fill.make(w, R)` 產生（日文：振り仮名、羅馬拼音、假名即時轉換、checkFill；語言頁：answerSpan、重音提醒 markDiff、同義字 synonymOf、答完念例句）。日文的聽寫（renderDict、nextDictQ）還在 index.html，用 `PAGE.fill.alt()` 切過去。
@@ -106,6 +117,8 @@ n5work/               目前網站上的所有檔案（含 index.html）
 
 ## 最近做過的改動
 
+- **日文頁改由 build.js 產生（第二項完成）**：index.html 拆成 n5src/ja/（page.html 樣板＋10 個程式檔），版面樣式抽成 n5src/base.css 給所有頁共用。拆完重新產生的 6 個頁面和拆之前逐位元組相同；之後每頁最上面多一行「這個檔是 build.js 產生的」註解。build.js 新增 `--check`。
+
 - **日文頁和語言頁共用程式：第三階段之五（文法頁、語音）**：新增 n5src/shared/gram-tab.js、voice.js，第三階段完成。文法頁所有狀態和語音（用假的語音清單測：選到的聲音、念的內容、語言代碼、速度、設定）都和之前一樣。
 
 - **日文頁和語言頁共用程式：第三階段之四（單選）**：新增 n5src/shared/mc-tab.js。所有題型（日文 6 種、語言頁 5 種）、題目來源、存下的紀錄、念出的句子都和之前一樣。emptyWords 改用語言頁比較新的版本：日文頁「去字卡挑字」會從新的一疊開始，「最近學過」沒有字時不會再提詞性篩選（最近學過本來就不看詞性）。日文頁沒用到的 MC_MODES 拿掉了。
@@ -126,9 +139,9 @@ n5work/               目前網站上的所有檔案（含 index.html）
 
 - **練習題的「看變化表」提示**（語言頁）：練習題上方有可展開的「不知道要用哪個？看變化表」，內容是那個文法點說明裡的所有表格（`gxHintHTML`），展開狀態在同一輪會記住。義大利文 stare 的說明補上變化表。
 - **動詞變化表標清楚**：義、西的人稱變化表（3 列 × 2 欄）改成 `table.conj`：上面有「一個人／好幾個人」，每格上面小字是人稱和中文（io 我），下面大字是動詞。德文 sein／haben／möchte 用 grammar.js 的 `CONJ()` 產生同樣的表；德、義、西、俄其他表格的人稱欄加上中文（`<span class="zg">`，換行小字）。
-- **文法練習題加量**：每個文法點從 3 題加到 6 題，追加的題目放在各語言的 `gx3.js`（日文是 index.html 裡的 `JA_GX_ADD`，原稿在 work/ja-gx3.js）。過關改成答對八成（`gxNeed`：6 題要對 5 題；少於 5 題時要全對）。test.js 檢查每點至少 6 題、題目不重複。
+- **文法練習題加量**：每個文法點從 3 題加到 6 題，追加的題目放在各語言的 `gx3.js`（日文是 n5src/ja/gx-data.js 的 `JA_GX_ADD`）。過關改成答對八成（`gxNeed`：6 題要對 5 題；少於 5 題時要全對）。test.js 檢查每點至少 6 題、題目不重複。
 - **文法關卡內容檢查**：前面關卡的範例和題目不能用到後面關卡才教的文法（例如第 1 關不能考過去式）。俄文、義大利文可以用 `grammarMatch` 自動找出用到後面文法的句子（腳本思路：每句跑一次所有文法點的 grammarMatch，比對關卡編號），會有不少誤判（Это 被算成 этот、固定說法），要人工看。已修掉俄文 25 句、義大利文 20 句、日文 15 句；義大利文的關卡順序也調整（否定、問句、Lei 移到現在式之後），日文把「を」和ます形放在第 2 關、其他助詞第 3 關。
-- **日文文法範例、練習題、關卡**（index.html）：做法和語言頁一樣，但程式和資料直接寫在 index.html（`JA_GX`、`JA_GX_PATH`，放在 `let gramShow` 前面）。48 個文法點分成 9 關。範例句和題目都附讀音（漢字換成平假名、其他字照抄），用 `align()` 標振り仮名；題目的空格寫成 `___`，讀音也放 `___`，程式用 `|___|` 分段對齊。過關紀錄 id 是 `ja:gx:文法id`。CSS 加在 `.gr-row{` 那行後面。改資料後可以用 align 檢查每句讀音對得起來（讀音對不上時會退回沒有假名）。
+- **日文文法範例、練習題、關卡**（index.html）：做法和語言頁一樣，程式和資料在 n5src/ja/gx-data.js（`JA_GX`、`JA_GX_PATH`）。48 個文法點分成 9 關。範例句和題目都附讀音（漢字換成平假名、其他字照抄），用 `align()` 標振り仮名；題目的空格寫成 `___`，讀音也放 `___`，程式用 `|___|` 分段對齊。過關紀錄 id 是 `ja:gx:文法id`。CSS 在 n5src/base.css（`.gr-row{` 那行後面）。改資料後可以用 align 檢查每句讀音對得起來（讀音對不上時會退回沒有假名）。
 - **文法關卡**（所有語言）：文法頁預設「關卡（照順序學）」，可切回「分類」；搜尋時用分類顯示。俄文 58 個文法點分成 12 關、義大利文 43 個分成 10 關、西班牙文 45 個分成 11 關、德文 47 個分成 11 關、英文 39 個分成 8 關（各語言的 `gxpath.js` 的 `RU.GX_PATH = [[關卡名, 說明, [文法id...]]]`，test.js 檢查剛好包含每個文法點一次）。練習題全對＝過關，一關全過下一關才打開；沒打開的關卡收起來，可以「先偷看」，點進去一樣能看、能練。上方有「繼續學：下一個沒過關的文法」，過關後結果頁直接接「下一個」。過關紀錄存在 progress 的 items，id 是 `ru:gx:文法id`（`{s:'gx', b:最佳分數, n:題數, p:1}`），跟著雲端同步；清除該語言紀錄時一起清掉；匯入備份碼也會保留。
 - **文法範例拆解＋練習題**（所有語言）：英文的 gx 檔字串一律用雙引號（句子裡有撇號）。文法詳細頁標題下有「說明／看範例／練習題」三個分頁。看範例：每個文法點 1–2 句，整句可播放、可點字查詢，下面逐字拆開（每個字下面標中文），再一條一條用白話說明字尾為什麼這樣變，最後一句「白話」總結。練習題：每個文法點 3 題四選一填空，答完一定顯示整句和「為什麼」，不自動跳下一題；算進今日題數，不進錯題和複習。資料在 `ru/gx1.js`、`ru/gx2.js` 的 `RU.GX[文法id] = { ex: [[句子, 中文, [[字, 中文]...], [說明...], 白話]], q: [[題目含 ___, 答案, [錯的選項], 中文, 為什麼]] }`，58 個文法點全部都有；app 只要 `IT.GX[id]` 存在就顯示分頁，其他語言加同格式的檔案、放進 build.js 的檔案清單即可。test.js 會檢查每個文法點都有題、拆字都在句子裡、選項不重複。
 - **規則頁小標題**（義、西、德、俄、英）：規則頁把好幾個文法點的說明接在一起時，每段前面加上該文法點的標題（各語言 grammar.js 的 `gb`／義大利文的 `gbI`，樣式 `.gbody h3.gb-h`）。
@@ -153,7 +166,7 @@ n5work/               目前網站上的所有檔案（含 index.html）
    - ~~第二階段：共用的介面零件搬進 ui.js~~（已完成；Voice 兩邊差比較多，留到第三階段）。
    - 第三階段：分頁逐一合併到 n5src/shared/，差異放在 PAGE。~~單字庫＋設定~~、~~字卡~~、~~填空~~、~~單選~~、~~文法頁~~、~~語音~~（第三階段完成：shared/lib-tab.js、card-tab.js、fill-tab.js、mc-tab.js、gram-tab.js、voice.js）。
    - 注意：「已排除」清單只會有 2026-10-26 以前在日文頁按「排除」的字（那天之後兩邊都沒有排除按鈕）。使用者還沒決定要把排除功能加回來，或在清單是 0 時把它藏起來。
-   - 最後：把 index.html 拆成 n5src/ja/（資料、引擎、日文專屬功能），由 build.js 產生。
+   - ~~最後：把 index.html 拆成 n5src/ja/，由 build.js 產生~~（已完成）。之後可以繼續把兩邊還重複的小工具（posChips、bindPos、progressLine、roundDone、renderChoice、點字查詢面板…）搬到 shared/。
    每一步都要跑：五個語言的 test.js、core-test.js、sync-test.js，並在手機寬度實際點過日文頁和至少一個語言頁。
 
 1. **好友對戰**（使用者的點子）：用邀請碼加好友，從兩人都學會的字出題，先做非同步挑戰，再做即時對戰。只用邀請碼，不開放隨機配對陌生人和聊天。需要寫好 Firestore 安全規則。
