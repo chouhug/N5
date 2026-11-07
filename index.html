@@ -4558,89 +4558,90 @@ function roundDone(host, R, again) {
 }
 
 // ================= 單選 =================
+// @include shared/mc-tab.js（這一段由 build.js 從 n5src/shared/mc-tab.js 複製過來，要改請改那個檔再跑 build.js）
+// ================= 單選（日文頁和語言頁共用：n5src/shared/mc-tab.js） =================
+// build.js 會把這個檔複製進兩邊的頁面（見 lib-tab.js 開頭的說明）。
+// 共用的是回合管理（選題、範圍換了沒、一輪結束、沒有題目時的提示）和三種基本題型
+//（看單字選意思、看意思選單字、聽發音選意思）。各頁的題型和差異由 PAGE.mc 提供：
+//   modes 題型選單、ctl(srcCtl) 題型後面的選單（預設是來源＋詞性）、bind(host)、
+//   resetOnMode 換題型時重新出題、roundKey() 這一輪的設定（變了就重新出題）、
+//   special(key, pool) 特殊回合（日文：助詞、詞性變化；語言頁：介係詞練習句），開始了就回傳 true、
+//   pool(src) 題庫、emptyPool() 題庫是空的時候的特別說明（有處理就回傳 true）、
+//   recentQueue(pool)、start() 開始出題（日文會依題型分到不同的函式）、
+//   question(R, item, c) 特殊題型（日文：漢字讀音；語言頁：冠詞、動詞變化），有處理就回傳 true、
+//   word：基本題型 { distractors(w, mode), prompt(w, mode), option(o, mode), after(w), speak(w, mode) }
 let mcRound = null;
-const MC_MODES = [['jp2zh', '看日文選中文'], ['zh2jp', '看中文選日文'], ['listen', '聽發音選中文']];
 const MC_SRCS = [['learn', '待考'], ['recent', '最近學過'], ['mcWrong', '單選錯題'], ['mcReview', '錯題複習'], ['learned', '複習已學會']];
 function renderMC() {
+  const P = PAGE.mc;
   const host = $('#tab-mc');
   const counts = Object.fromEntries(MC_SRCS.map(([k]) => [k, srcPool(k).length]));
+  const srcCtl = () => `${pillSelect('mcSrc', '題目來源', MC_SRCS.map(([k, l]) => [k, `${l} ${counts[k]}`]), UI.mcSrc)}${UI.mcSrc === 'recent' ? recentCtl().html : posChips()}`;
   host.innerHTML = `
-    <div class="ctl">${pillSelect('mcMode', '題型', MC_MODE_OPTS, UI.mcMode)}${UI.mcMode === 'conj' ? pillSelect('conjSet', '範圍', CONJ_SETS.map(([k, l]) => [k, `${l} ${conjWords(k).length}`]), UI.conjSet) : UI.mcMode === 'part' ? '' : `${pillSelect('mcSrc', '題目來源', MC_SRCS.map(([k, l]) => [k, `${l} ${counts[k]}`]), UI.mcSrc)}${UI.mcSrc === 'recent' ? recentCtl().html : posChips()}`}</div>
+    <div class="ctl">${pillSelect('mcMode', '題型', P.modes, UI.mcMode)}${P.ctl ? P.ctl(srcCtl) : srcCtl()}</div>
     <div id="mcq"></div>`;
-  $('#mcMode', host).onchange = e => { UI.mcMode = e.target.value; saveUI(); renderMC(); };
-  const csEl = $('#conjSet', host); if (csEl) csEl.onchange = e => { UI.conjSet = e.target.value; saveUI(); mcRound = null; renderMC(); };
+  $('#mcMode', host).onchange = e => { UI.mcMode = e.target.value; saveUI(); if (P.resetOnMode) mcRound = null; renderMC(); };
+  if (P.bind) P.bind(host);
   const srcEl = $('#mcSrc', host); if (srcEl) srcEl.onchange = e => { UI.mcSrc = e.target.value; saveUI(); mcRound = null; renderMC(); };
   recentCtl(renderMC).bind(host);
   bindPos(host, () => { mcRound = null; renderMC(); });
   if (mcRound && mcRound.done) { mcRound.idx++; mcRound.done = false; }
-  const kind = mcKind(UI.mcMode);
-  const valid = mcRound && mcRound.kind === kind && (kind === 'part' || (kind === 'conj' && mcRound.set === UI.conjSet) || (kind !== 'conj' && mcRound.src === UI.mcSrc && (UI.mcSrc === 'recent' || mcRound.pos === UI.pos)));
+  const key = P.roundKey();
+  const valid = mcRound && mcRound.key === key;
   if (!valid || mcRound.idx >= mcRound.queue.length) {
     if (valid && mcRound.queue.length && mcRound.idx >= mcRound.queue.length) return roundDone($('#mcq'), mcRound, () => { mcRound = null; renderMC(); });
-    if (kind === 'part') {
-      const items = particleItems();
-      mcRound = { kind, queue: shuffle(items).slice(0, roundSize()), idx: 0, total: items.length, right: 0 };
-      return nextPartQ();
-    }
-    if (kind === 'conj') {
-      const ws = conjWords(UI.conjSet);
-      mcRound = { kind, set: UI.conjSet, queue: shuffle(ws).slice(0, roundSize()).map(conjItem).filter(Boolean), idx: 0, total: ws.length, right: 0 };
-      return nextConjQ();
-    }
-    let pool = srcPool(UI.mcSrc);
-    if (kind === 'read') pool = pool.filter(w => hasKanji(w.word));
-    if (!pool.length && kind === 'read') { $('#mcq').innerHTML = '<div class="card empty"><p>這個來源裡沒有漢字詞。可以換一個題目來源，或先到字卡把有漢字的字列入考題。</p></div>'; return; }
-    if (!pool.length) return emptyWords($('#mcq'), UI.mcSrc);
+    const pool = P.pool(UI.mcSrc);
+    if (P.special && P.special(key, pool)) return;
+    if (!pool.length) { if (P.emptyPool && P.emptyPool()) return; return emptyWords($('#mcq'), UI.mcSrc); }
     const isRev = UI.mcSrc === 'mcReview';
     const queue = UI.mcSrc === 'recent'
-      ? recentQueue(pool)
+      ? P.recentQueue(pool)
       : pickRound(pool, getRec, 'mc', isRev ? REVIEW_ROUND : roundSize(), isRev);
-    mcRound = { kind, queue, idx: 0, total: pool.length, src: UI.mcSrc, pos: UI.pos, right: 0 };
+    mcRound = { key, mode: UI.mcMode, queue, idx: 0, total: pool.length, src: UI.mcSrc, pos: UI.pos, right: 0 };
   }
-  if (mcRound.kind === 'part') return nextPartQ();
-  if (mcRound.kind === 'conj') return nextConjQ();
-  nextMCQ();
+  P.start();
 }
+// 沒有題目時：說明為什麼、給一個去哪裡的按鈕（單選、填空、聽寫共用）
 function emptyWords(host, src) {
   Quiz.active = null;
+  const goCard = () => { UI.cardSrc = 'new'; saveUI(); deck = null; showTab('card'); };
   const m = {
-    learn: ['還沒有待考的字。先到「字卡」把想練的字「列入考題」。', '去字卡挑字', () => { UI.cardSrc = 'new'; saveUI(); showTab('card'); }],
+    learn: ['還沒有待考的字。先到「字卡」把想練的字「列入考題」。', '去字卡挑字', goCard],
     mcWrong: ['目前沒有單選錯題。', '練習待考的字', () => { UI.mcSrc = 'learn'; saveUI(); renderMC(); }],
     mcReview: ['目前沒有單選錯題複習。', '練習待考的字', () => { UI.mcSrc = 'learn'; saveUI(); renderMC(); }],
     learned: ['還沒有已學會的字。填空答對就算學會。', '去填空', () => showTab('fill')],
-    recent: [`「${recentLabel()}」範圍內還沒有學過的字。可以在上方把範圍調大，或先到字卡把字列入考題。`, '去字卡挑字', () => { UI.cardSrc = 'new'; saveUI(); showTab('card'); }],
+    recent: [`「${recentLabel()}」範圍內還沒有學過的字。可以在上方把範圍調大，或先到字卡把字列入考題。`, '去字卡挑字', goCard],
     fillWrong: ['目前沒有填空錯題。', '練習待考的字', () => { UI.fillSrc = 'learn'; saveUI(); renderFill(); }],
     fillReview: ['目前沒有填空錯題複習。', '練習待考的字', () => { UI.fillSrc = 'learn'; saveUI(); renderFill(); }],
     due: ['今天沒有到期要複習的字。', '練習待考的字', () => { UI.fillSrc = 'learn'; saveUI(); renderFill(); }],
     dictWrong: ['目前沒有聽寫錯題。', '練習待考的字', () => { UI.dictSrc = 'learn'; saveUI(); renderFill(); }]
-  }[src] || ['這個分類沒有題目。', '回到待考', () => {}];
-  const posNote = UI.pos !== 'all' ? `<p>目前只顯示「${POS_FILTERS.find(x => x[0] === UI.pos)[1]}」，可以改選「全部」。</p>` : '';
+  }[src] || ['這個分類沒有題目。', '去字卡挑字', goCard];
+  // 「最近學過」不看詞性，就不提詞性
+  const posNote = UI.pos !== 'all' && src !== 'recent' ? `<p>目前只顯示「${POS_FILTERS.find(x => x[0] === UI.pos)[1]}」，可以改選「全部」。</p>` : '';
   host.innerHTML = `<div class="card empty"><p>${m[0]}</p>${posNote}<button class="btn solid" id="emptyGo">${m[1]}</button></div>`;
   $('#emptyGo', host).onclick = m[2];
 }
 function nextMCQ() {
   const R = mcRound, host = $('#mcq'); if (!R || !host) return;   // 自動跳下一題前範圍被換掉了（R 已清空）
-  if (!host) return;
   if (R.idx >= R.queue.length) return roundDone(host, R, () => { mcRound = null; renderMC(); });
-  const w = R.queue[R.idx];
-  const mode = UI.mcMode;
-  if (mode === 'read') return nextReadQ(R, w);
-  const opts = shuffle([w, ...pickWordDistractors(w, WORDS, mode)]);
+  const item = R.queue[R.idx];
   const src = { mcWrong: 'wrong', mcReview: 'review' }[R.src] || (R.src === 'learned' ? 'learned' : 'learn');
-  let prompt;
-  if (mode === 'jp2zh') prompt = `<div class="big" lang="ja">${wordHTML(w)}</div>${romajiLine(w.romaji)}<span class="pos">${esc(w.pos)}</span>`;
-  else if (mode === 'zh2jp') prompt = `<div class="zh">${meanW(w)}</div><span class="pos">${esc(w.pos)}</span>`;
-  else prompt = `<button class="btn solid" data-say="${esc(w.reading)}" style="min-width:160px">${ICON.play}播放發音</button><span class="meta">按下按鈕聽發音，再選出意思</span>`;
+  const head = `<div class="qhead">${progressLine(R, R.total)}</div>`;
+  const next = () => { R.idx++; R.done = false; nextMCQ(); };
+  if (PAGE.mc.question(R, item, { host, src, head, next })) return;
+  // 基本題型：看單字選意思、看意思選單字、聽發音選意思
+  const W = PAGE.mc.word, w = item, mode = UI.mcMode;
+  const opts = shuffle([w, ...W.distractors(w, mode)]);
   renderChoice(host, {
-    head: `<div class="qhead">${progressLine(R, R.total)}</div>`,
-    promptHTML: prompt,
-    options: opts.map(o => mode === 'zh2jp'
-      ? { html: `<span lang="ja">${wordHTML(o)}</span>${romajiLine(o.romaji)}`, cls: 'ja', correct: o.id === w.id }
-      : { html: meanW(o), correct: o.id === w.id }),
+    head,
+    promptHTML: W.prompt(w, mode),
+    options: opts.map(o => Object.assign(W.option(o, mode), { correct: o.id === w.id })),
     onAnswer: ok => { if (ok) R.right++; R.done = true; record(w, 'mc', ok, src); },
-    afterHTML: () => `<div class="example"><div class="row" style="gap:12px;align-items:center"><span class="ja" style="font-size:24px">${wordHTML(w)}</span><span>${meanW(w)}</span>${iconPlay(w.reading, '播放單字')}</div>${romajiLine(w.romaji)}</div>${exampleBlock(w)}`
-  }, () => { R.idx++; R.done = false; nextMCQ(); });
+    afterHTML: () => W.after(w)
+  }, next);
+  if (W.speak) W.speak(w, mode);
 }
+// @end shared/mc-tab.js
 
 
 // ================= 漢字讀音、助詞填空 =================
@@ -5117,6 +5118,45 @@ function nextDictQ(keepFocus) {
 // ================= 單字庫 =================
 // 這一頁和語言頁不一樣的地方（共用的分頁程式用 PAGE.…）
 const PAGE = {
+  mc: {
+    get modes() { return MC_MODE_OPTS; },
+    // 詞性變化：題型後面是「範圍」；助詞填空：沒有選單
+    ctl: srcCtl => UI.mcMode === 'conj' ? pillSelect('conjSet', '範圍', CONJ_SETS.map(([k, l]) => [k, `${l} ${conjWords(k).length}`]), UI.conjSet) : UI.mcMode === 'part' ? '' : srcCtl(),
+    bind: host => { const csEl = $('#conjSet', host); if (csEl) csEl.onchange = e => { UI.conjSet = e.target.value; saveUI(); mcRound = null; renderMC(); }; },
+    resetOnMode: false,   // 日→中、中→日、聽→中 是同一輪，換題型接著出
+    roundKey: () => { const k = mcKind(UI.mcMode); return k === 'part' ? 'part' : k === 'conj' ? 'conj:' + UI.conjSet : k + ':' + UI.mcSrc + ':' + (UI.mcSrc === 'recent' ? '' : UI.pos); },
+    special(key) {
+      const kind = mcKind(UI.mcMode);
+      if (kind === 'part') {
+        const items = particleItems();
+        mcRound = { key, kind, queue: shuffle(items).slice(0, roundSize()), idx: 0, total: items.length, right: 0 };
+        nextPartQ(); return true;
+      }
+      if (kind === 'conj') {
+        const ws = conjWords(UI.conjSet);
+        mcRound = { key, kind, set: UI.conjSet, queue: shuffle(ws).slice(0, roundSize()).map(conjItem).filter(Boolean), idx: 0, total: ws.length, right: 0 };
+        nextConjQ(); return true;
+      }
+      return false;
+    },
+    pool: src => { const pool = srcPool(src); return mcKind(UI.mcMode) === 'read' ? pool.filter(w => hasKanji(w.word)) : pool; },
+    emptyPool() {
+      if (mcKind(UI.mcMode) !== 'read') return false;
+      $('#mcq').innerHTML = '<div class="card empty"><p>這個來源裡沒有漢字詞。可以換一個題目來源，或先到字卡把有漢字的字列入考題。</p></div>';
+      return true;
+    },
+    recentQueue: pool => recentQueue(pool),
+    start: () => mcRound.kind === 'part' ? nextPartQ() : mcRound.kind === 'conj' ? nextConjQ() : nextMCQ(),
+    question(R, item) { if (UI.mcMode !== 'read') return false; nextReadQ(R, item); return true; },
+    word: {
+      distractors: (w, mode) => pickWordDistractors(w, WORDS, mode),
+      prompt: (w, mode) => mode === 'jp2zh' ? `<div class="big" lang="ja">${wordHTML(w)}</div>${romajiLine(w.romaji)}<span class="pos">${esc(w.pos)}</span>`
+        : mode === 'zh2jp' ? `<div class="zh">${meanW(w)}</div><span class="pos">${esc(w.pos)}</span>`
+        : `<button class="btn solid" data-say="${esc(w.reading)}" style="min-width:160px">${ICON.play}播放發音</button><span class="meta">按下按鈕聽發音，再選出意思</span>`,
+      option: (o, mode) => mode === 'zh2jp' ? { html: `<span lang="ja">${wordHTML(o)}</span>${romajiLine(o.romaji)}`, cls: 'ja' } : { html: meanW(o) },
+      after: w => `<div class="example"><div class="row" style="gap:12px;align-items:center"><span class="ja" style="font-size:24px">${wordHTML(w)}</span><span>${meanW(w)}</span>${iconPlay(w.reading, '播放單字')}</div>${romajiLine(w.romaji)}</div>${exampleBlock(w)}`
+    }
+  },
   fill: {
     top: () => fillModeSeg(),
     bindTop: host => bindFillMode(host),

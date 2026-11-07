@@ -4056,23 +4056,6 @@ function roundDone(host, R, again) {
   host.innerHTML = `<div class="card empty"><p style="color:var(--fg);font-size:18px;font-weight:700">這一輪完成了</p><p>答對 ${R.right} / ${R.queue.length} 題</p><button class="btn solid" id="again">再來一輪</button></div>`;
   $('#again', host).onclick = again;
 }
-function emptyWords(host, src) {
-  Quiz.active = null;
-  const goCard = () => { UI.cardSrc = 'new'; saveUI(); deck = null; showTab('card'); };
-  const m = {
-    learn: ['還沒有待考的字。先到「字卡」把想練的字「列入考題」。', '去字卡挑字', goCard],
-    mcWrong: ['目前沒有單選錯題。', '練習待考的字', () => { UI.mcSrc = 'learn'; saveUI(); renderMC(); }],
-    mcReview: ['目前沒有單選錯題複習。', '練習待考的字', () => { UI.mcSrc = 'learn'; saveUI(); renderMC(); }],
-    learned: ['還沒有已學會的字。填空答對就算學會。', '去填空', () => showTab('fill')],
-    recent: [`「${recentLabel()}」範圍內還沒有學過的字。可以在上方把範圍調大，或先到字卡把字列入考題。`, '去字卡挑字', goCard],
-    fillWrong: ['目前沒有填空錯題。', '練習待考的字', () => { UI.fillSrc = 'learn'; saveUI(); renderFill(); }],
-    fillReview: ['目前沒有填空錯題複習。', '練習待考的字', () => { UI.fillSrc = 'learn'; saveUI(); renderFill(); }],
-    due: ['今天沒有到期要複習的字。', '練習待考的字', () => { UI.fillSrc = 'learn'; saveUI(); renderFill(); }]
-  }[src] || ['這個分類沒有題目。', '去字卡挑字', goCard];
-  const posNote = UI.pos !== 'all' && src !== 'recent' ? `<p>目前只顯示「${POS_FILTERS.find(x => x[0] === UI.pos)[1]}」，可以改選「全部」。</p>` : '';
-  host.innerHTML = `<div class="card empty"><p>${m[0]}</p>${posNote}<button class="btn solid" id="emptyGo">${m[1]}</button></div>`;
-  $('#emptyGo', host).onclick = m[2];
-}
 
 // ================= 通用選擇題（和日文頁一樣） =================
 const Quiz = { active: null };
@@ -4208,49 +4191,82 @@ function nextPronQ() {
 }
 
 // ================= 單選 =================
-let mcRound = null;
 const MC_MODES = [['it2zh', LC.short + '→中'], ['zh2it', '中→' + LC.short], ['listen', '聽→中'], ['verb', '動詞變化'], ['art', LC.artLabel]];
-const MC_SRCS = [['learn', '待考'], ['recent', '最近學過'], ['mcWrong', '單選錯題'], ['mcReview', '錯題複習'], ['learned', '複習已學會']];
 function mcPool(src) {
   let pool = srcPool(src);
   if (UI.mcMode === 'verb') pool = pool.filter(w => isVerbPos(w.pos));
   if (UI.mcMode === 'art') pool = pool.filter(w => IT.makeArtQuestion(w.e, LOOK));
   return pool;
 }
-function renderMC() {
-  const host = $('#tab-mc');
-  const counts = Object.fromEntries(MC_SRCS.map(([k]) => [k, srcPool(k).length]));
-  host.innerHTML = `<div class="ctl">${pillSelect('mcMode', '題型', MC_MODES, UI.mcMode)}${pillSelect('mcSrc', '題目來源', MC_SRCS.map(([k, l]) => [k, `${l} ${counts[k]}`]), UI.mcSrc)}${UI.mcSrc === 'recent' ? recentCtl().html : posChips()}</div><div id="mcq"></div>`;
-  $('#mcMode', host).onchange = e => { UI.mcMode = e.target.value; saveUI(); mcRound = null; renderMC(); };
-  $('#mcSrc', host).onchange = e => { UI.mcSrc = e.target.value; saveUI(); mcRound = null; renderMC(); };
-  recentCtl(renderMC).bind(host);
-  bindPos(host, () => { mcRound = null; renderMC(); });
-  if (mcRound && mcRound.done) { mcRound.idx++; mcRound.done = false; }
-  const valid = mcRound && mcRound.mode === UI.mcMode && mcRound.src === UI.mcSrc && (UI.mcSrc === 'recent' || mcRound.pos === UI.pos);
-  if (!valid || mcRound.idx >= mcRound.queue.length) {
-    if (valid && mcRound.queue.length && mcRound.idx >= mcRound.queue.length) return roundDone($('#mcq'), mcRound, () => { mcRound = null; renderMC(); });
-    const pool = mcPool(UI.mcSrc);
-    if (!pool.length || (UI.mcMode === 'art' && IT.DRILLS_ONLY)) {
-      if (UI.mcMode === 'art' && (srcPool(UI.mcSrc).length || IT.DRILLS_ONLY)) {
-        // 範圍裡的例句挖不出冠詞時，改出固定的介係詞練習句
-        const queue = shuffle(IT.PREP_DRILLS).slice(0, Math.min(10, roundSize())).map(d => ({ drill: d }));
-        mcRound = { mode: 'art', queue, idx: 0, total: IT.PREP_DRILLS.length, src: UI.mcSrc, pos: UI.pos, right: 0 };
-        return nextMCQ();
-      }
-      if (UI.mcMode === 'verb' && srcPool(UI.mcSrc).length) { $('#mcq').innerHTML = '<div class="card empty"><p>這個來源裡沒有動詞。可以換一個題目來源，或先到字卡把動詞列入考題。</p></div>'; return; }
-      return emptyWords($('#mcq'), UI.mcSrc);
-    }
-    const isRev = UI.mcSrc === 'mcReview';
-    const queue = UI.mcSrc === 'recent' ? shuffle(pool) : pickRound(pool, getRec, 'mc', isRev ? REVIEW_ROUND : roundSize(), isRev);
-    mcRound = { mode: UI.mcMode, queue, idx: 0, total: pool.length, src: UI.mcSrc, pos: UI.pos, right: 0 };
-  }
-  nextMCQ();
-}
 function artHint(x) {
   if (x.info) return x.info;
   if (x.kind === 'artprep') { const a = IT.ART_PREPS[x.answer]; return `${x.answer} ＝ ${a.prep} ＋ ${a.art}（${IT.ART_INFO[a.art]}）`; }
   if (x.kind === 'art') return `${x.answer}：${IT.ART_INFO[x.answer] || ''}`;
   return `${x.answer}：${(IT.INDEF_INFO || { un: '陽性', uno: '陽性（s+子音、z 前）', una: '陰性', "un'": '陰性（母音前）' })[x.answer] || ''}`;
+}
+// 單選答完後的單字和例句
+const mcWordAfter = w => `<div class="example"><div class="row" style="gap:12px;align-items:center"><b lang="${LC.id}" style="font-size:22px">${esc(w.title)}</b><span>${meanW(w)}</span>${iconPlay(w.title, '播放單字')}</div></div>${exampleBlock(w)}`;
+// ================= 單選（日文頁和語言頁共用：n5src/shared/mc-tab.js） =================
+// build.js 會把這個檔複製進兩邊的頁面（見 lib-tab.js 開頭的說明）。
+// 共用的是回合管理（選題、範圍換了沒、一輪結束、沒有題目時的提示）和三種基本題型
+//（看單字選意思、看意思選單字、聽發音選意思）。各頁的題型和差異由 PAGE.mc 提供：
+//   modes 題型選單、ctl(srcCtl) 題型後面的選單（預設是來源＋詞性）、bind(host)、
+//   resetOnMode 換題型時重新出題、roundKey() 這一輪的設定（變了就重新出題）、
+//   special(key, pool) 特殊回合（日文：助詞、詞性變化；語言頁：介係詞練習句），開始了就回傳 true、
+//   pool(src) 題庫、emptyPool() 題庫是空的時候的特別說明（有處理就回傳 true）、
+//   recentQueue(pool)、start() 開始出題（日文會依題型分到不同的函式）、
+//   question(R, item, c) 特殊題型（日文：漢字讀音；語言頁：冠詞、動詞變化），有處理就回傳 true、
+//   word：基本題型 { distractors(w, mode), prompt(w, mode), option(o, mode), after(w), speak(w, mode) }
+let mcRound = null;
+const MC_SRCS = [['learn', '待考'], ['recent', '最近學過'], ['mcWrong', '單選錯題'], ['mcReview', '錯題複習'], ['learned', '複習已學會']];
+function renderMC() {
+  const P = PAGE.mc;
+  const host = $('#tab-mc');
+  const counts = Object.fromEntries(MC_SRCS.map(([k]) => [k, srcPool(k).length]));
+  const srcCtl = () => `${pillSelect('mcSrc', '題目來源', MC_SRCS.map(([k, l]) => [k, `${l} ${counts[k]}`]), UI.mcSrc)}${UI.mcSrc === 'recent' ? recentCtl().html : posChips()}`;
+  host.innerHTML = `
+    <div class="ctl">${pillSelect('mcMode', '題型', P.modes, UI.mcMode)}${P.ctl ? P.ctl(srcCtl) : srcCtl()}</div>
+    <div id="mcq"></div>`;
+  $('#mcMode', host).onchange = e => { UI.mcMode = e.target.value; saveUI(); if (P.resetOnMode) mcRound = null; renderMC(); };
+  if (P.bind) P.bind(host);
+  const srcEl = $('#mcSrc', host); if (srcEl) srcEl.onchange = e => { UI.mcSrc = e.target.value; saveUI(); mcRound = null; renderMC(); };
+  recentCtl(renderMC).bind(host);
+  bindPos(host, () => { mcRound = null; renderMC(); });
+  if (mcRound && mcRound.done) { mcRound.idx++; mcRound.done = false; }
+  const key = P.roundKey();
+  const valid = mcRound && mcRound.key === key;
+  if (!valid || mcRound.idx >= mcRound.queue.length) {
+    if (valid && mcRound.queue.length && mcRound.idx >= mcRound.queue.length) return roundDone($('#mcq'), mcRound, () => { mcRound = null; renderMC(); });
+    const pool = P.pool(UI.mcSrc);
+    if (P.special && P.special(key, pool)) return;
+    if (!pool.length) { if (P.emptyPool && P.emptyPool()) return; return emptyWords($('#mcq'), UI.mcSrc); }
+    const isRev = UI.mcSrc === 'mcReview';
+    const queue = UI.mcSrc === 'recent'
+      ? P.recentQueue(pool)
+      : pickRound(pool, getRec, 'mc', isRev ? REVIEW_ROUND : roundSize(), isRev);
+    mcRound = { key, mode: UI.mcMode, queue, idx: 0, total: pool.length, src: UI.mcSrc, pos: UI.pos, right: 0 };
+  }
+  P.start();
+}
+// 沒有題目時：說明為什麼、給一個去哪裡的按鈕（單選、填空、聽寫共用）
+function emptyWords(host, src) {
+  Quiz.active = null;
+  const goCard = () => { UI.cardSrc = 'new'; saveUI(); deck = null; showTab('card'); };
+  const m = {
+    learn: ['還沒有待考的字。先到「字卡」把想練的字「列入考題」。', '去字卡挑字', goCard],
+    mcWrong: ['目前沒有單選錯題。', '練習待考的字', () => { UI.mcSrc = 'learn'; saveUI(); renderMC(); }],
+    mcReview: ['目前沒有單選錯題複習。', '練習待考的字', () => { UI.mcSrc = 'learn'; saveUI(); renderMC(); }],
+    learned: ['還沒有已學會的字。填空答對就算學會。', '去填空', () => showTab('fill')],
+    recent: [`「${recentLabel()}」範圍內還沒有學過的字。可以在上方把範圍調大，或先到字卡把字列入考題。`, '去字卡挑字', goCard],
+    fillWrong: ['目前沒有填空錯題。', '練習待考的字', () => { UI.fillSrc = 'learn'; saveUI(); renderFill(); }],
+    fillReview: ['目前沒有填空錯題複習。', '練習待考的字', () => { UI.fillSrc = 'learn'; saveUI(); renderFill(); }],
+    due: ['今天沒有到期要複習的字。', '練習待考的字', () => { UI.fillSrc = 'learn'; saveUI(); renderFill(); }],
+    dictWrong: ['目前沒有聽寫錯題。', '練習待考的字', () => { UI.dictSrc = 'learn'; saveUI(); renderFill(); }]
+  }[src] || ['這個分類沒有題目。', '去字卡挑字', goCard];
+  // 「最近學過」不看詞性，就不提詞性
+  const posNote = UI.pos !== 'all' && src !== 'recent' ? `<p>目前只顯示「${POS_FILTERS.find(x => x[0] === UI.pos)[1]}」，可以改選「全部」。</p>` : '';
+  host.innerHTML = `<div class="card empty"><p>${m[0]}</p>${posNote}<button class="btn solid" id="emptyGo">${m[1]}</button></div>`;
+  $('#emptyGo', host).onclick = m[2];
 }
 function nextMCQ() {
   const R = mcRound, host = $('#mcq'); if (!R || !host) return;   // 自動跳下一題前範圍被換掉了（R 已清空）
@@ -4259,46 +4275,18 @@ function nextMCQ() {
   const src = { mcWrong: 'wrong', mcReview: 'review' }[R.src] || (R.src === 'learned' ? 'learned' : 'learn');
   const head = `<div class="qhead">${progressLine(R, R.total)}</div>`;
   const next = () => { R.idx++; R.done = false; nextMCQ(); };
-  const wordAfter = w => `<div class="example"><div class="row" style="gap:12px;align-items:center"><b lang="${LC.id}" style="font-size:22px">${esc(w.title)}</b><span>${meanW(w)}</span>${iconPlay(w.title, '播放單字')}</div></div>${exampleBlock(w)}`;
-  if (R.mode === 'art') {
-    if (item.drill) {
-      const d = item.drill;
-      return renderChoice(host, {
-        head, promptHTML: `<div class="sent" lang="${LC.id}">${esc(d[0]).replace('___', '<span class="blank" id="blank">？</span>')}</div><div class="zhline">${esc(d[3])}</div>`,
-        options: shuffle([d[1]].concat(d[2])).map(o => ({ html: esc(o), correct: o === d[1], lang: LC.id })),
-        onAnswer: ok => { if (ok) R.right++; R.done = true; bumpDay(); const b = $('#blank'); b.textContent = d[1]; b.classList.add(ok ? 'ok' : 'ng'); }
-      }, next);
-    }
-    const w = item, x = IT.makeArtQuestion(w.e, LOOK);
-    return renderChoice(host, {
-      head, promptHTML: `<div class="sent" lang="${LC.id}">${sentHTML(x.sentence, { blank: [x.before.length, x.before.length + x.answer.length], blankHTML: '<span class="blank" id="blank">？</span>', noGen: true })}</div><div class="zhline">${esc(x.zh)}</div>`,
-      options: x.options.map(o => ({ html: esc(o), correct: o === x.answer, lang: LC.id })),
-      onAnswer: ok => { if (ok) R.right++; R.done = true; bumpDay(); const b = $('#blank'); b.textContent = x.answer; b.classList.add(ok ? 'ok' : 'ng'); },
-      afterHTML: () => `<div class="hint"><span>${esc(artHint(x))}</span></div>${wordAfter(w)}`
-    }, next);
-  }
-  const w = item;
-  if (R.mode === 'verb') {
-    const q = IT.makeVerbQuestion(w.e);
-    return renderChoice(host, {
-      head, promptHTML: `<div class="mid" lang="${LC.id}">${esc(q.subj)} ＋ ${esc(w.word)}</div><span class="meta">${esc(q.label || (q.tense === 'passato' ? LC.pastLabel : '現在式'))}・${esc(w.zh)}</span>`,
-      options: q.options.map(o => ({ html: esc(o), correct: o === q.answer, lang: LC.id })),
-      onAnswer: ok => { if (ok) R.right++; R.done = true; record(w, 'mc', ok, src); },
-      afterHTML: () => `<div class="hint"><span>正確答案：<b lang="${LC.id}">${esc(q.answer)}</b></span><button class="linkbtn" data-word="${esc(w.id)}" style="align-self:flex-start">看完整變化表</button></div>`
-    }, next);
-  }
-  const opts = shuffle([w, ...pickWordDistractors(w, R.mode)]);
-  let prompt;
-  if (R.mode === 'it2zh') prompt = `<div class="word-row"><div class="big${lenCls(w.title)}" lang="${LC.id}">${esc(w.title)}</div>${iconPlay(w.title, '播放單字')}</div><span class="pos">${esc(POS_ZH[w.pos])}</span>`;
-  else if (R.mode === 'zh2it') prompt = `<div class="zh">${meanW(w)}</div><span class="pos">${esc(POS_ZH[w.pos])}</span>`;
-  else prompt = `<button class="btn solid" data-say="${esc(w.title)}" style="min-width:160px">${ICON.play}播放發音</button><span class="meta">按下按鈕聽發音，再選出意思</span>`;
+  if (PAGE.mc.question(R, item, { host, src, head, next })) return;
+  // 基本題型：看單字選意思、看意思選單字、聽發音選意思
+  const W = PAGE.mc.word, w = item, mode = UI.mcMode;
+  const opts = shuffle([w, ...W.distractors(w, mode)]);
   renderChoice(host, {
-    head, promptHTML: prompt,
-    options: opts.map(o => R.mode === 'zh2it' ? { html: esc(o.title), correct: o.id === w.id, lang: LC.id } : { html: meanW(o), correct: o.id === w.id }),
+    head,
+    promptHTML: W.prompt(w, mode),
+    options: opts.map(o => Object.assign(W.option(o, mode), { correct: o.id === w.id })),
     onAnswer: ok => { if (ok) R.right++; R.done = true; record(w, 'mc', ok, src); },
-    afterHTML: () => wordAfter(w)
+    afterHTML: () => W.after(w)
   }, next);
-  if (R.mode === 'it2zh' || R.mode === 'listen') setTimeout(() => Voice.speak(w.title), 250);
+  if (W.speak) W.speak(w, mode);
 }
 
 // ================= 字卡 =================
@@ -4714,6 +4702,69 @@ document.addEventListener('click', e => {
 // ================= 單字庫 =================
 // 這一頁和日文頁不一樣的地方（共用的分頁程式用 PAGE.…）
 const PAGE = {
+  mc: {
+    get modes() { return MC_MODES; },
+    resetOnMode: true,
+    roundKey: () => UI.mcMode + ':' + UI.mcSrc + ':' + (UI.mcSrc === 'recent' ? '' : UI.pos),
+    // 冠詞題：範圍裡的例句挖不出冠詞時（或語言包只用練習句），改出固定的介係詞練習句
+    special(key, pool) {
+      if (UI.mcMode !== 'art' || !(IT.DRILLS_ONLY || (!pool.length && srcPool(UI.mcSrc).length))) return false;
+      const queue = shuffle(IT.PREP_DRILLS).slice(0, Math.min(10, roundSize())).map(d => ({ drill: d }));
+      mcRound = { key, mode: 'art', queue, idx: 0, total: IT.PREP_DRILLS.length, src: UI.mcSrc, pos: UI.pos, right: 0 };
+      nextMCQ(); return true;
+    },
+    pool: src => mcPool(src),
+    emptyPool() {
+      if (UI.mcMode !== 'verb' || !srcPool(UI.mcSrc).length) return false;
+      $('#mcq').innerHTML = '<div class="card empty"><p>這個來源裡沒有動詞。可以換一個題目來源，或先到字卡把動詞列入考題。</p></div>';
+      return true;
+    },
+    recentQueue: pool => shuffle(pool),
+    start: () => nextMCQ(),
+    // 冠詞／格與性別、動詞變化
+    question(R, item, c) {
+      const { host, src, head, next } = c;
+      if (R.mode === 'art') {
+        if (item.drill) {
+          const d = item.drill;
+          renderChoice(host, {
+            head, promptHTML: `<div class="sent" lang="${LC.id}">${esc(d[0]).replace('___', '<span class="blank" id="blank">？</span>')}</div><div class="zhline">${esc(d[3])}</div>`,
+            options: shuffle([d[1]].concat(d[2])).map(o => ({ html: esc(o), correct: o === d[1], lang: LC.id })),
+            onAnswer: ok => { if (ok) R.right++; R.done = true; bumpDay(); const b = $('#blank'); b.textContent = d[1]; b.classList.add(ok ? 'ok' : 'ng'); }
+          }, next);
+          return true;
+        }
+        const w = item, x = IT.makeArtQuestion(w.e, LOOK);
+        renderChoice(host, {
+          head, promptHTML: `<div class="sent" lang="${LC.id}">${sentHTML(x.sentence, { blank: [x.before.length, x.before.length + x.answer.length], blankHTML: '<span class="blank" id="blank">？</span>', noGen: true })}</div><div class="zhline">${esc(x.zh)}</div>`,
+          options: x.options.map(o => ({ html: esc(o), correct: o === x.answer, lang: LC.id })),
+          onAnswer: ok => { if (ok) R.right++; R.done = true; bumpDay(); const b = $('#blank'); b.textContent = x.answer; b.classList.add(ok ? 'ok' : 'ng'); },
+          afterHTML: () => `<div class="hint"><span>${esc(artHint(x))}</span></div>${mcWordAfter(w)}`
+        }, next);
+        return true;
+      }
+      if (R.mode === 'verb') {
+        const w = item, q = IT.makeVerbQuestion(w.e);
+        renderChoice(host, {
+          head, promptHTML: `<div class="mid" lang="${LC.id}">${esc(q.subj)} ＋ ${esc(w.word)}</div><span class="meta">${esc(q.label || (q.tense === 'passato' ? LC.pastLabel : '現在式'))}・${esc(w.zh)}</span>`,
+          options: q.options.map(o => ({ html: esc(o), correct: o === q.answer, lang: LC.id })),
+          onAnswer: ok => { if (ok) R.right++; R.done = true; record(w, 'mc', ok, src); },
+          afterHTML: () => `<div class="hint"><span>正確答案：<b lang="${LC.id}">${esc(q.answer)}</b></span><button class="linkbtn" data-word="${esc(w.id)}" style="align-self:flex-start">看完整變化表</button></div>`
+        }, next);
+        return true;
+      }
+      return false;
+    },
+    word: {
+      distractors: (w, mode) => pickWordDistractors(w, mode),
+      prompt: (w, mode) => mode === 'it2zh' ? `<div class="word-row"><div class="big${lenCls(w.title)}" lang="${LC.id}">${esc(w.title)}</div>${iconPlay(w.title, '播放單字')}</div><span class="pos">${esc(POS_ZH[w.pos])}</span>`
+        : mode === 'zh2it' ? `<div class="zh">${meanW(w)}</div><span class="pos">${esc(POS_ZH[w.pos])}</span>`
+        : `<button class="btn solid" data-say="${esc(w.title)}" style="min-width:160px">${ICON.play}播放發音</button><span class="meta">按下按鈕聽發音，再選出意思</span>`,
+      option: (o, mode) => mode === 'zh2it' ? { html: esc(o.title), lang: LC.id } : { html: meanW(o) },
+      after: w => mcWordAfter(w),
+      speak: (w, mode) => { if (mode === 'it2zh' || mode === 'listen') setTimeout(() => Voice.speak(w.title), 250); }
+    }
+  },
   fill: {
     top: () => '',
     bindTop: () => {},
