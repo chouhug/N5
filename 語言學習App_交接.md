@@ -124,6 +124,8 @@ n5work/               目前網站上的所有檔案（build.js 的輸出）
 
 ## 最近做過的改動
 
+- **GitHub Actions 實測**：模擬從 iPad 只上傳 n5-src.zip（只改了 zip 裡的這份交接文件），由 Action 自動更新網站上的這個檔案和快取版本。
+
 - **GitHub Actions 自動檢查和部署**：新增 .github/workflows/site.yml，以及 n5src/test-all.js（全部測試）、deploy.js（zip → 網站）、pack.py（打包 zip）。在本機用 git repo 模擬過：只上傳 zip → 自動更新 it.html 和快取版本並 commit，再跑一次判斷一致；直接改網站檔案 → 失敗不覆蓋；測試失敗 → 擋下。
 
 - **日文頁改由 build.js 產生（第二項完成）**：index.html 拆成 n5src/ja/（page.html 樣板＋10 個程式檔），版面樣式抽成 n5src/base.css 給所有頁共用。拆完重新產生的 6 個頁面和拆之前逐位元組相同；之後每頁最上面多一行「這個檔是 build.js 產生的」註解。build.js 新增 `--check`。
