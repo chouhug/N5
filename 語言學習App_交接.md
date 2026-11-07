@@ -53,6 +53,7 @@ n5work/               目前網站上的所有檔案（含 index.html）
   所以**這些段落不要直接在 index.html 或 lang-app.js 改**，改 shared 的檔再跑 build.js。各頁不一樣的地方放在頁面的 `PAGE` 物件（`PAGE.lib` 是單字庫的掛勾，說明在 lib-tab.js 開頭）。
   - `shared/lib-tab.js`：單字庫＋設定分頁（libCounts、renderLib、fillList、entryBtn、libList）。搜尋 doSearch 兩邊差太多，還是各自的。
   - `shared/card-tab.js`：字卡分頁（deck、CARD_SRCS、renderCard、showFlash、updateCardCounts）。卡片上各頁不同的部分在 `PAGE.card`（詞性、文法按鈕和說明、單字那一行、變化形）；語言頁的 formsLine 留在 lang-app.js。
+  - `shared/fill-tab.js`：填空分頁的流程（fillRound、FILL_SRCS、renderFill、nextFillQ、scrollFillTop）：選題、送出、判斷、記錄、音效、下一題、手機鍵盤。題目本身由 `PAGE.fill.make(w, R)` 產生（日文：振り仮名、羅馬拼音、假名即時轉換、checkFill；語言頁：answerSpan、重音提醒 markDiff、同義字 synonymOf、答完念例句）。日文的聽寫（renderDict、nextDictQ）還在 index.html，用 `PAGE.fill.alt()` 切過去。
 - 每個語言有自己的背景插畫（義大利：絲柏、托斯卡尼小鎮；西班牙：風車、橄欖樹；德國：阿爾卑斯雪山、城堡、桁架屋、冷杉；俄羅斯：洋蔥頂教堂、白樺樹、木屋；英文：鐘樓、拱橋、雙層巴士）。
 - 測試：`node n5src/it/test.js`（21061 項）、`node n5src/es/test.js`（20974 項）、`node n5src/de/test.js`（31429 項）、`node n5src/ru/test.js`（32586 項）、`node n5src/en/test.js`（19897 項），目前全部通過。
 - 單字格式：`[單字, 詞性, 性別, 複數或變化, 中文, 英文, 例句, 例句中文, 填空答案]`。
@@ -102,6 +103,8 @@ n5work/               目前網站上的所有檔案（含 index.html）
 
 ## 最近做過的改動
 
+- **日文頁和語言頁共用程式：第三階段之三（填空）**：新增 n5src/shared/fill-tab.js（答題流程共用，題目內容在 PAGE.fill）。兩邊畫面和行為都完全不變（用固定亂數逐步比對：作答、提示、答錯、看答案、錯題、一輪結束、同義字、重音提醒、日文聽寫切換、存下的紀錄、念出的句子）。
+
 - **日文頁和語言頁共用程式：第三階段之二（字卡）**：新增 n5src/shared/card-tab.js。日文頁字卡畫面完全不變；語言頁的錯題標籤多了 ✕ 小圖示、「剩 x · 共 y」多了給螢幕閱讀器的說明（和日文頁一致）。
 
 - **日文頁和語言頁共用程式：第三階段之一（單字庫＋設定）**：新增 n5src/shared/lib-tab.js 和 build.js 的 include 機制（index.html 也由 build.js 更新共用段落）。日文頁畫面完全不變（只多了搜尋框會記住上次輸入）；語言頁多了「已排除」清單（可以恢復）和「收起」音效試聽。日文頁也有 reloadShared（匯出、匯入前先合併別的分頁存的進度）。
@@ -141,7 +144,7 @@ n5work/               目前網站上的所有檔案（含 index.html）
 
 0. **日文頁和語言頁共用程式（接續第一階段）**：還有 57 個函式兩邊各一份、內容大同小異（renderMC、renderCard、renderFill、renderLib、Voice、Sfx、Picker、startGxQuiz、renderGram…），以及日文頁獨有的功能（五十音、振り仮名、詞性變化、聽寫、導覽、English 介面）。建議順序：
    - ~~第二階段：共用的介面零件搬進 ui.js~~（已完成；Voice 兩邊差比較多，留到第三階段）。
-   - 第三階段：分頁逐一合併到 n5src/shared/，差異放在 PAGE。~~單字庫＋設定~~、~~字卡~~（已完成：shared/lib-tab.js、card-tab.js）；接下來：填空、單選、文法頁、Voice。
+   - 第三階段：分頁逐一合併到 n5src/shared/，差異放在 PAGE。~~單字庫＋設定~~、~~字卡~~、~~填空~~（已完成：shared/lib-tab.js、card-tab.js、fill-tab.js）；接下來：單選、文法頁、Voice。
    - 注意：「已排除」清單只會有 2026-10-26 以前在日文頁按「排除」的字（那天之後兩邊都沒有排除按鈕）。使用者還沒決定要把排除功能加回來，或在清單是 0 時把它藏起來。
    - 最後：把 index.html 拆成 n5src/ja/（資料、引擎、日文專屬功能），由 build.js 產生。
    每一步都要跑：五個語言的 test.js、core-test.js、sync-test.js，並在手機寬度實際點過日文頁和至少一個語言頁。

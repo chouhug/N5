@@ -4909,8 +4909,6 @@ function updateCardCounts() {
 // @end shared/card-tab.js
 
 // ================= 填空 =================
-let fillRound = null;
-const FILL_SRCS = [['learn', '待考'], ['recent', '最近學過'], ['fillWrong', '填空錯題'], ['fillReview', '錯題複習'], ['due', '到期複習']];
 const fillModeSeg = () => `<div class="seg" role="group" aria-label="填空模式">
       <button data-fmode="fill" aria-pressed="${UI.fillMode !== 'dict'}">句子填空</button>
       <button data-fmode="dict" aria-pressed="${UI.fillMode === 'dict'}">聽寫</button>
@@ -4918,15 +4916,30 @@ const fillModeSeg = () => `<div class="seg" role="group" aria-label="填空模�
 function bindFillMode(host) {
   $$('[data-fmode]', host).forEach(b => b.onclick = () => { if (UI.fillMode === b.dataset.fmode) return; UI.fillMode = b.dataset.fmode; saveUI(); document.body.classList.remove('typing'); renderFill(); });
 }
+// @include shared/fill-tab.js（這一段由 build.js 從 n5src/shared/fill-tab.js 複製過來，要改請改那個檔再跑 build.js）
+// ================= 填空（日文頁和語言頁共用：n5src/shared/fill-tab.js） =================
+// build.js 會把這個檔複製進兩邊的頁面（見 lib-tab.js 開頭的說明）。
+// 共用的是出題和答題流程：選題、送出、判斷、記錄、音效、下一題、手機鍵盤的處理。
+// 題目長什麼樣子由 PAGE.fill 決定：
+//   top() 來源選單上面的東西、bindTop(host)、alt() 回傳 true＝改走別的模式（日文：聽寫）、
+//   recentQueue(pool)「最近學過」的出題順序、
+//   make(w, R) 回傳這一題：{ html 卡片內容（要有 #fillIn #fillGo #fillShow #blank #fillAfter，
+//     可以有 #fillHintBtn #fillHint）, blankEmpty, live(inp, blank) 打字時, check(v) → 'ok'|'accent'|'wrong',
+//     retry(v) 答錯但值得再給一次機會時回傳 true（語言頁：填了同義字）, hintSound 按提示時「滴」一聲,
+//     reveal(blank) 答完後空格裡放答案, hideButtons(), verdict(res, shown, v) 對錯標示,
+//     correct(v, shown) 答錯時的正確答案, wordRow() 單字那一行, after(ok) 答完之後（語言頁：念例句） }
+let fillRound = null;
+const FILL_SRCS = [['learn', '待考'], ['recent', '最近學過'], ['fillWrong', '填空錯題'], ['fillReview', '錯題複習'], ['due', '到期複習']];
 function renderFill() {
+  const P = PAGE.fill;
   const host = $('#tab-fill');
   Quiz.active = null;
-  if (UI.fillMode === 'dict') return renderDict();
+  if (P.alt && P.alt()) return;
   const counts = Object.fromEntries(FILL_SRCS.map(([k]) => [k, srcPool(k).length]));
-  host.innerHTML = `${fillModeSeg()}
+  host.innerHTML = `${P.top()}
     <div class="ctl">${pillSelect('fillSrc', '題目來源', FILL_SRCS.map(([k, l]) => [k, `${l} ${counts[k]}`]), UI.fillSrc)}${UI.fillSrc === 'recent' ? recentCtl().html : posChips()}</div>
     <div id="fq"></div>`;
-  bindFillMode(host);
+  P.bindTop(host);
   $('#fillSrc', host).onchange = e => { UI.fillSrc = e.target.value; saveUI(); fillRound = null; renderFill(); };
   recentCtl(renderFill).bind(host);
   bindPos(host, () => { fillRound = null; renderFill(); });
@@ -4937,85 +4950,69 @@ function renderFill() {
     const pool = srcPool(UI.fillSrc);
     if (!pool.length) return emptyWords($('#fq'), UI.fillSrc);
     const isRev = UI.fillSrc === 'fillReview';
-    fillRound = { queue: UI.fillSrc === 'recent' ? recentQueue(pool) : pickRound(pool, getRec, 'fill', isRev ? REVIEW_ROUND : roundSize(), isRev), idx: 0, total: pool.length, src: UI.fillSrc, pos: UI.pos, right: 0 };
+    fillRound = { queue: UI.fillSrc === 'recent' ? P.recentQueue(pool) : pickRound(pool, getRec, 'fill', isRev ? REVIEW_ROUND : roundSize(), isRev), idx: 0, total: pool.length, src: UI.fillSrc, pos: UI.pos, right: 0 };
   }
   nextFillQ();
 }
 function nextFillQ(keepFocus) {
   const R = fillRound, host = $('#fq'); if (!R || !host) return;   // 自動跳下一題前範圍被換掉了（R 已清空）
-  if (!host) return;
   if (R.idx >= R.queue.length) { document.body.classList.remove('typing'); return roundDone(host, R, () => { fillRound = null; renderFill(); }); }
   const w = R.queue[R.idx];
   const src = { fillWrong: 'wrong', fillReview: 'review', due: 'due' }[R.src] || 'learn';
-  const len = kanaLen(w.ansR);
-  const blankEmpty = '＿'.repeat(Math.max(2, Math.min(len, 8)));
-  const preRom = segsRomaji(w.segs, 0, w.a0), postRom = segsRomaji(w.segs, w.a1);
+  const q = PAGE.fill.make(w, R);
   host.innerHTML = `<div class="card" id="fillCard">
-    <div class="qhead">${progressLine(R, R.total)}</div>
-    <div class="sent" lang="ja" id="fillSent" style="margin-top:8px">${rubyHTML(w.segs, { toks: toksOf(w), blank: { a0: w.a0, a1: w.a1, html: `<span class="blank" id="blank">${blankEmpty}</span>` } })}</div>
-    ${romajiLine((preRom + ' ____ ' + postRom).trim())}
-    <div class="hint" style="margin-top:8px">
-      <span>${esc(w.sentZh)}</span>
-      ${len > 1 ? `<span class="meta" id="fillHint"${SET.fillHint === 'show' ? '' : ' hidden'}>提示：第一個假名是 <b style="color:var(--fg)">${esc(w.ansR[0])}</b>，共 ${len} 個假名</span>` : ''}
-    </div>
-    <form class="answerrow" id="fillForm" style="margin-top:12px" autocomplete="off">
-      <input id="fillIn" type="text" inputmode="text" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" placeholder="漢字、平假名或拼音" aria-label="填入答案">
-      <button class="btn solid" type="submit" id="fillGo">送出</button>
-    </form>
-    <div class="preview" id="fillPrev"></div>
-    <div${len > 1 ? ' class="btnrow"' : ''} style="margin-top:4px">${len > 1 ? `<button class="btn quiet" id="fillHintBtn" aria-pressed="${SET.fillHint === 'show'}">${SET.fillHint === 'show' ? '收起提示' : '提示'}</button>` : ''}<button class="btn quiet${len > 1 ? '' : ' block'}" id="fillShow">看答案</button></div>
-    <div id="fillAfter"></div>
+    ${q.html}
   </div>`;
-  const inp = $('#fillIn'), blank = $('#blank'), prev = $('#fillPrev');
+  const inp = $('#fillIn'), blank = $('#blank');
   let answered = false;
-  const live = () => {
-    const v = inp.value;
-    const conv = /[a-z]/i.test(v) ? romaToKana(v, false) : v;
-    blank.textContent = v ? conv : blankEmpty;
-    prev.textContent = v && conv !== v ? `→ ${conv}` : '';
-  };
-  inp.addEventListener('input', live);
+  inp.addEventListener('input', () => q.live(inp, blank));
   const hb = $('#fillHintBtn');
   if (hb) hb.onclick = () => {
     const h = $('#fillHint'), on = h.hidden;
     h.hidden = !on; hb.textContent = on ? '收起提示' : '提示'; hb.setAttribute('aria-pressed', String(on));
+    if (q.hintSound) Sfx.tick();
   };
-  const finish = (ok, shown) => {
+  const finish = (res, shown) => {
     answered = true;
     R.done = true;
+    const ok = res !== 'wrong';
     if (ok) R.right++;
     record(w, 'fill', ok, src);
     ok ? Sfx.ok() : Sfx.ng(); buzz(ok);
-    blank.innerHTML = rubyHTML(w.segs.slice(w.a0, w.a1));
+    q.reveal(blank);
     blank.classList.add(ok ? 'ok' : 'ng');
     inp.readOnly = true;
     $('#fillGo').textContent = '下一題';
-    $('#fillShow').parentNode.hidden = true;
+    q.hideButtons();
     const r = getRec(w.id);
     const learnedNow = ok && r.s === 'learned' && r.lv === 0 && r.due === addDays(today(), 1) && src !== 'due';
     $('#fillAfter').innerHTML = `<div class="afterbox">
-      ${verdict(ok, shown ? '（看了答案）' : '')}
-      ${!ok ? `<div>正確答案：<span class="ja" style="font-size:22px;font-weight:700">${esc(w.ans)}</span>（${esc(w.ansR)}）${inp.value && !shown ? `<br><span class="meta">你的答案：${esc(inp.value)}</span>` : ''}</div>` : ''}
+      ${q.verdict(res, shown, inp.value)}
+      ${!ok ? q.correct(inp.value, shown) : ''}
       ${learnedNow ? `<div class="meta">已學會，明天（${r.due.slice(5).replace('-', '/')}）會出現在到期複習。</div>` : ''}
       ${ok && src === 'due' ? `<div class="meta">下次複習：${r.due.slice(5).replace('-', '/')}</div>` : ''}
-      <div class="row" style="gap:12px;align-items:center"><span class="ja" style="font-size:22px">${wordHTML(w)}</span><span>${meanW(w)}</span>${iconPlay(w.reading, '播放單字')}</div>
+      ${q.wordRow()}
       ${exampleBlock(w)}
     </div>`;
+    if (q.after) q.after(ok);
   };
   const next = () => { R.idx++; R.done = false; nextFillQ(true); };
   $('#fillForm').addEventListener('submit', e => {
     e.preventDefault();
     if (answered) return next();
     if (!inp.value.trim()) { inp.focus(); return; }
-    finish(checkFill(w, inp.value), false);
+    const res = q.check(inp.value);
+    if (res === 'wrong' && q.retry && q.retry(inp.value)) return;
+    finish(res, false);
   });
   $('#fillGo').addEventListener('mousedown', e => e.preventDefault()); // 按送出時不讓鍵盤收起
-  $('#fillShow').onclick = () => { if (!answered) finish(false, true); };
+  $('#fillShow').onclick = () => { if (!answered) finish('wrong', true); };
   inp.addEventListener('focus', () => { document.body.classList.add('typing'); setTimeout(scrollFillTop, 280); });
   inp.addEventListener('blur', () => setTimeout(() => { const a = document.activeElement; if (!a || a.id !== 'fillIn') document.body.classList.remove('typing'); }, 250));
   if (keepFocus && window.matchMedia('(pointer:fine)').matches) inp.focus({ preventScroll: true });
   else if (keepFocus && document.body.classList.contains('typing')) { inp.focus({ preventScroll: true }); scrollFillTop(); }
 }
+// 打字時（鍵盤打開）把題目捲到畫面最上面
 function scrollFillTop() {
   const card = $('#fillCard');
   if (!card || !document.body.classList.contains('typing')) return;
@@ -5023,6 +5020,7 @@ function scrollFillTop() {
   window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
 }
 if (window.visualViewport) window.visualViewport.addEventListener('resize', () => { if (document.body.classList.contains('typing')) scrollFillTop(); });
+// @end shared/fill-tab.js
 
 // ================= 聽寫 =================
 // 聽單字的發音，打出假名（或拼音、漢字）。不影響「已學會」，答錯的字會進「聽寫錯題」。
@@ -5119,6 +5117,47 @@ function nextDictQ(keepFocus) {
 // ================= 單字庫 =================
 // 這一頁和語言頁不一樣的地方（共用的分頁程式用 PAGE.…）
 const PAGE = {
+  fill: {
+    top: () => fillModeSeg(),
+    bindTop: host => bindFillMode(host),
+    alt: () => { if (UI.fillMode !== 'dict') return false; renderDict(); return true; },
+    recentQueue: pool => recentQueue(pool),
+    make(w, R) {
+      const len = kanaLen(w.ansR);
+      const blankEmpty = '＿'.repeat(Math.max(2, Math.min(len, 8)));
+      const preRom = segsRomaji(w.segs, 0, w.a0), postRom = segsRomaji(w.segs, w.a1);
+      return {
+        blankEmpty,
+        html: `<div class="qhead">${progressLine(R, R.total)}</div>
+    <div class="sent" lang="ja" id="fillSent" style="margin-top:8px">${rubyHTML(w.segs, { toks: toksOf(w), blank: { a0: w.a0, a1: w.a1, html: `<span class="blank" id="blank">${blankEmpty}</span>` } })}</div>
+    ${romajiLine((preRom + ' ____ ' + postRom).trim())}
+    <div class="hint" style="margin-top:8px">
+      <span>${esc(w.sentZh)}</span>
+      ${len > 1 ? `<span class="meta" id="fillHint"${SET.fillHint === 'show' ? '' : ' hidden'}>提示：第一個假名是 <b style="color:var(--fg)">${esc(w.ansR[0])}</b>，共 ${len} 個假名</span>` : ''}
+    </div>
+    <form class="answerrow" id="fillForm" style="margin-top:12px" autocomplete="off">
+      <input id="fillIn" type="text" inputmode="text" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" placeholder="漢字、平假名或拼音" aria-label="填入答案">
+      <button class="btn solid" type="submit" id="fillGo">送出</button>
+    </form>
+    <div class="preview" id="fillPrev"></div>
+    <div${len > 1 ? ' class="btnrow"' : ''} style="margin-top:4px">${len > 1 ? `<button class="btn quiet" id="fillHintBtn" aria-pressed="${SET.fillHint === 'show'}">${SET.fillHint === 'show' ? '收起提示' : '提示'}</button>` : ''}<button class="btn quiet${len > 1 ? '' : ' block'}" id="fillShow">看答案</button></div>
+    <div id="fillAfter"></div>`,
+        // 打拼音時即時換成假名，空格裡和下面都看得到
+        live(inp, blank) {
+          const v = inp.value;
+          const conv = /[a-z]/i.test(v) ? romaToKana(v, false) : v;
+          blank.textContent = v ? conv : blankEmpty;
+          $('#fillPrev').textContent = v && conv !== v ? `→ ${conv}` : '';
+        },
+        check: v => checkFill(w, v) ? 'ok' : 'wrong',
+        reveal: blank => { blank.innerHTML = rubyHTML(w.segs.slice(w.a0, w.a1)); },
+        hideButtons: () => { $('#fillShow').parentNode.hidden = true; },
+        verdict: (res, shown) => verdict(res !== 'wrong', shown ? '（看了答案）' : ''),
+        correct: (v, shown) => `<div>正確答案：<span class="ja" style="font-size:22px;font-weight:700">${esc(w.ans)}</span>（${esc(w.ansR)}）${v && !shown ? `<br><span class="meta">你的答案：${esc(v)}</span>` : ''}</div>`,
+        wordRow: () => `<div class="row" style="gap:12px;align-items:center"><span class="ja" style="font-size:22px">${wordHTML(w)}</span><span>${meanW(w)}</span>${iconPlay(w.reading, '播放單字')}</div>`
+      };
+    }
+  },
   card: {
     pos: w => `<button class="posbtn" data-forms="${esc(w.id)}" aria-label="看「${esc(w.word)}」的詞性和變化形">${esc(w.pos)}<span aria-hidden="true">›</span></button>`,
     headRight: w => grammarButton(w),
