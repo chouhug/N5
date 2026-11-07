@@ -3562,7 +3562,7 @@ function bumpDay() {
   reloadShared();
   const d = today();
   SyncDays.bump(S, d);   // 加一題（只留最近 90 天）
-  saveLocal(); Cloud.schedule();   // 只有題數變了（五十音、詞性變化、文法練習）也要同步 renderGoal();
+  saveLocal(); renderGoal(); Cloud.schedule();   // 只有題數變了（文法練習等）也要同步
   if (S.days[d] === GOAL) toast(`今天的 ${GOAL} 題完成了！`, true);
 }
 function record(w, mode, correct, source) {
